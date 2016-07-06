@@ -1,0 +1,550 @@
+= M07UF3NF2 PAC1 Servidor DHCP
+Josep Queralt <jqueral8@xtec.cat>
+:revdate: Gener 10, 2016
+:revnumber: 0.1
+:encoding: utf-8
+// :slides:
+:lang: ca
+:toc: left
+:!numbered:
+// :teacher:
+
+ifdef::teacher[]
+== (Versió del professor):
+endif::teacher[]
+
+////
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+////
+
+[WARNING]
+====
+**Aquest document pot quedar obsolet un cop imprès, revisa el moodle per obtenir-ne la versió actualitzada.**
+====
+
+<<<
+
+== Objectiu de la pràctica
+
+Configurar una màquina com a servidor DHCP i dues màquines com a clients del servei.
+
+== Preparatius
+
+* Utilitzareu, com a entorn de proves, màquines virtuals creades amb Virtualbox o VMWare. 
+* Creareu concretament tres màquines virtuals, a les que d'aquí en endavant referirem amb els acrònims *SERVIDOR*, *CLIENT1* i *CLIENT2*. És obligatori usar els sistemes operatius indicats a continuació:
+SERVIDOR::
+Màquina servidor amb *Debian 8*, per un tema de facilitat i rendiment us recomano que instal·leu l'escriptori *XFCE*, simplement estigueu atents al procés d'instalació.
+CLIENT1 i CLIENT2::
+Màquina client, amb *Linux Mint Cinnamon*.
+
+=== Configuració de xarxa de les màquines virtuals
+
+* Per tal que les tres màquines “es vegin” a través de xarxa, haureu de configurar una targeta de xarxa virtual usant el mode *Adaptador sólo anfitrión* o *Host-only*. Això crearà una xarxa virtual privada entre les màquines virtuals, sense que la xarxa externa, la real, interfereixi (això és important doncs el router real pot tenir un DHCP i podria col·lisionar amb el nostre).
+* A més, per tal de poder instal·lar paquets des d'Internet  amb apt-get, Synaptic o aptitude, hauríeu de configurar una  targeta de xarxa virtual de tipus *NAT*.
+* Per evitar un problema que us trobareu amb VMWare o VirtualBox, caldrà que desactiveu un servidor DHCP intern que duu incorporat aquest programari. 
+** Seguiu els passos següents (*Virual Box*):
+1. Obriu VirtualBox, i aneu al menu "Archivo>Preferencias"
+2. Seleccioneu la categoria "Red", a la banda esquerra.
+3. Tal i com es mostra a la figura següent, seleccioneu "VirtualBox Host-Only Ethernet Adapter" o l'equivalent en castellà, i cliqueu a la icona del tornavís:
+4. A la nova finestra, seleccioneu la pestanya "Servidor DHCP" i desactiveu el checkbox del servidor DHCP
+5. Reinicieu la màquina real.
+
+.Deshabilitar el servidor DHCP virtual en VirtualBox
+image::images/preparacio1.png[1000,1000]
+
+** Seguiu els passos següents (*VMWare*):
+1. Obriu VMWare i aneu a "Edit>Virtual Network Editor"
+2. Deshabiliteu el servidor DHCP a la tarja Host-Only
+
+.Deshabilitar el servidor DHCP virtual en VMWare
+image::images/preparacio1b.png[1000,1000]
+
+=== Preparació dels S.O.
+
+* També caldrà que instal·leu alguna eina de monitoratge de xarxa, per exemple el *WireShark*.
++
+[IMPORTANT]
+====
+A cadascuna de les màquines virtuals heu de crear un usuari amb l'estructura *CognomInicialNom*, per exemple en Toni Lòpez crearà un usuari anomenat lopezt, tot en minúscula i sense accents ni lletres no angleses.
+
+AQUEST USUARI SERÀ UTILITZAT OBLIGATORIAMENT A TOTES LES PRÀCTIQUES, NO UTILITZEU L'USUARI ROOT.
+====
+
+* Verifiqueu que el vostre usuari té permís de sudo a totes les màquines.
+
+[source,bash]
+----
+# En cas que el vostre usuari no pugui fer sudo:
+# Verificar que la comanda sudo està instalada
+dpkg -L sudo 
+# Per obrir el fitxer de configuració de sudoers
+visudo
+# Afegir a l'apartat # User privilege specificaction
+lopezt	ALL=(ALL:ALL) ALL
+----
+
+[IMPORTANT]
+====
+Cal que configureu el vostre terminal perquè al prompt aparegui el vostre nom i la data ressaltat en diferents colors. *Això és imprescindible per avaluar les captures*.
+====
+
+[source,bash]
+----
+# Cal obrir el fitxer .bashrc situat a la home del vostre usuari, aquest fitxer conté la configuració del terminal.
+# Cal buscar la línia que conté
+force_color_prompt=yes
+# i descomentar-la
+# Busqueu el següent fragment i canvieu la part resaltada:
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\D{%d.%m.%y}_\t->\[\e[0;31m\]\u\[\e[m\]\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+----
+
+A partir d'ara el prompt de la màquina Linux hauria de ser com el de la imatge:
+
+.Prompt
+image::images/preparacio2.png[1000,1000]
+
+== Apartat 1: Preparació de la màquina SERVIDOR
+
+* Instal·leu la màquina virtual des de la iso tenint en compte tots els preparatius.
+* Podeu instal·lar-vos l'escriptori que vulgueu, jo us recomano l'escriptori *XFCE* tant per rendiment com per funcionalitat.
+* Estaria bé que instal·léssiu les *guest additions* de virtual box (o les *VMWare tools*) a les màquines virtuals, això us permetrà treballar amb més comoditat.
+* La màquina virtual haurà de tenir dues targes de xarxa definides de la següent manera:
+** *eth0*:
+*** en mode xarxa privada amb l'amfitrió (host-only), sobre aquesta tarja treballarem amb el servei DHCP.
+**** Adreça ip: 172.16.0.3/16
+** *eth1*: 
+*** en mode NAT, aquesta tarja només ens servirà per tenir sortida a Internet. 
++
+[WARNING]
+====
+Si treballeu en entorn gràfic un servei anomenat network manager gestiona les connexions de xarxa, en aquest cas la configuració de la xarxa no la trobareu al fitxer /etc/network/interfaces. 
+====
+
+** *eth2*: 
+*** En mode xarxa privada amb l'amfitrió (host-only), sobre aquesta tarja treballarem amb el servei DHCP als últims apartats de la pràctica.
+*** Adreça ip: 172.17.0.3/16
+* Doneu un cop d'ull al fitxer de configuració del networkmanager, */etc/NetworkManager/Networkmanager.config* i assegureu-vos que la variable managed és igual a false.
++
+.Deshabilitar el Network Manager
+image::images/preparacio3.png[1000,1000]
+
+* *NO TREBALLEU AMB EL NETWORK MANAGER HABILITAT*
+* Amb aquests canvis si modifiqueu manualment el fitxer */etc/network/interfaces* amb les configuracions de xarxa corresponents el servei del network manager no interferirà amb la configuració.
+
+ifndef::teacher[]
+.Entregar
+====
+*Mostreu una captura del fitxer de configuració*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la configuració de xarxa resultant*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+
+* Instal·lar el servidor, des de línia de comandes, DHCP a la màquina SERVIDOR.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instal·lació*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Verificar que el servei DHCP està funcionant
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de les comandes que utilitzeu per verificar el funcionament del servei.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Quin és el nom de l'arxiu de configuració del servei DHCP? Quan modifiquem l'arxiu, quina instrucció haurem de llançar per què el servidor recarregui la nova configuració?
+
+ifndef::teacher[]
+.Entregar
+====
+*Ruta completa a l'arxiu de configuració*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Comanda per recarregar els canvis a la configuració
+- Inseriu una captura del registre del sistema mostrant els missatges que llença el servidor DHCP.
+
+[source,bash]
+----
+sudo cat /var/log/syslog | grep dhcpd
+----
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció anterior.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Explica el significat dels missatges de la captura anterior. Què estem veient?*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Configuració del servei DHCP, requeriments:
+* En general, el servidor DHCP proporcionarà la següent configuració a les màquines client:
+. Servidor DNS primari: 172.16.0.2
+. Servidor DNS secundari: 172.16.0.22
+. Nom de domini: cognom1-cognom2.test. Per exemple en Pere Roca Grau tindrà un nom de domini roca-grau.test.
+. EL servei DHCP repartirà adreces IP en els rangs 172.16.1.1/16 – 172.16.5.255/16 (ambdues incloses)
+. La porta d'enllaç serà 172.16.0.1
+
+ifndef::teacher[]
+.Entregar
+====
+*Arxiu de configuració complet, esborreu tots els comentaris i feu-lo llegible.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instal·lació*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura reinici del servei DHCP*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+== Apartat 2: Configuració de la màquina CLIENT1
+
+* Configurem les ip de la màquina client de manera que eth0 adquireixi ip mitjançant dhcp, feu-ho des de la interfície gràfica.
+
+ifndef::teacher[]
+.Entregar
+====
+*Mostrar configuració de xarxa del CLIENT*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Forceu la renovació de l'adreça ip reiniciant el servei NetworkManager. Si treballéssiu sense entorn gràfic la comanda que utilitzaríeu per gestionar el client dhcp seria dhclient.
+
+ifndef::teacher[]
+.Entregar
+====
+*comanda per reiniciar el NetworkManager*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Observeu el trafic generat a l'apartat anterior utilitzant Wireshark a qualsevol de les dues bandes (serà més pràctic si l'instal·leu al SERVIDOR).
+. Feu que el CLIENT sol·liciti una nova concessió DHCP
+. Captureu les trames de tot el procés (DHCPDiscover, DHCPOffer, DHCPRequest, DHCPAck)
+
+ifndef::teacher[]
+.Entregar
+====
+*captura de pantalla amb la captura del wireshark.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Des de la màquina CLIENT1 verificar que tots els paràmetres adquirits són correctes.
+
+ifndef::teacher[]
+.Entregar
+====
+*Validar l'adreça ip*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*validar porta d'enllaç*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*validar servidors dns (podeu utilitzar la comanda nmcli)*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*captura ping contra el servidor DHCP*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Modificar l'arxiu de configuració del DHCP per tal que el tems de les concessions sigui per defecte d'una hora i com a màxim de dues hores. Reinicieu el servei DHCP.
+captura de la modificació.
+* Forceu al client la renovació de l'adreça. Des del SERVIDOR, localitzeu l'arxiu on s'emmagatzema el registre de les cessions DHCP, i trobeu el fragment on s'ha registrat la operació anterior. Ressalta la IP i la hora de cessió i l'hora de caducitat de la cessió.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció i el resultat*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* *Les hores que es guarden a l'arxiu de concessions són en format GMT+0 (hora respecte al meridià de Greenwich) Si teniu ben configurada la zona horària, nosaltres estem a la zona GMT+1,  i trobareu una diferència negativa d'una hora*.
+* A la màquina CLIENT1 descobriu l'adreça MAC de la tarja eth0 des de línia de comandes.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció i el resultat*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* A la màquina SERVIDOR modifiqueu la configuració del servei dhcp, volem que les seguents màquines de la subxarxa 72.16.0.0/16 tinguin una IP reservada fixa:
+. SERVIDOR_FTP Té la MAC  00:0c:76:8b:c4:16. Volem que se li assigni la IP 172.16.200.1
+. SERVIDOR_WEB: Feu coincidir la MAC de CLI per aquest servidor. Volem que se li assigni la IP 172.16.200.2.
+. La màquina SERVIDOR_WEB ha de rebre el servidor DNS 8.8.8.8 i la porta d'enllaç 10.0.0.1. SERVIDOR_FTP ha de rebre les mateixes que les màquines configurades als exercicis anteriors.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció i el resultat*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Reinicieu el servei DHCP a SERVIDOR, i demaneu una renovació d'adreça a CLIENT1. Verifiqueu a CLIENT1 que l'adreça adquirida és l'esperada.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció per validar l'adreça IP i del seu resultat.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció per validar la porta d'enllaç.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció per validar el servidor de noms.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+== Apartat 3: Configuració de la màquina CLIENT2
+
+* Definirem ara al servei DHCP la configuració d'una segona subxarxa  172.17.0.0/16. (*eth2*)
+* Assumirem que és una xarxa on es barregen màquines conegudes i registrades (en sabem la MAC i la desem a l'arxiu de configuració) i desconegudes (imagineu, per exemple, clients WIFI dels que no podem  saber la MAC).
+* El DHCP assignarà:
+. el rang 172.17.0.10 a 172.17.0.150 a les màquines registrades al DHCP.
+. el rang 172.17.0.151 a 172.17.0.255 per a les màquines no registrades.
+* Per a totes les màquines d'aquesta subxarxa,  la porta d'enllaç és la 172.17.0.1, i el DNS el 172.17.0.8.
+* Per facilitar la feina,  només definirem 2 màquines amb adreces MAC registrades, tindran el nom OFICINA1 i OFICINA2. Inicialment feu coincidir la mac de CLIENT2 amb OFICINA1, i inventeu-vos la de OFICINA2.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de les ampliacions de l'arxiu de configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Renoveu la IP de CLIENT2 i verifiqueu que adquireix una IP del rang registrat.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del terminal amb la renovació i la IP adquirida.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+* Canvieu ara la MAC d'OFICINA1 a la configuració DHCP per a que sigui diferent de la MAC de CLIENT2. Reinicieu el servei i renoveu la IP de CLIENT2. Verifiqueu que la IP que s'adquireix a CLIENT2 és del rang NO registrat.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del terminal amb la renovació i la IP adquirida.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
