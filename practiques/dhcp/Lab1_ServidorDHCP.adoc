@@ -4,7 +4,7 @@
 :lang: ca
 :toc: left
 :!numbered:
-//:teacher:
+:teacher:
 
 ifdef::teacher[]
 == (Versió del professor):
@@ -76,7 +76,25 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug eth0
+auto eth0
+iface eth0 inet static
+address 172.16.3.2
+netmask 255.255.255.0
+gateway 172.16.3.1
+----
 ====
 endif::teacher[]
 
@@ -89,7 +107,18 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
+ 1  172.16.3.1 (172.16.3.1)  0.257 ms  0.190 ms  0.140 ms
+ 2  172.16.100.254 (172.16.100.254)  0.290 ms  0.263 ms  0.185 ms
+ 3  192.168.1.1 (192.168.1.1)  0.797 ms  1.114 ms  1.158 ms
+ 4  * * *
+ 5  * * *
+ 6  * * *
+[...]
+12  google-public-dns-a.google.com (8.8.8.8)  57.573 ms  57.297 ms  58.827 ms
+----
 ====
 endif::teacher[]
 
@@ -106,7 +135,24 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+apt-cache search --names-only dhcp | grep server
+udhcpd - Provides the busybox DHCP server implementation
+dhcp-probe - network DHCP or BootP server discover
+dhcpy6d - MAC address aware DHCPv6 server written in Python
+isc-dhcp-client-dbg - ISC DHCP server for automatic IP address assignment (client debug)
+isc-dhcp-dbg - ISC DHCP server for automatic IP address assignment (debuging symbols)
+isc-dhcp-dev - API for accessing and modifying the DHCP server and client state
+isc-dhcp-relay-dbg - ISC DHCP server for automatic IP address assignment (relay debug)
+isc-dhcp-server - ISC DHCP server for automatic IP address assignment
+isc-dhcp-server-dbg - ISC DHCP server for automatic IP address assignment (server debug)
+isc-dhcp-server-ldap - DHCP server that uses LDAP as its backend
+python-pydhcplib - Python DHCP client/server library
+wide-dhcpv6-server - DHCPv6 server for automatic IPv6 hosts configuration
+
+apt-get install isc-dhcp-server
+----
 ====
 endif::teacher[]
 
@@ -126,7 +172,30 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+# Defaults for isc-dhcp-server initscript
+# sourced by /etc/init.d/isc-dhcp-server
+# installed at /etc/default/isc-dhcp-server by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
+#DHCPD_CONF=/etc/dhcp/dhcpd.conf
+
+# Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
+#DHCPD_PID=/var/run/dhcpd.pid
+
+# Additional options to start dhcpd with.
+#	Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
+#OPTIONS=""
+
+# On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
+#	Separate multiple interfaces with spaces, e.g. "eth0 eth1".
+INTERFACES="eth0"
+----
 ====
 endif::teacher[]
 
@@ -148,7 +217,12 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source]
+----
+/etc/dhcp/dhcpd.conf
+
+systemctl restart isc-dhcp-server
+----
 ====
 endif::teacher[]
 
@@ -169,7 +243,36 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source, bash]
+----
+Jul  8 13:41:14 bilbo dhcpd: Internet Systems Consortium DHCP Server 4.3.1
+Jul  8 13:41:14 bilbo dhcpd: Copyright 2004-2014 Internet Systems Consortium.
+Jul  8 13:41:14 bilbo dhcpd: All rights reserved.
+Jul  8 13:41:14 bilbo dhcpd: For info, please visit https://www.isc.org/software/dhcp/
+Jul  8 13:41:14 bilbo dhcpd: Internet Systems Consortium DHCP Server 4.3.1
+Jul  8 13:41:14 bilbo dhcpd: Copyright 2004-2014 Internet Systems Consortium.
+Jul  8 13:41:14 bilbo dhcpd: All rights reserved.
+Jul  8 13:41:14 bilbo dhcpd: For info, please visit https://www.isc.org/software/dhcp/
+Jul  8 13:41:14 bilbo dhcpd: Wrote 0 leases to leases file.
+Jul  8 13:41:14 bilbo dhcpd:
+Jul  8 13:41:14 bilbo dhcpd: No subnet declaration for eth0 (172.16.3.2).
+Jul  8 13:41:14 bilbo dhcpd: ** Ignoring requests on eth0.  If this is not what
+Jul  8 13:41:14 bilbo dhcpd:    you want, please write a subnet declaration
+Jul  8 13:41:14 bilbo dhcpd:    in your dhcpd.conf file for the network segment
+Jul  8 13:41:14 bilbo dhcpd:    to which interface eth0 is attached. **
+Jul  8 13:41:14 bilbo dhcpd:
+Jul  8 13:41:14 bilbo dhcpd:
+Jul  8 13:41:14 bilbo dhcpd: Not configured to listen on any interfaces!
+Jul  8 13:41:14 bilbo dhcpd:
+Jul  8 13:41:14 bilbo dhcpd: If you think you have received this message due to a bug rather
+Jul  8 13:41:14 bilbo dhcpd: than a configuration issue please read the section on submitting
+Jul  8 13:41:14 bilbo dhcpd: bugs on either our web page at www.isc.org or in the README file
+Jul  8 13:41:14 bilbo dhcpd: before submitting a bug.  These pages explain the proper
+Jul  8 13:41:14 bilbo dhcpd: process and the information we find helpful for debugging..
+Jul  8 13:41:14 bilbo dhcpd:
+Jul  8 13:41:14 bilbo dhcpd: exiting.
+Jul  8 13:41:16 bilbo isc-dhcp-server[1248]: Starting ISC DHCP server: dhcpdcheck syslog for diagnostics. ... failed!
+----
 ====
 endif::teacher[]
 
@@ -182,7 +285,8 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+El servidor DHCP no arrenca perquè no hem configurat com ha de respondre a les
+peticions que li arribin per eth0.
 ====
 endif::teacher[]
 
@@ -207,6 +311,12 @@ nom de domini roca-grau.test.
 172.16.3.254 (ambdues incloses).
 . La porta d'enllaç serà 172.16.3.1.
 
+[WARNING]
+====
+*Feu una còpia de seguretat del fitxer de configuració original abans de
+modificar-lo.*
+====
+
 ifndef::teacher[]
 .Entregar
 ====
@@ -216,22 +326,33 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source, bash]
+----
+ddns-update-style none;
+
+option domain-name "queralt-molina.test";
+option domain-name-servers 172.16.3.2, 172.16.3.22;
+
+default-lease-time 3600;
+max-lease-time 7200;
+
+authoritative;
+
+log-facility local7;
+
+subnet 172.16.3.0 netmask 255.255.255.0 {
+  range 172.16.3.100 172.16.3.254;
+  option routers 172.16.3.1;
+  option broadcast-address 172.16.3.255;
+}
+----
 ====
 endif::teacher[]
 
-ifndef::teacher[]
-.Entregar
+[WARNING]
 ====
-*Captura reinici del servei DHCP*
+*Recordeu reiniciar el servidor després de fer canvis a la seva configuració!*
 ====
-endif::teacher[]
-ifdef::teacher[]
-.Solució
-====
-*Solució*
-====
-endif::teacher[]
 
 == Apartat 4: Configuració de la màquina client PC1 (a la mateixa xarxa)
 
@@ -239,8 +360,8 @@ endif::teacher[]
 directament des del VirtualBox, connectant la seva targeta de xarxa al
 switch _intnet3_.
 
-* Configurem les ip de la màquina PC1 de manera que eth0 adquireixi ip
-mitjançant dhcp. Hauria d'estar així per defecte.
+* Configurem la xarxa de la màquina PC1 de manera que eth0 adquireixi IP
+mitjançant DHCP. Hauria d'estar així per defecte.
 
 ifndef::teacher[]
 .Entregar
@@ -251,7 +372,21 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug eth0
+iface eth0 inet dhcp
+----
 ====
 endif::teacher[]
 
@@ -271,7 +406,13 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+dhclient -r eth0
+dhclient eth0
+
+systemctl restart network-manager
+----
 ====
 endif::teacher[]
 
@@ -286,7 +427,14 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+Jul  8 17:00:13 bilbo dhcpd: DHCPRELEASE of 172.16.3.101 from 08:00:27:24:bf:cb (PC1) via eth0 (found)
+Jul  8 17:00:16 bilbo dhcpd: DHCPDISCOVER from 08:00:27:24:bf:cb via eth0
+Jul  8 17:00:16 bilbo dhcpd: DHCPOFFER on 172.16.3.101 to 08:00:27:24:bf:cb (PC1) via eth0
+Jul  8 17:00:16 bilbo dhcpd: DHCPREQUEST for 172.16.3.101 (172.16.3.2) from 08:00:27:24:bf:cb (PC1) via eth0
+Jul  8 17:00:16 bilbo dhcpd: DHCPACK on 172.16.3.101 to 08:00:27:24:bf:cb (PC1) via eth0
+----
 ====
 endif::teacher[]
 
@@ -307,7 +455,79 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+17:04:14.166047 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 172.16.3.2 tell 172.16.3.101, length 46
+17:04:14.166063 ARP, Ethernet (len 6), IPv4 (len 4), Reply 172.16.3.2 is-at 08:00:27:4a:13:c1, length 28
+17:04:14.166201 IP (tos 0x0, ttl 64, id 18221, offset 0, flags [DF], proto UDP (17), length 328)
+    172.16.3.101.68 > 172.16.3.2.67: BOOTP/DHCP, Request from 08:00:27:24:bf:cb, length 300, xid 0x9f36be03, Flags [none]
+	  Client-IP 172.16.3.101
+	  Client-Ethernet-Address 08:00:27:24:bf:cb
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Release
+	    Server-ID Option 54, length 4: 172.16.3.2
+	    Hostname Option 12, length 3: "PC1"
+17:04:15.805306 IP (tos 0x10, ttl 128, id 0, offset 0, flags [none], proto UDP (17), length 328)
+    0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 08:00:27:24:bf:cb, length 300, xid 0xac37352e, Flags [none]
+	  Client-Ethernet-Address 08:00:27:24:bf:cb
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Discover
+	    Requested-IP Option 50, length 4: 172.16.3.101
+	    Hostname Option 12, length 3: "PC1"
+	    Parameter-Request Option 55, length 13:
+	      Subnet-Mask, BR, Time-Zone, Default-Gateway
+	      Domain-Name, Domain-Name-Server, Option 119, Hostname
+	      Netbios-Name-Server, Netbios-Scope, MTU, Classless-Static-Route
+	      NTP
+17:04:15.805472 IP (tos 0x0, ttl 64, id 15649, offset 0, flags [DF], proto ICMP (1), length 48)
+    172.16.3.2 > 172.16.3.101: ICMP echo request, id 51798, seq 0, length 28
+17:04:16.807151 IP (tos 0x10, ttl 128, id 0, offset 0, flags [none], proto UDP (17), length 333)
+    172.16.3.2.67 > 172.16.3.101.68: BOOTP/DHCP, Reply, length 305, xid 0xac37352e, Flags [none]
+	  Your-IP 172.16.3.101
+	  Client-Ethernet-Address 08:00:27:24:bf:cb
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Offer
+	    Server-ID Option 54, length 4: 172.16.3.2
+	    Lease-Time Option 51, length 4: 3600
+	    Subnet-Mask Option 1, length 4: 255.255.255.0
+	    BR Option 28, length 4: 172.16.3.255
+	    Default-Gateway Option 3, length 4: 172.16.3.1
+	    Domain-Name Option 15, length 19: "queralt-molina.test"
+	    Domain-Name-Server Option 6, length 8: 172.16.3.2,172.16.3.22
+17:04:16.807532 IP (tos 0x10, ttl 128, id 0, offset 0, flags [none], proto UDP (17), length 328)
+    0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 08:00:27:24:bf:cb, length 300, xid 0xac37352e, Flags [none]
+	  Client-Ethernet-Address 08:00:27:24:bf:cb
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: Request
+	    Server-ID Option 54, length 4: 172.16.3.2
+	    Requested-IP Option 50, length 4: 172.16.3.101
+	    Hostname Option 12, length 3: "PC1"
+	    Parameter-Request Option 55, length 13:
+	      Subnet-Mask, BR, Time-Zone, Default-Gateway
+	      Domain-Name, Domain-Name-Server, Option 119, Hostname
+	      Netbios-Name-Server, Netbios-Scope, MTU, Classless-Static-Route
+	      NTP
+17:04:16.809563 IP (tos 0x10, ttl 128, id 0, offset 0, flags [none], proto UDP (17), length 333)
+    172.16.3.2.67 > 172.16.3.101.68: BOOTP/DHCP, Reply, length 305, xid 0xac37352e, Flags [none]
+	  Your-IP 172.16.3.101
+	  Client-Ethernet-Address 08:00:27:24:bf:cb
+	  Vendor-rfc1048 Extensions
+	    Magic Cookie 0x63825363
+	    DHCP-Message Option 53, length 1: ACK
+	    Server-ID Option 54, length 4: 172.16.3.2
+	    Lease-Time Option 51, length 4: 3600
+	    Subnet-Mask Option 1, length 4: 255.255.255.0
+	    BR Option 28, length 4: 172.16.3.255
+	    Default-Gateway Option 3, length 4: 172.16.3.1
+	    Domain-Name Option 15, length 19: "queralt-molina.test"
+	    Domain-Name-Server Option 6, length 8: 172.16.3.2,172.16.3.22
+17:04:20.816447 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 172.16.3.101 tell 172.16.3.2, length 28
+17:04:20.816796 ARP, Ethernet (len 6), IPv4 (len 4), Reply 172.16.3.101 is-at 08:00:27:24:bf:cb, length 46
+----
 ====
 endif::teacher[]
 
@@ -322,7 +542,19 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+ifconfig eth0
+
+eth0      Link encap:Ethernet  HWaddr 08:00:27:24:bf:cb
+          inet addr:172.16.3.101  Bcast:172.16.3.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe24:bfcb/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:42 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:97 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:6341 (6.1 KiB)  TX bytes:10530 (10.2 KiB)
+----
 ====
 endif::teacher[]
 
@@ -335,7 +567,15 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+route -n
+
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         172.16.3.1      0.0.0.0         UG    0      0        0 eth0
+172.16.3.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0
+----
 ====
 endif::teacher[]
 
@@ -348,7 +588,15 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+cat /etc/resolv.conf
+
+domain queralt-molina.test
+search queralt-molina.test
+nameserver 172.16.3.2
+nameserver 172.16.3.22
+----
 ====
 endif::teacher[]
 
@@ -366,7 +614,21 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+tail /var/lib/dhcp/dhcpd.leases
+
+lease 172.16.3.101 {
+  starts 5 2016/07/08 15:12:18;
+  ends 5 2016/07/08 16:12:18;
+  cltt 5 2016/07/08 15:12:18;
+  binding state active;
+  next binding state free;
+  rewind binding state free;
+  hardware ethernet 08:00:27:24:bf:cb;
+  client-hostname "PC1";
+}
+----
 ====
 endif::teacher[]
 
@@ -374,7 +636,8 @@ endif::teacher[]
 ====
 *Les hores que es guarden a l'arxiu de concessions són en format GMT+0 (hora
   respecte al meridià de Greenwich) Si teniu ben configurada la zona horària,
-  nosaltres estem a la zona GMT+1,  i trobareu una diferència negativa d'una hora*.
+  nosaltres estem a la zona GMT+1,  i trobareu una diferència negativa d'una
+  o dues hores*.
 ====
 
 * A la màquina PC1 descobriu l'adreça MAC de la targeta eth0 des de línia de
@@ -389,11 +652,25 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+ifconfig eth0
+
+eth0      Link encap:Ethernet  HWaddr 08:00:27:24:bf:cb
+          inet addr:172.16.3.101  Bcast:172.16.3.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe24:bfcb/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:42 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:97 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:6341 (6.1 KiB)  TX bytes:10530 (10.2 KiB)
+----
 ====
 endif::teacher[]
 
-* A la màquina *bilbo* modifiqueu la configuració del servei dhcp. Volem que
+== Apartat 5: Reserva d'adreces IP
+
+* A la màquina *bilbo* modifiqueu la configuració del servei DHCP. Volem que
 les següents màquines (fícticies) de la subxarxa 172.16.3.0/24 tinguin una IP
 reservada fixa:
 
@@ -412,7 +689,38 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+ddns-update-style none;
+
+option domain-name "queralt-molina.test";
+option domain-name-servers 172.16.3.2, 172.16.3.22;
+
+default-lease-time 3600;
+max-lease-time 7200;
+
+authoritative;
+
+log-facility local7;
+
+subnet 172.16.3.0 netmask 255.255.255.0 {
+  range 172.16.3.100 172.16.3.254;
+  option routers 172.16.3.1;
+  option broadcast-address 172.16.3.255;
+}
+
+host SERVIDOR_WEB {
+  hardware ethernet 00:0C:76:8B:C4:16;
+  fixed-address 172.16.3.5;
+  option domain-name-servers 8.8.8.8;
+  option routers 10.0.0.1;
+}
+
+host PC1 {
+  hardware ethernet 08:00:27:24:BF:CB;
+  fixed-address 172.16.3.8;
+}
+----
 ====
 endif::teacher[]
 
@@ -428,13 +736,25 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+ifconfig eth0
+
+eth0      Link encap:Ethernet  HWaddr 08:00:27:24:bf:cb
+          inet addr:172.16.3.8  Bcast:172.16.3.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe24:bfcb/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:128 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:158 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:14060 (13.7 KiB)  TX bytes:23312 (22.7 KiB)
+----
 ====
 endif::teacher[]
 
-== Apartat 5: Configuració de la màquina PC2
+== Apartat 6: Grups d'adreces i clients registrats
 
-* Assumirem ara que a la xarxa 172.16.3.0/24  es barregen màquines conegudes i
+* Assumirem ara que a la xarxa 172.16.3.0/24 es barregen màquines conegudes i
 registrades (en sabem la MAC i la desem a l'arxiu de configuració) i
 desconegudes (imagineu, per exemple, clients WIFI dels que no podem saber la
 MAC).
@@ -447,19 +767,53 @@ MAC).
 172.16.3.1, i els DNS són 172.16.3.2 i 127.16.3.22.
 
 * Per facilitar la feina, només definirem 2 màquines amb adreces MAC
-registrades, tindran el nom OFICINA1 i OFICINA2. Inicialment feu coincidir
-la mac de PC1 amb OFICINA1, i inventeu-vos la d'OFICINA2.
+registrades, seran PC1 i OFICINA. Inventeu-vos la MAC d'OFICINA.
 
 ifndef::teacher[]
 .Entregar
 ====
-*Captura de les ampliacions de l'arxiu de configuració.*
+*Captura de les modificacions de l'arxiu de configuració.*
 ====
 endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+ddns-update-style none;
+
+option domain-name "queralt-molina.test";
+
+default-lease-time 3600;
+max-lease-time 7200;
+
+authoritative;
+
+log-facility local7;
+
+subnet 172.16.3.0 netmask 255.255.255.0 {
+  option domain-name-servers 172.16.3.2, 172.16.3.22;
+  option routers 172.16.3.1;
+  option broadcast-address 172.16.3.255;
+
+  pool {
+    range 172.16.3.151 172.16.3.254;
+    allow unknown-clients;
+  }
+  pool {
+    range 172.16.3.30 172.16.3.150;
+    deny unknown-clients;
+  }
+}
+
+host OFICINA {
+  hardware ethernet 00:0C:76:8B:C4:16;
+}
+
+host PC1 {
+  hardware ethernet 08:00:27:24:BF:CB;
+}
+----
 ====
 endif::teacher[]
 
@@ -474,11 +828,22 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+eth0      Link encap:Ethernet  HWaddr 08:00:27:24:bf:cb
+          inet addr:172.16.3.100  Bcast:172.16.3.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe24:bfcb/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:152 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:194 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:18244 (17.8 KiB)  TX bytes:28628 (27.9 KiB)
+----
 ====
 endif::teacher[]
 
-* Renoveu la IP de PC2 i verifiqueu que adquireix una IP del rang *NO* registrat.
+* Situeu PC2 a la mateixa xarxa i comprovem quina IP agafa. Verifiqueu que
+adquireix una IP del rang *NO* registrat.
 
 ifndef::teacher[]
 .Entregar
@@ -489,11 +854,21 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+eth0      Link encap:Ethernet  HWaddr 08:00:27:9f:f4:57
+          inet addr:172.16.3.151  Bcast:172.16.3.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe9f:f457/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:9 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:32 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:1331 (1.2 KiB)  TX bytes:2827 (2.7 KiB)
+----
 ====
 endif::teacher[]
 
-== Apartat 6: Configuració de PC1 i PC2 a una xarxa diferent
+== Apartat 7: Configuració de PC1 i PC2 a una xarxa diferent
 
 Volem ara traslladar els ordinadors PC1 i PC2 a la seva xarxa 172.16.2.0/24.
 Ara, com que el servidor DHCP i els clients es troben a xarxes diferents, les
@@ -522,7 +897,32 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+ddns-update-style none;
+
+option domain-name "queralt-molina.test";
+option domain-name-servers 172.16.3.2, 172.16.3.22;
+
+default-lease-time 3600;
+max-lease-time 7200;
+
+authoritative;
+
+log-facility local7;
+
+subnet 172.16.3.0 netmask 255.255.255.0 {
+  option routers 172.16.3.1;
+  option broadcast-address 172.16.3.255;
+  range 172.16.3.100 172.16.3.254;
+}
+
+subnet 172.16.2.0 netmask 255.255.255.0 {
+  option routers 172.16.2.1;
+  option broadcast-address 172.16.2.255;
+  range 172.16.2.100 172.16.2.254;
+}
+----
 ====
 endif::teacher[]
 
@@ -536,8 +936,42 @@ segons la nostra configuració de xarxa.
 aquesta última, no reenvia les respostes del servidor DHCP cap als clients.*
 ====
 
-Si no funciona a la primera i heu de reconfigurar el relay, utilitzeu
-`dpkg-reconfigure`.
+[TIP]
+====
+*Si no funciona a la primera i heu de reconfigurar el relay, utilitzeu
+`dpkg-reconfigure`.*
+====
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del fitxer `/etc/default/isc-dhcp-relay`.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+[source,bash]
+----
+# Defaults for isc-dhcp-relay initscript
+# sourced by /etc/init.d/isc-dhcp-relay
+# installed at /etc/default/isc-dhcp-relay by the maintainer scripts
+
+#
+# This is a POSIX shell fragment
+#
+
+# What servers should the DHCP relay forward requests to?
+SERVERS="172.16.3.2"
+
+# On what interfaces should the DHCP relay (dhrelay) serve DHCP requests?
+INTERFACES="eth1 eth2"
+
+# Additional options that are passed to the DHCP relay daemon?
+OPTIONS=""
+----
+====
+endif::teacher[]
 
 * Per comprovar que el relay està en funcionament, ho podem fer amb la
 comanda `ps x | grep dhcrelay`.
@@ -551,7 +985,11 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+[source,bash]
+----
+481 ?        Ss     0:00 /usr/sbin/dhcrelay -q -i eth1 -i eth2 172.16.3.2
+840 tty1     S+     0:00 grep dhcrelay
+----
 ====
 endif::teacher[]
 
@@ -567,6 +1005,29 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
-*Solució*
+A PC1 obtenim:
+[source]
+----
+eth0      Link encap:Ethernet  HWaddr 08:00:27:24:bf:cb
+          inet addr:172.16.2.100  Bcast:172.16.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe24:bfcb/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:20 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:23 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:2668 (2.6 KiB)  TX bytes:2278 (2.2 KiB)
+----
+I a PC2:
+[source]
+----
+eth0      Link encap:Ethernet  HWaddr 08:00:27:9f:f4:57
+          inet addr:172.16.2.101  Bcast:172.16.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe9f:f457/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:30 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:37 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:3467 (3.3 KiB)  TX bytes:3334 (3.2 KiB)
+----
 ====
 endif::teacher[]
