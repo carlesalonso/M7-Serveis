@@ -34,11 +34,222 @@ image::images/topologia.png[]
 
 <<<
 
-=== Preparació de *saruman*
+=== Màquina virtual base
+
+Com que haurem d'instal·lar una colla de màquines virtuals, el millor serà
+fer-ne una de model i clonar-la diversos cops, per no haver de tornar a fer
+tot el procés d'instal·lació.
+
+La màquina base la farem amb les següents característiques:
 
 . Basat en Debian Jessie. Màquina virtual amb 512 MB de memòria sense entorn
 gràfic.
-. Assignar el nom *saruman* durant la instal·lació.
+. Assignar el nom *base* durant la instal·lació.
+
+==== Verificar repositoris
+
+Abans de començar a treballar cal:
+
+. Verificar que els repositoris siguin els adequats
++
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+[source,bash]
+----
+root@base:~# cat /etc/apt/sources.list
+#
+
+# deb cdrom:[Debian GNU/Linux 8.3.0 _Jessie_ - Official amd64 DVD Binary-1 20160123-19:03]/ jessie contrib main
+
+# deb cdrom:[Debian GNU/Linux 8.3.0 _Jessie_ - Official amd64 DVD Binary-1 20160123-19:03]/ jessie contrib main
+
+deb http://ftp.es.debian.org/debian/ jessie main
+deb-src http://ftp.es.debian.org/debian/ jessie main
+
+deb http://security.debian.org/ jessie/updates main contrib
+deb-src http://security.debian.org/ jessie/updates main contrib
+
+# jessie-updates, previously known as 'volatile'
+deb http://ftp.es.debian.org/debian/ jessie-updates main contrib
+deb-src http://ftp.es.debian.org/debian/ jessie-updates main contrib
+root@base:~#
+----
+====
+endif::teacher[]
+. Actualitzar els indexos locals contra els repositoris escollits.
++
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+[source,bash]
+----
+apt-get update
+----
+====
+endif::teacher[]
+. Actualitzar els paquets del sistema a les versions més actuals.
++
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+[source,bash]
+----
+apt-get dist-upgrade
+----
+====
+endif::teacher[]
+
+==== Instal·lar les VirtualBox Guest Additions a *base*
+
+Les *Guest Additions* s'han de compilar per la versió concreta del nucli que
+estem utilitzant. Per fer això necessitem els programes que compilen i munten
+un executable (*gcc* i *make*), les capçaleres del nucli (permeten enllaçar
+un programa amb el nucli), i un programa que automatitza aquest procés (*dkms*).
+
+Afortunadament, el *dkms* ja inclou com a dependències a tots els altres.
+
+. Instal·lar prerequisits:
++
+[source, bash]
+----
+apt-get install dkms
+----
+. Muntar la unitat virtual i executar l'script d'instal·lació.
++
+Per muntar la unitat de CD virtual, anem a l'opció *Dispositius->Insereix
+la imatge de CD de les Guest Additions...* Això descarregarà l'última versió
+de les Guest Additions i les pondrà a disposició de la màquina virtual.
++
+Per accedir-hi des de la màquina virtual:
++
+[source, bash]
+----
+mount /dev/cdrom /media/cdrom
+cd /media/cdrom
+sh VBoxLinuxAdditions.ru
+----
+
+==== Compartir una carpeta amb el host
+
+Crear una carpeta compartida entre el nostre ordinador i la màquina virtual
+facilitarà poder traspassar fitxers d'una banda a l'altra després.
+
+. Crear una carpeta al host, per exemple, suposem que el seu nom és *shared*.
+. A la configuració de la màquina virtual del VirtualBox, anem a *Carpetes
+compartides* i n'afegim una amb *+*. Posem la ruta on es troba la carpeta al
+host, i el nom que volem que tingui al guest, per exemple *shared*. Seleccionem
+*Munta automàticament*.
+. La carpeta compartida es troba a */media/sf_shared*.
+
+==== Eines de monitoratge de xarxa
+
+* També pot ser útil instal·lar alguna eina de monitoratge de xarxa, com
+el *tcpdump*.
++
+[source,bash]
+----
+apt-get install tcpdump
+----
+
+==== Prompt i usuaris
+
+[IMPORTANT]
+====
+A cadascuna de les màquines virtuals heu de crear un usuari amb l'estructura
+*CognomInicialNom*, per exemple en Toni Lòpez crearà un usuari anomenat
+lopezt, tot en minúscula i sense accents ni lletres no angleses.
+
+AQUEST USUARI SERÀ UTILITZAT OBLIGATORIAMENT A TOTES LES PRÀCTIQUES, NO
+UTILITZEU L'USUARI ROOT.
+====
+
+* Verifiqueu que el vostre usuari té permís de sudo a totes les màquines. La
+forma més fàcil d'aconseguir això és afegir l'usuari al grup *sudo*.
++
+[source,bash]
+----
+apt-get install sudo
+adduser lopezt sudo
+----
++
+[IMPORTANT]
+====
+Cal que configureu el vostre terminal per a què al prompt aparegui el vostre nom
+i la data ressaltat en diferents colors. *Això és imprescindible per avaluar
+les captures*.
+====
++
+Cal editar el fitxer *.bashrc* situat a la home del vostre usuari. Aquest fitxer
+conté la configuració del terminal.
++
+Busqueu la línia que conté `force_color_prompt=yes` i descomenteu-la.
++
+Una mica més avall trobarem una secció com:
++
+[source,bash]
+----
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+----
++
+Només cal afegir l'expressió `\d \t` a la segona línia:
++
+[source,bash]
+----
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\d \t \u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+----
++
+A partir d'ara el prompt de la màquina Linux hauria de ser com el de la imatge, llevat del nom de màquina:
++
+[source,bash]
+----
+Mon Jul 04 18:59:55 queraltj@base:~$
+----
+
+==== Creació de màquines virtuals basades en *base*
+
+Un cop hem fet tot això, per crear altres màquines virtuals, només hem de fer
+un parell de tasques:
+
+. Seleccionar la màquina *base* al VirtualBox i prémer l'opció *clona*
+del menú.
+. Indicar al VirtualBox el nom de la nova màquina i seleccionar la casella per
+tal que reincialitzi l'adreça MAC de la targeta de xarxa.
+. Arrencar la màquina i canviar-li el nom. Per canviar el nom cal:
+.. Executar `hostnamectl set-hostname <nou_nom_de_la_màquina>`.
+.. Editar el fitxer `/etc/hosts` i canviar el nom vell pel nou nom allà on
+aparegui.
+
+=== Preparació de *saruman*
+
+. Clonada de *base*.
+. Assignar el nom *saruman*.
 . Al VirtualBox, configurar tres targetes de xarxa connectades a tres xarxes
 internet diferents:
 .. `intnet1`
@@ -216,12 +427,11 @@ endif::teacher[]
 
 === Configuració de *sauron*
 
-. Basat en Debian Jessie. Màquina virtual amb 512 MB de memòria sense entorn
-gràfic.
-. Durant la instal·lació configurar el nom *sauron*.
+. Clonada de *base*.
+. Assignar el nom *sauron*.
 . Al VirtualBox, configurar dues targetes de xarxa:
 .. Adaptador pont
-.. Xarxa internat intnet1
+.. Xarxa interna `intnet1`
 . Configuració dels paràmetres de xarxa a */etc/network/interfaces*
 +
 ifndef::teacher[]
@@ -351,7 +561,8 @@ toqui segons la taula d'enrutament (*FORWARD*).
 
 La configuració queda guardada a */etc/iptables/rules.v4*
 
-. Finalment cal revisar la taula de rutes per assegurar que aquest node coneix totes les rutes necessaries pel seu funcionament.
+. Finalment cal revisar la taula de rutes per assegurar que aquest node coneix
+totes les rutes necessàries pel seu funcionament.
 +
 ifndef::teacher[]
 .Entregar
@@ -378,11 +589,11 @@ les rutes adequades per indicar-li el camí.
 ====
 endif::teacher[]
 
-. Afegir les rutes necessaries per al correcte funcionament del router.
+. Afegir les rutes necessàries per al correcte funcionament del router.
 +
-Hi ha diverses maneres d'afegir rutes a un sistema Debian. Es poden utilitzar les
-comandes *route* o *ip route*, en aquest cas les rutes *no* són permanents i
-caldrà afegir-les cada cop que arranqui el sistema.
+Hi ha diverses maneres d'afegir rutes a un sistema Debian. Es poden utilitzar
+les comandes *route* o *ip route*, en aquest cas les rutes *no* són permanents
+i caldrà afegir-les cada cop que arranqui el sistema.
 +
 La segona opció és utilitzar les comandes anteriors però dins del fitxer
 */etc/network/interfaces*. Doneu un cop d'ull a *man interfaces*, opcions
@@ -430,10 +641,10 @@ endif::teacher[]
 
 === Preparació de les màquines virtuals servidor
 
-En principi les màquines virtuals sobre les que s'instal·laran servidors haurien
-de ser màquines sense cap entorn gràfic instal·lat. No obstant per facilitar
-la feina d'administració i per permetre capturar pantalles es permetrà la
-instal·lació d'algun escriptori lleuger en aquestes màquines.
+En principi les màquines virtuals sobre les quuals s'instal·laran servidors
+haurien de ser màquines sense cap entorn gràfic instal·lat. No obstant per
+facilitar la feina d'administració es permetrà la instal·lació d'algun
+escriptori lleuger en aquestes màquines.
 
 Es permet la instal·lació d'un dels següents escriptoris lleugers:
 
@@ -481,6 +692,14 @@ apt-get remove --purge network-manager
 ====
 endif::teacher[]
 
+==== Configuració de la xarxa
+
+La configuració serà diferent depenent del servidor que estiguem configurant.
+Per a les primeres pràctiques necessitarem el servidor *bilbo*.
+
+En qualsevol cas, s'ha d'assignar la IP fixa indicada a l'esquema de la xarxa
+i la passarel·la correponent a la xarxa on es troba el servidor.
+
 . Configurar la xarxa manualment a */etc/network/interfaces*
 +
 ifndef::teacher[]
@@ -492,197 +711,26 @@ endif::teacher[]
 ifdef::teacher[]
 .Solució
 ====
+Per exemple, per a *bilbo*:
+
 [source,bash]
 ----
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
 
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug eth0
+auto eth0
+iface eth0 inet static
+address 172.16.3.2
+netmask 255.255.255.0
+gateway 172.16.3.1
 ----
 ====
 endif::teacher[]
-
-==== Verificar repositoris
-
-Abans de començar a treballar cal:
-
-. Verificar que els repositoris siguin els adequats
-+
-ifndef::teacher[]
-.Entregar
-====
-*Resposta*
-====
-endif::teacher[]
-ifdef::teacher[]
-.Solució
-====
-[source,bash]
-----
-root@bilbo:~# cat /etc/apt/sources.list
-#
-
-# deb cdrom:[Debian GNU/Linux 8.3.0 _Jessie_ - Official amd64 DVD Binary-1 20160123-19:03]/ jessie contrib main
-
-# deb cdrom:[Debian GNU/Linux 8.3.0 _Jessie_ - Official amd64 DVD Binary-1 20160123-19:03]/ jessie contrib main
-
-deb http://ftp.es.debian.org/debian/ jessie main
-deb-src http://ftp.es.debian.org/debian/ jessie main
-
-deb http://security.debian.org/ jessie/updates main contrib
-deb-src http://security.debian.org/ jessie/updates main contrib
-
-# jessie-updates, previously known as 'volatile'
-deb http://ftp.es.debian.org/debian/ jessie-updates main contrib
-deb-src http://ftp.es.debian.org/debian/ jessie-updates main contrib
-root@debian83:~#
-----
-====
-endif::teacher[]
-. Actualitzar els indexos locals contra els repositoris escollits.
-+
-ifndef::teacher[]
-.Entregar
-====
-*Resposta*
-====
-endif::teacher[]
-ifdef::teacher[]
-.Solució
-====
-[source,bash]
-----
-apt-get update
-----
-====
-endif::teacher[]
-. Actualitzar els paquets del sistema a les versions més actuals.
-+
-ifndef::teacher[]
-.Entregar
-====
-*Resposta*
-====
-endif::teacher[]
-ifdef::teacher[]
-.Solució
-====
-[source,bash]
-----
-apt-get dist-upgrade
-----
-====
-endif::teacher[]
-
-==== Instal·lar les VirtualBox Guest Additions en Debian
-
-Les *Guest Additions* s'han de compilar per la versió concreta del nucli que
-estem utilitzant. Per fer això necessitem els programes que compilen i munten
-un executable (*gcc* i *make*), les capçaleres del nucli (permeten enllaçar
-un programa amb el nucli), i un programa que automatitza aquest procés (*dkms*).
-
-Afortunadament, el *dkms* ja inclou com a dependències a tots els altres.
-
-. Instal·lar prerequisits:
-+
-[source, bash]
-----
-apt-get install dkms
-----
-. Muntar la unitat virtual i executar l'script d'instal·lació.
-+
-Per muntar la unitat de CD virtual, anem a l'opció *Dispositius->Insereix
-la imatge de CD de les Guest Additions...* Això descarregarà l'última versió
-de les Guest Additions i les pondrà a disposició de la màquina virtual.
-+
-Per accedir-hi des de la màquina virtual:
-+
-[source, bash]
-----
-mount /dev/cdrom /media/cdrom
-cd /media/cdrom
-sh VBoxLinuxAdditions.ru
-----
-
-==== Compartir una carpeta amb el host
-
-. Crear una carpeta al host, per exemple, suposem que el seu nom és *shared*.
-. A la configuració de la màquina virtual del VirtualBox, anem a *Carpetes
-compartides* i n'afegim una amb *+*. Posem la ruta on es troba la carpeta al
-host, i el nom que volem que tingui al guest, per exemple *shared*. Seleccionem
-*Munta automàticament*.
-. La carpeta compartida es troba a */media/sf_shared*.
-
-==== Eines de monitoratge de xarxa
-
-* També pot ser útil instal·lar alguna eina de monitoratge de xarxa, per
-exemple el *WireShark* en el cas que disposeu d'entorn gràfic o el *tcpdump* en
-cas contrari.
-+
-[source,bash]
-----
-apt-get install wireshark
-
-# o bé
-
-apt-get install tcpdump
-----
-
-==== Prompt i usuaris
-
-[IMPORTANT]
-====
-A cadascuna de les màquines virtuals heu de crear un usuari amb l'estructura
-*CognomInicialNom*, per exemple en Toni Lòpez crearà un usuari anomenat
-lopezt, tot en minúscula i sense accents ni lletres no angleses.
-
-AQUEST USUARI SERÀ UTILITZAT OBLIGATORIAMENT A TOTES LES PRÀCTIQUES, NO
-UTILITZEU L'USUARI ROOT.
-====
-
-* Verifiqueu que el vostre usuari té permís de sudo a totes les màquines. La
-forma més fàcil d'aconseguir això és afegir l'usuari al grup *sudo*.
-+
-[source,bash]
-----
-apt-get install sudo
-adduser lopezt sudo
-----
-+
-[IMPORTANT]
-====
-Cal que configureu el vostre terminal per què al prompt aparegui el vostre nom
-i la data ressaltat en diferents colors. *Això és imprescindible per avaluar
-les captures*.
-====
-+
-Cal editar el fitxer *.bashrc* situat a la home del vostre usuari. Aquest fitxer
-conté la configuració del terminal.
-+
-Busqueu la línia que conté `force_color_prompt=yes` i descomenteu-la.
-+
-Una mica més avall trobarem una secció com:
-+
-[source,bash]
-----
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-----
-+
-Només cal afegir l'expressió `\d \t` a la segona línia:
-+
-[source,bash]
-----
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\d \t \u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-----
-+
-A partir d'ara el prompt de la màquina Linux hauria de ser com el de la imatge, llevat del nom de màquina:
-+
-[source,bash]
-----
-Mon Jul 04 18:59:55 queraltj@bilbo:~$
-----
