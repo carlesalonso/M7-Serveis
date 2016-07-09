@@ -45,6 +45,17 @@ La màquina base la farem amb les següents característiques:
 . Basat en Debian Jessie. Màquina virtual amb 512 MB de memòria sense entorn
 gràfic.
 . Assignar el nom *base* durant la instal·lació.
+. Durant la instal·lació, crear l'usuari amb el qual treballarem: 
+
+[IMPORTANT]
+====
+A cadascuna de les màquines virtuals heu de crear un usuari amb l'estructura
+*CognomInicialNom*, per exemple en Toni Lòpez crearà un usuari anomenat
+lopezt, tot en minúscula i sense accents ni lletres no angleses.
+
+AQUEST USUARI SERÀ UTILITZAT OBLIGATORIAMENT A TOTES LES PRÀCTIQUES, NO
+UTILITZEU L'USUARI ROOT.
+====
 
 ==== Verificar repositoris
 
@@ -171,16 +182,6 @@ apt-get install tcpdump
 ----
 
 ==== Prompt i usuaris
-
-[IMPORTANT]
-====
-A cadascuna de les màquines virtuals heu de crear un usuari amb l'estructura
-*CognomInicialNom*, per exemple en Toni Lòpez crearà un usuari anomenat
-lopezt, tot en minúscula i sense accents ni lletres no angleses.
-
-AQUEST USUARI SERÀ UTILITZAT OBLIGATORIAMENT A TOTES LES PRÀCTIQUES, NO
-UTILITZEU L'USUARI ROOT.
-====
 
 * Verifiqueu que el vostre usuari té permís de sudo a totes les màquines. La
 forma més fàcil d'aconseguir això és afegir l'usuari al grup *sudo*.
