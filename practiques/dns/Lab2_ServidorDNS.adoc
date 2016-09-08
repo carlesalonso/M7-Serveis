@@ -1,0 +1,394 @@
+= M07UF1NF2 Servidor DNS
+:encoding: utf-8
+// :slides:
+:lang: ca
+:toc: left
+:!numbered:
+// :teacher:
+
+ifdef::teacher[]
+== (Versió del professor):
+endif::teacher[]
+
+////
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+////
+
+<<<
+
+== Objectiu de la pràctica
+
+Configurar una màquina com a servidor DNS principal i una altra com a DNS
+secundari de la xarxa local.
+
+== Preparatius
+
+* Utilitzarem l'entorn de xarxa local creat durant la pràctica anterior.
+
+* Concretament, hem de configurar la màquina *bilbo* com a servidor DNS
+principal i *frodo* com a DNS secundari. El router *saruman* ha d'estar engegat
+per permetre la comunicació entre les màquines. El router *sauron* ha d'estar
+engegat si volem que tinguin connexió externa.
+
+* A la pràctica anterior ja vam configurar el servidor DHCP per tal que els
+clients rebin la informació correcta sobre quins són els DNS que han
+d'utilitzar.
+
+* Els nostres servidors DNS resoldran els noms de tots els servidors i
+routers de la xarxa local, i redirigiran les altres consultes a servidors
+DNS externs.
+
+* Seguint els passos de la pràctica anterior, totes les màquines han de mostrar
+un prompt personalitzat i hi ha d'haver un usuari amb el vostre nom i permisos
+per utilitzar *sudo*.
+
+[IMPORTANT]
+====
+Cal que configureu el vostre terminal perquè al prompt aparegui el vostre nom i
+la data ressaltats en diferents colors. *Això és imprescindible per avaluar
+les captures*.
+====
+
+== Apartat 1: Instal·lació del servidor DNS a *bilbo*
+
+El primer que farem serà comprovar la configuració DNS actual de *bilbo*.
+Prova a consultar l'adreça IP del nom de domini `louvre.fr`. Per fer a mà una
+consulta DNS podem utilitzar les comandes `dig` o `nslookup`.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del resultat de la consulta DNS.*
+
+*Quina és la IP de `louvre.fr`? Quina és la IP del servidor DNS que ens ha
+respost?*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+
+; <<>> DiG 9.9.5-9+deb8u6-Debian <<>> louvre.fr
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 53169
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;louvre.fr.			IN	A
+
+;; ANSWER SECTION:
+louvre.fr.		252	IN	A	89.185.38.136
+
+;; Query time: 14 msec
+;; SERVER: 87.216.1.65#53(87.216.1.65)
+;; WHEN: Sat Jul 09 19:43:26 CEST 2016
+;; MSG SIZE  rcvd: 54
+
+====
+endif::teacher[]
+
+* Instal·lem ara el servidor DNS a *bilbo*
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció que instal·la el servidor DNS.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+apt-get install bind9
+====
+endif::teacher[]
+
+* Comprovem que el servidor DNS s'està executant. Utilitza `netstat` per veure
+per quin port està escoltant.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del resultat de la instrucció `netstat` que mostra el servidor DNS
+funcionant.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+netstat -tupln | grep named
+
+tcp        0      0 127.0.0.1:953           0.0.0.0:*               LISTEN      1474/named
+tcp        0      0 172.16.3.2:53           0.0.0.0:*               LISTEN      1474/named
+tcp        0      0 127.0.0.1:53            0.0.0.0:*               LISTEN      1474/named
+tcp6       0      0 ::1:953                 :::*                    LISTEN      1474/named
+tcp6       0      0 :::53                   :::*                    LISTEN      1474/named
+udp        0      0 172.16.3.2:53           0.0.0.0:*                           1474/named
+udp        0      0 127.0.0.1:53            0.0.0.0:*                           1474/named
+udp6       0      0 :::53                   :::*                                1474/named
+====
+endif::teacher[]
+
+Ara ja podem modificar la configuració de xarxa de *bilbo* per tal
+que s'utilitzi a sí mateix com a servidor DNS.
+
+* Modifica el fitxer `/etc/resolv.conf` i escriu-hi les adreces dels dos
+servidors DNS de la nostra xarxa local.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del contingut del fitxer `/etc/resolv.conf`.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+domain Home
+search Home
+nameserver 172.16.3.2
+nameserver 172.16.3.22
+====
+endif::teacher[]
+
+[TIP]
+====
+*Si el paquet `resolvconf` estigués instal·lat, el fitxer `resolv.conf` es
+reescriuria automàticament, eliminant els nostres canvis. En aquest cas,
+hauríem de configurar els DNS afegint dues línies del tipus
+`dns-nameservers 8.8.8.8` a la configuració de xarxa de
+`/etc/network/interfaces`.*
+
+*Si utilitzéssim el NetworkManager, faríem aquesta configuració gràficament.*
+====
+
+Anem a provar el nou servei. El programa `rndc` s'utilitza per controlar
+l'execució del `bind`. Anem a veure què passa exactament quan fem una
+consulta al nostre DNS.
+
+* Utilitza `rndc` per activar la depuració del servidor. Posa la depuració
+a nivell 2 (com més gran aquest nombre, més informació es guarda al registre.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció utilitzada.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+rndc trace 2
+====
+endif::teacher[]
+
+* Consulta la IP d'un nou domini, per exemple _britishmuseum.org_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la instrucció utilitzada i el seu resultat.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+dig britishmuseum.org
+
+; <<>> DiG 9.9.5-9+deb8u6-Debian <<>> britishmuseum.org
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 19332
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 3
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;britishmuseum.org.		IN	A
+
+;; ANSWER SECTION:
+britishmuseum.org.	21585	IN	A	185.26.230.129
+
+;; AUTHORITY SECTION:
+britishmuseum.org.	86385	IN	NS	ns2.netnames.net.
+britishmuseum.org.	86385	IN	NS	ns1.netnames.net.
+
+;; ADDITIONAL SECTION:
+ns1.netnames.net.	172785	IN	A	204.74.108.253
+ns2.netnames.net.	172785	IN	A	185.26.230.5
+
+;; Query time: 0 msec
+;; SERVER: 172.16.3.2#53(172.16.3.2)
+;; WHEN: Tue Jul 12 12:54:32 CEST 2016
+;; MSG SIZE  rcvd: 142
+====
+endif::teacher[]
+
+* Comprova la informació de depurció que ha quedat guardada al registre del
+`bind` sobre aquesta consulta.
+
+ifndef::teacher[]
+.Entregar
+====
+*Part del registre del `bind` corresponent a l'última petició.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+12-Jul-2016 12:54:17.056 createfetch: britishmuseum.org A
+12-Jul-2016 12:54:17.056 createfetch: . NS
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab27e068 .
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 a.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 b.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 c.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 d.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 e.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 f.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 g.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 h.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 i.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 j.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 k.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 l.root-servers.net
+12-Jul-2016 12:54:17.093 decrement_reference: delete from rbt: 0x7f5bab288010 m.root-servers.net
+12-Jul-2016 12:54:17.093 createfetch: . DNSKEY
+12-Jul-2016 12:54:17.093 error (network unreachable) resolving './DNSKEY/IN': 2001:7fd::1#53
+12-Jul-2016 12:54:17.093 error (network unreachable) resolving './DNSKEY/IN': 2001:503:ba3e::2:30#53
+12-Jul-2016 12:54:17.143 createfetch: ns1.netnames.net A
+12-Jul-2016 12:54:17.143 createfetch: ns1.netnames.net AAAA
+12-Jul-2016 12:54:17.143 createfetch: ns2.netnames.net A
+12-Jul-2016 12:54:17.143 createfetch: ns2.netnames.net AAAA
+12-Jul-2016 12:54:17.143 error (network unreachable) resolving 'ns1.netnames.net/A/IN': 2001:500:1::803f:235#53
+12-Jul-2016 12:54:17.144 error (network unreachable) resolving 'ns1.netnames.net/AAAA/IN': 2001:500:1::803f:235#53
+12-Jul-2016 12:54:17.341 createfetch: org DS
+12-Jul-2016 12:54:17.341 error (network unreachable) resolving 'org/DS/IN': 2001:7fe::53#53
+12-Jul-2016 12:54:17.383 createfetch: britishmuseum.org DS
+12-Jul-2016 12:54:17.383 error (network unreachable) resolving 'britishmuseum.org/DS/IN': 2001:500:3::42#53
+12-Jul-2016 12:54:17.617 createfetch: org DNSKEY
+12-Jul-2016 12:54:17.617 error (network unreachable) resolving 'org/DNSKEY/IN': 2001:500:c::1#53
+12-Jul-2016 12:54:17.618 error (network unreachable) resolving 'org/DNSKEY/IN': 2001:500:b::1#53
+====
+endif::teacher[]
+
+* Bolca el cau del servidor DNS a un fitxer i comprova quina informació s'ha
+guardat sobre _britishmuseum.org_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Instrucció per bolcar el cau a un fitxer i contingut obtingut.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+rndc dumpdb
+El fitxer és /var/cache/bind/named_dump.db
+
+; glue
+britishmuseum.org.	85938	NS	ns1.netnames.net.
+			85938	NS	ns2.netnames.net.
+; secure
+			438	\-DS	;-$NXRRSET
+; org. SOA a0.org.afilias-nst.info. noc.afilias-nst.info. 2012070288 1800 900 604800 86400
+; org. RRSIG SOA ...
+; a0lhu2r60dhnee3k13j26s91hdtupc1m.org. RRSIG NSEC3 ...
+; a0lhu2r60dhnee3k13j26s91hdtupc1m.org. NSEC3 1 1 1 D399EAAB A0MB7LSFVTDKUEULUOT5NGIAAU139G3I NS DS RRSIG
+; h9p7u7tr2u91d0v0ljs9l1gidnp90u3h.org. RRSIG NSEC3 ...
+; h9p7u7tr2u91d0v0ljs9l1gidnp90u3h.org. NSEC3 1 1 1 D399EAAB H9PARR669T6U8O1GSG9E1LMITK4DEM0T NS SOA RRSIG DNSKEY NSEC3PARAM
+; answer
+			21138	A	185.26.230.129
+====
+endif::teacher[]
+
+* Desactiva ara la depuració del servidor.
+
+ifndef::teacher[]
+.Entregar
+====
+*Instrucció per desactivar la depuració del servidor DNS.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+rndc notrace
+====
+endif::teacher[]
+
+== Apartat 2: Configuració del servidor DNS
+
+Fer que el servidor DNS només treballi amb IPv4. Modificar el fitxer
+`/etc/default/bind9` i canviar la línia `OPTIONS` de `OPTIONS="-u bind"` a
+`OPTIONS="-4 -u bind"`.
+
+
+
+En general, en un servidor DNS de xarxa local, evitarem que aquest faci tot
+el procés de resolució de noms externs, i delegarem aquesta feina a un
+servidor DNS d'internet.
+
+* Configura els _forwarders_ per fer que les peticions externes
+s'adrecin als mateixos servidors que s'utilitzen a la xarxa local real.
+
+* Configura el servidor per tal que no resolgui peticions per IPv6.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de les modificacions fetes a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+Fitxer `/etc/bind/named.conf.options`
+
+
+====
+endif::teacher[]
+
+* Reinicia el servidor i comprova que els canvis funcionen activant i
+consultant la depuració. Pots buidar el cau del servidor per assegurar que les
+peticions que facis són noves. Desactiva de nou la depuració quan acabis.
+
+ifndef::teacher[]
+.Entregar
+====
+
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+systemctl restart bind9
+rndc trace 2
+rndc flush
+dig louvre.fr
+
+
+====
+endif::teacher[]
+
+Com saber si el servidor està utilitzant els forwarders? Posant una IP
+qualsevol a `forwarders`. Si després d'això el servidor tarda molt a respondre
+és que intenta utilitzar el forwarder i només procedeix a fer la cerca sencera
+quan veu que aquest no contesta.
+
+Si afegim la directiva `forward only`, forcem que el servidor només pugui
+resoldre consultes utilitzant els forwarders. En aquest cas no obtindrem
+resposta a les consultes si el forwarder està malament.
