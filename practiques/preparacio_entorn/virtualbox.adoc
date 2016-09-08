@@ -1,0 +1,59 @@
+= Instal·lacio i configuració del VirtualBox en Debian Jessie
+:doctype: article
+:encoding: utf-8
+:lang: ca
+:toc: left
+:toclevels: 3
+:numbered:
+:teacher:
+
+== Activació de la virtualització per maquinari
+
+- Arrencar l'ordinador i entrar al _setup_ de la _BIOS_.
+- Cercar una opció anomenada "Virtualization Technology" o similar, i
+assegurar-se que està "enabled".
+- Cercar una opció anomenada "Intel VTd" o "AMD IOMMU", i assegurar-se que
+està "enabled".
+- Guardar els canvis.
+- Per comprovar que realment s'han habilitat, dins del Debian executar l'ordre:
+
+[source,bash]
+----
+$ cat /proc/cpuinfo | grep "vmx\|svm"
+----
+
+Si l'ordre produeix alguna sortida, significa que l'acceleració per maquinari
+està habilitada.
+
+== Configuració de Debian Backports
+
+El VirtualBox es troba als dipòsits de paquets de Debian. És probable que la
+versió disponible a la distribució estable de Debian sigui una mica antiga.
+Com que el VirtualBox és un programa que evoluciona ràpidament, és interessant
+obtenir-ne una versió recent. Per aconseguir això i no sortir del sistema de
+paquets de Debian, utilitzarem el dipòsit
+https://backports.debian.org/[Debian Backports], que conté programari
+actualitzat preparat per ésser instal·lat directament en una Debian estable.
+
+- Editar el fitxer _/etc/apt/sources.list_ i afegir la línia:
+
+----
+deb http://ftp.debian.org/debian jessie-backports main contrib non-free
+----
+
+- Actualitzar la llista de paquets disponible amb:
+
+----
+# apt-get update
+----
+
+== Instal·lació del VirtualBox
+
+Si no li diem el contrari, l'_apt-get_ instal·la els paquets de la versió
+estable abans que de backports. Per indicar-li que una operació la volem
+fer sobre un dipòsit en concret, utilitzem l'opció _-t_. Així, per instal·lar
+el virtualbox ho farem amb:
+
+----
+# apt-get install -t jessie-backports virtualbox
+----
