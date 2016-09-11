@@ -1,6 +1,6 @@
-= M07UF1NF2 Servidor DNS
+= Pràctica DNS
+
 :encoding: utf-8
-// :slides:
 :lang: ca
 :toc: left
 :!numbered:

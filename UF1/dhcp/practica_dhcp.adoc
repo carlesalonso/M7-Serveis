@@ -1,10 +1,10 @@
-= M07UF3NF2 PAC1 Servidor DHCP
+= Pràctica servidor DHCP
+
 :encoding: utf-8
-// :slides:
 :lang: ca
 :toc: left
 :!numbered:
-:teacher:
+//:teacher:
 
 ifdef::teacher[]
 == (Versió del professor):

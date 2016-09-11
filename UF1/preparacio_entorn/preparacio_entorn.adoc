@@ -1,11 +1,12 @@
-= Lab 1.1.0
+= Pràctica: preparació de l'entorn
+
 :doctype: article
 :encoding: utf-8
 :lang: ca
 :toc: left
 :toclevels: 3
 :numbered:
-:teacher:
+//:teacher:
 
 ifdef::teacher[]
 (Versió del professor)
@@ -45,7 +46,7 @@ La màquina base la farem amb les següents característiques:
 . Basat en Debian Jessie. Màquina virtual amb 512 MB de memòria sense entorn
 gràfic.
 . Assignar el nom *base* durant la instal·lació.
-. Durant la instal·lació, crear l'usuari amb el qual treballarem: 
+. Durant la instal·lació, crear l'usuari amb el qual treballarem:
 
 [IMPORTANT]
 ====
