@@ -6,6 +6,8 @@
 :numbered:
 :teacher:
 
+<<<
+
 == Introducció
 
 image::images/osilayersdhcp.png[]
