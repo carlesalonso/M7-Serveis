@@ -13,7 +13,7 @@ Materials per al mòdul *M7 - Serveix de xarxa* del cicle de *Sistemes microinfo
   - [Teoria](UF1/dhcp)
   - [Pràctica](UF1/dhcp/practica_dhcp.adoc)
 2. DNS
-  - Teoria
+  - [Teoria](UF1/dns)
   - [Pràctica](UF1/dns/practica_dns.adoc)
 
 ### UF 2: correu electrònic i transmissió d’arxius
