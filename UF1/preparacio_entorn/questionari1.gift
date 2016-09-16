@@ -1,0 +1,37 @@
+// Qüestionari centrat en comandes bàsiques de GNU/Linux i xarxes.
+
+::Mostrar un fitxer::Quina d'aquestes ordres mostra el contingut d'un fitxer per pantalla? {
+  =cat
+  ~grep
+  ~ls
+  ~cd
+}
+
+::Màscara de xarxa 1::Si utilitzem la màscara de xarxa 255.255.248.0, quants bits tenim per a la part de host? {#11}
+
+::Màscara de xarxa 2::Si utilitzem la màscara de xarxa 255.255.252.0, quants hosts podem tenir a la xarxa 192.168.1.0? {#1022}
+
+::Rutes 1::[markdown]
+Hem creat el directori *zervit* a *Baixades*. Dins de *zervit* hi ha un directori anomenat *src*. Ara mateix, estem situats al directori *Baixades*. Com entrem al directori *src*? {
+  =cd zervit/src
+  ~cd /zervit/src
+  ~cd Baixades/zervit/src
+  ~cd /Baixades/zervit/src
+}
+
+::Actualització::Quines d'aquestes ordres serveixen per actualitzar un sistema Debian? {
+  ~%-33.33333%apt-get update
+  ~%50%apt-get upgrade
+  ~%50%apt-get dist-upgrade
+  ~%-33.33333%apt-get dist-update
+  ~%-33.33333%apt-get install
+}
+
+::Rutes 2::[markdown]
+Som al directori */home/super/zervit/src*. En aquest mateix directori hi ha un fitxer executable anomenat *zervit*. Com l'executem? {
+  =./zervit
+  ~src/zervit
+  ~zervit
+  ~../zervit
+  ~cat zervit
+}
