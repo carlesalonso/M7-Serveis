@@ -57,3 +57,44 @@ el virtualbox ho farem amb:
 ----
 # apt-get install -t jessie-backports virtualbox
 ----
+
+== Compartició de la imatge per a les màquines virtuals
+
+Per tal de no saturar la xarxa amb molts ordinadors descarregant la mateixa
+imatge, utilitzarem un programari anomenat *zervit* que ens permet la
+compartició ràpida de fitxers utilitzant el protocol HTTP, que és més ràpid
+que l'ús de carpetes compartides.
+
+El *zervit* actua com un servidor HTTP que comparteix automàticament el
+directori on es troba el propi programa. No és útil, ni segur, per crear
+servidors HTTP reals, però sí que és molt pràctic per traspassar fitxers
+ràpidament a molts ordinadors de la mateixa xarxa.
+
+El *zervit* es pot obtenir de la web http://zervit.sourceforge.net/.
+
+Desgraciadament, hem de compilar-nos la versió per GNU/Linux (per Windows es
+proporciona directament un executable).
+
+Per compilar el programa seguirem els següents passos:
+
+- Descarreguem el codi font del *zervit* de la seva web.
+- Descomprimim el fitxer. Això ens crea el directori _zervit_.
+
+Els següents passos estan explicats al fitxer _README_ que trobarem al lloc
+on hem descomprimit:
+
+- Instal·lar el paquet _scons_.
+- Anar al directori _scripts_ i executar el programa _./mkiconfile.py_. Això
+ens genera una sèrie d'icones necessàries per compilar el programa.
+- Anar al directori _src_ i compilar el programa amb l'ordre _scons_. _scons_
+automatitza el procés de compilació, així que sense fer res més hauria de
+crear-se el fitxer executable _zervit_.
+
+Per utilitzar-lo, només cal copiar el l'executable obtingut a la carpeta que
+volguem compartir i executar-lo. Si volem utilitzar el port 80 per al servidor
+HTTP (el port estàndard per aquest servei), hem d'executar el programa com
+a _root_ (o utilitzant _sudo_), perquè es tracta d'un port reservat.
+
+Els clients poden utilitzar el seu navegador web, posar l'adreça IP de
+l'ordinador que comparteix el fitxer, i descarregar-se la imatge per a la
+instal·lació.
