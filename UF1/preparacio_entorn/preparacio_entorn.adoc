@@ -157,7 +157,7 @@ Per accedir-hi des de la màquina virtual:
 ----
 mount /dev/cdrom /media/cdrom
 cd /media/cdrom
-sh VBoxLinuxAdditions.ru
+sh VBoxLinuxAdditions.run
 ----
 
 ==== Compartir una carpeta amb el host
