@@ -253,7 +253,7 @@ aparegui.
 . Clonada de *base*.
 . Assignar el nom *saruman*.
 . Al VirtualBox, configurar tres targetes de xarxa connectades a tres xarxes
-internet diferents:
+internes diferents:
 .. `intnet1`
 .. `intnet2`
 .. `intnet3`
