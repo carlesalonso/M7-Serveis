@@ -1031,3 +1031,124 @@ eth0      Link encap:Ethernet  HWaddr 08:00:27:9f:f4:57
 ----
 ====
 endif::teacher[]
+
+== Apartat 8 (opcional): Configuració d'un servidor secundari
+
+Si la nostra xarxa utilitza DHCP per donar IP als clients, el servidor DHCP es
+converteix en un punt de fallada única: si el servidor falla, tota la xarxa
+deixa de funcionar.
+
+Per aquest motiu és molt habitual crear no un, sinó dos servidors DHCP, de
+manera que si un d'ells cau, l'altra pugui seguir concedint configuracions de
+xarxa als clients.
+
+El segon servidor s'anomena un servidor secundari i el mecanisme que permet
+passar d'un a l'altre en cas de problemes s'anomena _failover_.
+
+Anem a muntar un servidor secundari per a la nostra xarxa. El servidor
+s'anomenarà _sam_ i tindrà la IP 172.16.3.22.
+
+Per tal que els dos servidors es puguin comunicar correctament, és
+necessari que tinguin el seu rellotge sincronitzat. Per aconseguir-ho,
+instal·larem el paquet _ntp_, que proporciona un _daemon_ que manté el
+rellotge del servidor sincronitzat a través de servidor de temps d'Internet.
+
+.Entregar
+====
+*Instal·lació del NTP a _bilbo_ i a _sam_.*
+====
+
+Crearem una configuració de _failover_ anomenada _dhcp-failover_. Aquest nom
+és arbitrari i s'utilitza per fer-ne referència si necessitem tenir més d'una
+configuració de _failover_ al mateix servidor.
+
+Abans de crear la configuració, però, indicarem per quins clients la
+utilitzarem. Per fer això només hem d'afegir la directiva
+`failover peer "dhcp-failover";` a tots els _pools_ que tinguem definits.
+
+.Entregar
+====
+*Canvis a la configuració de _bilbo_.*
+====
+
+A partir d'aquí, podem instal·lar el servidor DHCP a _sam_ i copiar-ne la
+configuració que teníem a _bilbo_.
+
+.Entregar
+====
+*Demostració que el servidor DHCP s'està executant a _sam_.*
+====
+
+Ara, cal dir a cadascun dels dos servidors DHCP que tenen un company. Això ho
+fem afegint una secció _failover peer_ a la configuració.
+
+Aquest és un exemple de configuració:
+
+----
+failover peer "dhcp-failover" {
+  primary;
+  address 10.1.0.1;
+  port 647;
+  peer address 10.1.0.2;
+  peer port 847;
+  max-response-delay 60;
+  max-unacked-updates 10;
+  load balance max seconds 3;
+  mclt 3600;
+  split 128;
+}
+----
+
+Aquesta configuració inclou:
+
+1. Si el servidor DHCP és primari o secundari (_primary_, _secondary_).
+2. L'adreça IP del servidor i del seu company (_address_, _peer address_).
+3. Els ports que utilitzaran per comunicar-se entre ells (_port_, _peer port_).
+4. Temps que ha de passar per considerar que un servidor ha caigut i cal
+intercanviar-los (_max-response-delay_, _max-unacked-updated_).
+5. Temps màxim que un dels servidors por estendre una concessió a un client
+sense que ho sàpiga el seu company (_mclt_: _maximum client lead time_). Només
+es posa al servidor primari.
+6. Divisió entre el servidor primari i secundari a efecte de balancejar la
+càrrega, sobre 256 (_split_). 128 significa que es reparteixen la càrrega a
+mitges. Número més grans signifiquen més càrrega pel primari, i més petits més
+càrrega pel secundari. Només s'especifica al servidor primari.
+7. Temps màxim d'espera abans de resoldre una petició que, segons la
+configuració de càrrega, era per l'altre servidor (_load balance max seconds_).
+
+Adapta la configuració al nostre cas particular i afegeix-la a _bilbo_.
+
+.Entregar
+====
+*Captura de la configuració de _failover_ a _bilbo_.*
+====
+
+Finalment, copiarem la mateixa configuració de _failover_ a _sam_, amb només
+dos petits canvis:
+
+- Declararem _sam_ com a servidor secundari.
+- No inclourem les opcions _mclt_ i _split_.
+
+.Entregar
+====
+*Captura de la configuració de _failover_ a _sam_.*
+====
+
+Ja podem reinciar els servidors DHCP!
+
+No hem d'oblidar d'afegir l'adreça IP del nou servidor DHCP a la configuració
+del _relay_, per tal que també rebi les peticions des de l'altra xarxa.
+
+.Entregar
+====
+*Nova configuració del DHCP _relay_.*
+====
+
+Per comprovar que la configuració està funcionant podem apagar el servidor
+primari, utilitzar PC1 per demanar una IP, arrencar el servidor primari de nou,
+i veure com el _lease_ de PC1 apareix a la llista de concessions de _bilbo_.
+
+.Entregar
+====
+*Demostració que el _failover_ funciona.*
+====
