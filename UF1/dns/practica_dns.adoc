@@ -356,14 +356,68 @@ ifdef::teacher[]
 ====
 endif::teacher[]
 
+== Apartat 3: Configuració d'un servidor DNS només _cache_
+
+Cada vegada que resolem un nom de domini a una adreça IP es produeix una
+consulta a un servidor DNS. Això fa que per organitzacions petites valgui la
+pena tenir un servidor DNS encara que només serveixi per fer de cau de les
+consultes DNS que es van realitzant.
+
+Amb un servidor així, la primera consulta contra un domini s'hauria de fer de
+forma iterativa, consultant tots els es passaria al
+servidor DNS extern, però les següents consultes al mateix domini ja no caldria
+que sortissin de la xarxa local, cosa que escorçaria el temps d'espera general
+de les consultes.
+
+En aquest apartat configurarem el servidor DNS per tal que actuï com un
+cau DNS.
+
+Canvis que cal fer a `/etc/bind/named.conf.options`:
+
+* Configura el servidor per tal que no resolgui peticions per IPv6.
+
+* Crea una llista de control d'accés per tal que només els clients de la nostra
+xarxa puguin utilitzar el servidor DNS.
+
+Exemple de llista de control d'accés (aquest segment es posa abans de començar
+les `options`):
+
+----
+acl goodclients {
+    192.0.2.0/24;
+    localhost;
+    localnets;
+};
+----
+
+* Activar la recursió al servidor DNS i permetre que els clients definits a
+la ACL anterior puguin fer consultes:
+
+----
+recursion yes;
+allow-query { goodclients; };
+----
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de les modificacions fetes a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+== Apartat 4: Configuració d'un servidor DNS _forwarding_
+
 En general, en un servidor DNS de xarxa local, evitarem que aquest faci tot
 el procés de resolució de noms externs, i delegarem aquesta feina a un
 servidor DNS d'internet.
 
 * Configura els _forwarders_ per fer que les peticions externes
 s'adrecin als mateixos servidors que s'utilitzen a la xarxa local real.
-
-* Configura el servidor per tal que no resolgui peticions per IPv6.
 
 ifndef::teacher[]
 .Entregar
