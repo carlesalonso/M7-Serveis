@@ -414,10 +414,26 @@ endif::teacher[]
 
 En general, en un servidor DNS de xarxa local, evitarem que aquest faci tot
 el procés de resolució de noms externs, i delegarem aquesta feina a un
-servidor DNS d'internet.
+servidor DNS d'internet, típicament els servidors proporcionats pel nostre
+ISP.
+
+Habitualment, aquest procés és més ràpid, perquè el nostre servidor segueix
+disposant de _cache_, però el servidor DNS extern té un _cache_ molt més gran,
+cosa que fa que consultar-li a ell sigui més ràpid que fer el procés de
+resolució complet.
 
 * Configura els _forwarders_ per fer que les peticions externes
 s'adrecin als mateixos servidors que s'utilitzen a la xarxa local real.
+
+* Indica al servidor que només ha d'utilitzar el _forwarding_ i no intentar
+resoldre les consultes directament.
+
+* Cal activar la validació segura de les respostes dels DNS externs:
+
+----
+dnssec-enable yes;
+dnssec-validation yes;
+----
 
 ifndef::teacher[]
 .Entregar
@@ -429,10 +445,14 @@ ifdef::teacher[]
 .Solució
 ====
 Fitxer `/etc/bind/named.conf.options`
-
-
 ====
 endif::teacher[]
+
+* Comprova que la configuració està ben escrita utilitzant `named-checkconf`.
+Si no dóna cap resposta significa que no hi ha errors (cosa que no significa que
+el servidor faci el que vols, només que la seva configuració està ben escrita).
+És convenient utilitzar sovint aquesta ordre per assegurar-se que els canvis que
+anem fent són vàlids.
 
 * Reinicia el servidor i comprova que els canvis funcionen activant i
 consultant la depuració. Pots buidar el cau del servidor per assegurar que les
@@ -441,7 +461,7 @@ peticions que facis són noves. Desactiva de nou la depuració quan acabis.
 ifndef::teacher[]
 .Entregar
 ====
-
+*Sentències utilitzades i resultats*
 ====
 endif::teacher[]
 ifdef::teacher[]
@@ -451,8 +471,6 @@ systemctl restart bind9
 rndc trace 2
 rndc flush
 dig louvre.fr
-
-
 ====
 endif::teacher[]
 
