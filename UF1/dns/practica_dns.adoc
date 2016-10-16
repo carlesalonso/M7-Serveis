@@ -593,3 +593,24 @@ ifdef::teacher[]
 ====
 ====
 endif::teacher[]
+
+== Apartat 8: Configuració de la resolució inversa
+
+Crea el/els fitxers de resolució inversa per al teu domini. Pots copiar el
+fitxer `db.127` per tenir una base on començar l'edició.
+
+* Edita els registres SOA i NS com a l'apartat anterior.
+
+* Afegeix registres PTR per cada host amb IP fixa de la zona.
+
+ifndef::teacher[]
+.Entregar
+====
+*Configuració de la resolució inversa.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
