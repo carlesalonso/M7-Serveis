@@ -37,9 +37,9 @@ secundari de la xarxa local.
 * Utilitzarem l'entorn de xarxa local creat durant la pràctica anterior.
 
 * Concretament, hem de configurar la màquina *bilbo* com a servidor DNS
-principal i *sam* com a DNS secundari. El router *saruman* ha d'estar engegat
-per permetre la comunicació entre les màquines. El router *sauron* ha d'estar
-engegat si volem que tinguin connexió externa.
+principal i *sam* (172.161.3.22) com a DNS secundari. El router *saruman* ha
+d'estar engegat per permetre la comunicació entre les màquines. El router
+*sauron* ha d'estar engegat si volem que tinguin connexió externa.
 
 * A la pràctica anterior ja vam configurar el servidor DHCP per tal que els
 clients rebin la informació correcta sobre quins són els DNS que han
@@ -481,4 +481,29 @@ quan veu que aquest no contesta.
 
 Si afegim la directiva `forward only`, forcem que el servidor només pugui
 resoldre consultes utilitzant els forwarders. En aquest cas no obtindrem
-resposta a les consultes si el forwarder està malament.
+resposta a les consultes si el _forwarder_ està malament.
+
+== Apartat 5: Configuració dels clients
+
+Ara que ja tenim el servidor _bilbo_ funcionant com a servidor DNS, i que
+d'aquí a poc també tindrem el servidor _sam_ com a DNS secundari, és el moment
+de configurar tota la xarxa per tal que utilitzi aquests servidors.
+
+* Configura a mà el propi _bilbo_, _sam_, _sauron_ i _saruman_ per tal que
+utilitzin a _bilbo_ i a _sam_ com a servidors DNS (alguns d'ells poden estar ja
+ben configurats de pràctiques anteriors).
+
+* Configura el servidor DHCP per tal que els clients amb IP dinàmica també
+utilitzin els nostres servidors DNS.
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació a _bilbo_ i a _PC1_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
