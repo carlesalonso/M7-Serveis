@@ -37,7 +37,7 @@ secundari de la xarxa local.
 * Utilitzarem l'entorn de xarxa local creat durant la pràctica anterior.
 
 * Concretament, hem de configurar la màquina *bilbo* com a servidor DNS
-principal i *frodo* com a DNS secundari. El router *saruman* ha d'estar engegat
+principal i *sam* com a DNS secundari. El router *saruman* ha d'estar engegat
 per permetre la comunicació entre les màquines. El router *sauron* ha d'estar
 engegat si volem que tinguin connexió externa.
 
