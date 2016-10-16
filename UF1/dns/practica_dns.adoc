@@ -237,7 +237,7 @@ ns2.netnames.net.	172785	IN	A	185.26.230.5
 ====
 endif::teacher[]
 
-* Comprova la informació de depurció que ha quedat guardada al registre del
+* Comprova la informació de depuració que ha quedat guardada al registre del
 `bind` sobre aquesta consulta.
 
 ifndef::teacher[]
