@@ -60,6 +60,22 @@ la data ressaltats en diferents colors. *Això és imprescindible per avaluar
 les captures*.
 ====
 
+== Algunes referències útils
+
+A banda de les pàgines de manual de cada ordre i fitxer que apareixen a la
+pràctica, pot ser útil consultar les següents referències:
+
+* http://www.zytrax.com/books/dns/[DNS for Rocket Scientists]: llibre online
+gratuït amb informació útils sobre diverses configuracions del servidor BIND i
+explicació de les seves opcions.
+
+* Dos tutorials de la mateixa sèrie per diferents configuracions del BIND:
+https://www.digitalocean.com/community/tutorials/how-to-configure-bind-as-a-caching-or-forwarding-dns-server-on-ubuntu-14-04[Tutorial 1]
+https://www.digitalocean.com/community/tutorials/how-to-configure-bind-as-a-private-network-dns-server-on-ubuntu-14-04[Tutorial 2]
+
+* http://www.bind9.net/[Pàgina oficial del BIND], amb multitud de recuros.
+Destaca el manual oficial de BIND.
+
 == Apartat 1: Instal·lació del servidor DNS a *bilbo*
 
 El primer que farem serà comprovar la configuració DNS actual de *bilbo*.
