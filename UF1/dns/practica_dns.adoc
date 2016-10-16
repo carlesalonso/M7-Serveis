@@ -646,3 +646,46 @@ ifdef::teacher[]
 ====
 ====
 endif::teacher[]
+
+== Apartat 10: Configuració del servidor DNS secundari
+
+En aquest apartat configurarem _sam_ com a servidor DNS secundari.
+
+* Instal·la el _bind_ a _sam_.
+
+* Edita el fitxer `/etc/bind/named.conf.options` de _sam_. Ha de quedar igual
+que el de _bilbo_.
+
+* Edita el fitxer `/etc/bind/named.conf.local`. Cal afegir les mateixes zones
+que a _bilbo_, però indicant que el tipus és _slave_. El fitxer de zona es
+declara aquí, però després no l'hem de crear, perquè es transferirà directament
+del servidor principal. Finalment, en comptes d'`allow-transfer`, tindrem la
+directiva `masters`, que indicarà la IP del servidor DNS principal de la zona.
+
+ifndef::teacher[]
+.Entregar
+====
+*Configuració de _sam_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+Com hem fet amb el servidor principal, amb el secundari també comprovarem que
+la configuració és correcta, i utilitzarem PC1 per comprovar-ne el
+funcionament.
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació del funcionament de _sam_ des de _PC1_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
