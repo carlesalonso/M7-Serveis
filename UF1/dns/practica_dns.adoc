@@ -330,13 +330,19 @@ rndc notrace
 ====
 endif::teacher[]
 
-== Apartat 2: Configuració del servidor DNS
+== Apartat 2: Configuració bàsica del servidor DNS
 
-Fer que el servidor DNS només treballi amb IPv4. Modificar el fitxer
-`/etc/default/bind9` i canviar la línia `OPTIONS` de `OPTIONS="-u bind"` a
+Com que la nostra xarxa no utilitza IPv6, indicarem al servidor DNS que només
+treballa amb IPv4. Aquest pas no és imprescindible, però fer això reduïrà la
+quantitat de missatges que apareixeran als registres, cosa que ens facilitarà
+la posterior configuració del servidor.
+
+Per fer que el servidor DNS només treballi amb IPv4 modificarem el fitxer
+`/etc/default/bind9` i canviarem la línia `OPTIONS` de `OPTIONS="-u bind"` a
 `OPTIONS="-4 -u bind"`.
 
-
+Com sempre, recordem que cal reinciar el servidor DNS cada cop que en modifiquem
+la configuració per tal que s'adapti a la noves opcions.
 
 En general, en un servidor DNS de xarxa local, evitarem que aquest faci tot
 el procés de resolució de noms externs, i delegarem aquesta feina a un
