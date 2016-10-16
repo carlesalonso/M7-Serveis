@@ -398,6 +398,13 @@ recursion yes;
 allow-query { goodclients; };
 ----
 
+* No permetre la transferència (copia) de tota la informació del DNS a ningú.
+Això no és obligatori, però fa el servidor més resistents a atacs DoS:
+
+----
+allow-transfer { none; };
+----
+
 ifndef::teacher[]
 .Entregar
 ====
@@ -500,6 +507,55 @@ ifndef::teacher[]
 .Entregar
 ====
 *Comprovació a _bilbo_ i a _PC1_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+== Apartat 6: Creació de la zona interna
+
+El domini que configurarem serà de la forma `nom.cognom.local`. Per exemple, na
+Maria Soler configuraria el domini `maria.soler.local`.
+
+Volem afegir a aquesta zona tots els hosts amb IP fixa que tenim: _bilbo_,
+_sauron_, etc.
+
+A més, volem que també s'hi pugui accedir per noms lògics: per exemple,
+`dhcp.maria.soler.local` hauria de donar la IP de _bilbo_, i
+`web.maria.soler.local` o `www.maria.soler.local` la IP de _legolas_.
+
+La configuració d'una nova zona sempre consta de quatre parts:
+
+1- Afegir la configuració general de la zona a `named.conf.local`.
+2- Afegir la resolució directa de la zona.
+3- Afegir la resolució inversa de la zona.
+4- Comprovar que la configuració és correcta.
+
+* Afegeix al fitxer `named.conf.local` la configuració de la zona.
+
+Un exemple de configuració:
+
+----
+zone "aaa.example.com" { # Configuració de la resolució directa
+    type master; # Indiquem que aquest és el servidor principal
+    file "/etc/bind/zones/db.aaa.example.com"; # Fitxer de resolució directa
+    allow-transfer { 10.128.40.72; }; # Servidor DNS secundari
+};
+
+zone "128.10.in-addr.arpa" { # Configuració de la resolució inversa
+    type master;
+    file "/etc/bind/zones/db.10.128";  # Resolució inversa de la subxarxa 10.128.0.0/16
+    allow-transfer { 10.128.20.12; };
+};
+----
+
+ifndef::teacher[]
+.Entregar
+====
+*Fixer `/etc/bind/named.conf.local`.*
 ====
 endif::teacher[]
 ifdef::teacher[]
