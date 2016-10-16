@@ -524,7 +524,7 @@ Volem afegir a aquesta zona tots els hosts amb IP fixa que tenim: _bilbo_,
 _sauron_, etc.
 
 A més, volem que també s'hi pugui accedir per noms lògics: per exemple,
-`dhcp.maria.soler.local` hauria de donar la IP de _bilbo_, i
+`dhcp1.maria.soler.local` hauria de donar la IP de _bilbo_, i
 `web.maria.soler.local` o `www.maria.soler.local` la IP de _legolas_.
 
 La configuració d'una nova zona sempre consta de quatre parts:
@@ -541,21 +541,51 @@ Un exemple de configuració:
 ----
 zone "aaa.example.com" { # Configuració de la resolució directa
     type master; # Indiquem que aquest és el servidor principal
-    file "/etc/bind/zones/db.aaa.example.com"; # Fitxer de resolució directa
+    file "/etc/bind/db.aaa.example.com"; # Fitxer de resolució directa
     allow-transfer { 10.128.40.72; }; # Servidor DNS secundari
 };
 
 zone "128.10.in-addr.arpa" { # Configuració de la resolució inversa
     type master;
-    file "/etc/bind/zones/db.10.128";  # Resolució inversa de la subxarxa 10.128.0.0/16
+    file "/etc/bind/db.10.128";  # Resolució inversa de la subxarxa 10.128.0.0/16
     allow-transfer { 10.128.20.12; };
 };
 ----
+
+Recorda que pot caldra definir més d'una zona per servir a diverses subxarxes.
 
 ifndef::teacher[]
 .Entregar
 ====
 *Fixer `/etc/bind/named.conf.local`.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+== Apartat 7: Configuració de la resolució directa
+
+Crea el fitxer de resolució directa per al teu domini. Pots copiar el fitxer
+`db.local` per tenir una base on començar a editar.
+
+* Edita el registre SOA. Indica el nom de domini i correu electrònic de
+l'administrador. Recorda augmentar en 1 el número de sèrie cada cop que
+modifiquis el fitxer. Configura una freqüència de refresc d'una hora, una
+freqüència de reintents d'una hora, i un temps d'expiració d'una setmana.
+
+* Configura els registres NS per tal que apuntin als dos servidors DNS.
+
+* Afegeix registres A i CNAME adequats per configurar la resta dels servidors.
+
+* Afegeix també un registre MX per al (futur) servidor de correu.
+
+ifndef::teacher[]
+.Entregar
+====
+*Configuració de la resolució directa.*
 ====
 endif::teacher[]
 ifdef::teacher[]
