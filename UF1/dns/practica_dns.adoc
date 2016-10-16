@@ -503,6 +503,16 @@ ben configurats de pràctiques anteriors).
 * Configura el servidor DHCP per tal que els clients amb IP dinàmica també
 utilitzin els nostres servidors DNS.
 
+[IMPORTANT]
+====
+El domini que configurarem serà de la forma `nom.cognom.local`. Per exemple, na
+Maria Soler configuraria el domini `maria.soler.local`.
+====
+
+* Configura el servidor DHCP per tal que els clients cerquin per defecte al teu
+domini. És a dir, que si no especifiquen el FQDN, es consideri que els hosts
+són d'aquest domini.
+
 ifndef::teacher[]
 .Entregar
 ====
@@ -516,9 +526,6 @@ ifdef::teacher[]
 endif::teacher[]
 
 == Apartat 6: Creació de la zona interna
-
-El domini que configurarem serà de la forma `nom.cognom.local`. Per exemple, na
-Maria Soler configuraria el domini `maria.soler.local`.
 
 Volem afegir a aquesta zona tots els hosts amb IP fixa que tenim: _bilbo_,
 _sauron_, etc.
@@ -607,6 +614,31 @@ ifndef::teacher[]
 .Entregar
 ====
 *Configuració de la resolució inversa.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+== Apartat 9: Comprovació de la configuració
+
+Utilitza els programes `named-checkconf` i `named-checkzone` per comprovar la
+configuració general del servidor DNS i de cadascuna de les zones creades.
+
+Arregla els problemes que hi puguin haver i reinicia el servidor DNS quan tot
+estigui bé.
+
+Comprova des del client PC1 el funcionament del servidor DNS. Utilitza `dig`
+per a les comprovacions. Volem comprovar almenys 4 resolucions directes i 4
+resolucions inverses (de diferents subxarxes). Comprova també que la resolució
+d'un domini d'internet segueix funcionant.
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovacions des de PC1.*
 ====
 endif::teacher[]
 ifdef::teacher[]
