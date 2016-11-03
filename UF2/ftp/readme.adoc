@@ -1,284 +1,220 @@
-= Títol
-Josep Queralt <jqueral8@xtec.cat>
-:revdate: Gener 10, 2016
-:revnumber: 0.1
+= Transferència de fitxers
 :encoding: utf-8
-:slides:
+:doctype: article
 :lang: ca
 :toc: left
 :numbered:
 :teacher:
 
-1.  UF2NF1: Transferència de Fitxers
+<<<
 
-1.  UF2NF1 Transferencia de Fitxers.odp 
-Resultats d'aprenentatge
+== Protocol FTP
 
-*   Desprès de cursar aquesta UF del MP l’alumne hauria de poder:
+image::images/ftpintro.jpg[]
 
-    * Gestiona servidors de Correu Electrònic identificant requeriments d'utilització i aplicant criteris de configuració.
+* L’FTP (File Transfer Protocol) és el protocol que proporciona el servei de
+transferència de fitxers més usat.
 
-        * Instal·la serveis de transferència de fitxers, descrivint les seves característiques i aplicacions. 
-Resultats d'aprenentatge
+* Es basa en una arquitectura client/servidor i utilitza el protocol de
+transport TCP.
 
-*   Concretament pel que fa a la transferència de fitxers::
+* Permet la transferència de fitxers de qualsevol tipus entre dos equips.
 
-    * Gestiona servidors de Correu Electrònic identificant requeriments d'utilització i aplicant criteris de configuració.
+* El servidor actua a mode de repositori de fitxers i el client s’hi connecta
+per baixar (download) o pujar (upload) fitxers.
 
-        * Instal·la serveis de transferència de fitxers, descrivint les seves característiques i aplicacions.
+* Aquesta transferència és independent de la plataforma usada i del tipus de
+fitxers gestionats.
 
-            *   Establert la utilitat i mode d'operació del servei de transferència de fitxers.
+* La primera especificació del protocol FTP apareix al 1980.
 
-                *   Instal·la un servei de transferència de fitxers.
+* L’octubre de 1985 es publica l’RFC 959, que és la base del protocol actual. A
+aquest RFC se n’hi han afegit posteriorment d’altres per incorporar seguretat,
+internacionalització...
 
-                *   Crea usuaris i grups per a accés remot al servidor.
+* Una de les virtuts del model FTP és que permet transferir fitxers (també
+modificar-los, esborrar-los, afegir-los…) independentment de la plataforma i del
+sistema on resideixen.
 
-                *   Configura l'accés anònim.
+* La debilitat principal del protocol FTP és la falta de seguretat. Tot el
+flux de dades viatja en text pla, sense xifrar, fins i tot els noms d’usuari i
+les contrasenyes. Això ha obligat a adoptar noves estratègies per proporcionar
+confidencialitat a les transmissions.
 
-                *   Estableix límits en les diferents maneres d'accés.
+* Els objectius del servei FTP són els següents:
 
-                *   Comprova l'accés al servidor, tant en manera activa com en manera passiva.
+  * Compartir fitxers tant de dades com de programes.
 
-                *   Realitza proves amb clients en línia de comandaments i en manera gràfica.
+  * Permetre prosseguir les transferències de fitxers un cop interrompudes
+  (reprendre les baixades).
 
-                *   Realitza la documentació adient per donar suport a l'usuari. 
-Transferència de Fitxers
+  * Transferir dades de manera eficient i fiable.
 
-image::images/[1000,1000]
+* El servidor FTP es pot classificar segons sigui:
 
-Protocol FTP
+  * D’accés públic / d’accés corporatiu.
 
-*   L’FTP (File Transfer Protocol) és el protocol que proporciona el servei de transferència de fitxers més usat.
+  * D’accés amb usuari identificat / d’accés amb usuari anònim.
 
-*   Es basa en una arquitectura client/servidor i utilitza el protocol de transport TCP.
+  * De mode de transferència ASCII / de mode de transferència binari.
 
-*   Permet la transferència de fitxers de qualsevol tipus entre dos equips.
+* De forma inusual, el servei FTP utilitza dos ports del sistema.
 
-*   El servidor actua a mode de repositori de fitxers i el client s’hi connecta per baixar (download) o pujar (upload) fitxers.
+  * A través del port 21 es realitza la interpretació de les instruccions.
 
-*   Aquesta transferència és independent de la plataforma usada i del tipus de fitxers gestionats. 
-Protocol FTP
+  * El port 20 és destinat a la transferència de dades, tot i que es pot
+  utilitzar un altre port dinàmic en el seu lloc.
 
-*   La primera especificació del protocol FTP apareix al 1980.
-
-*   L’octubre
- de 1985 es publica l’RFC 959, que és la base del protocol actual. A
-aquest RFC se n’hi han afegit posteriorment d’altres per incorporarseguretat, internacionalització… 
-
-*   Una
- de les virtuts del model FTP és que permet transferir fitxers (també
-modificar-los, esborrar-los, afegir-los…) independentment de laplataforma i del sistema on resideixen. 
-
-*   La
- debilitat principal del protocol FTP és la falta de seguretat. Tot el
-flux de dades viatja en text pla, sense encriptar, fins i tot els nomsd’usuari i les contrasenyes. Això ha obligat a adoptar noves estratègies
- per proporcionar confidencialitat a les transmissions. 
-Protocol FTP
-
-*   Els objectius del servei FTP són els següents:
-
-    * Compartir fitxers tant de dades com de programes.
-
-        * Permetre prosseguir les transferències de fitxers un cop interrompudes (reprendre les baixades).
-
-        * Transferir dades de manera eficient i fiable. 
-Servei FTP
-
-*   El servidor FTP es pot classificar segons sigui:
-
-    * D’accés públic / d’accés corporatiu.
-
-        * D’accés amb usuari identificat / d’accés amb usuari anònim.
-
-        * De mode de transferència ASCII / de mode de transferència binari.
-
-*   De forma inusual, el servei FTP utilitza dos ports del sistema.
-
-    * A través del port 21 es realitza la interpretació de les instruccions.
-
-        * El port 20 és destinat a la transferència de dades, tot i que es pot utilitzar un altre port dinàmic en el seu lloc.
-
-        * El
- mode real de funcionament de la transmissió de dades i els ports
+  * El mode real de funcionament de la transmissió de dades i els ports
 implicats depenen del mode de funcionament, que pot ser actiu o passiu.
 
-*   La funcionalitat del servei es classifica en:
+* La funcionalitat del servei es classifica en:
 
-    * Mode intèrpret del protocol.
+  * Mode intèrpret del protocol.
 
-        * Mode de transferència de dades. 
-Servei FTP – Accés identificat / usuari anònim
+  * Mode de transferència de dades.
 
-*   Segons el tipus de clients que accepta, podem classificar els servidors FTP de la manera següent:
+== Servei FTP – Accés identificat / usuari anònim
 
-    * Usuari identificat. El servidor requereix un nom d’usuari i una contrasenya vàlids per accedir al servei.
+* Segons el tipus de clients que accepta, podem classificar els servidors FTP de
+la manera següent:
 
-        * Els
- comptes d’usuari poden ser gestionats directament per l’aplicació del
+  * Usuari identificat. El servidor requereix un nom d’usuari i una contrasenya
+  vàlids per accedir al servei.
+
+  * Els comptes d’usuari poden ser gestionats directament per l’aplicació del
 servidor o se’n pot delegar l’autenticació al sistema operatiu.
 
-    * Accés anònim. Un servidor que permet accessos anònims permet que qualsevol usuari pugui accedir al repositori de fitxers.
+  * Accés anònim. Un servidor que permet accessos anònims permet que qualsevol
+  usuari pugui accedir al repositori de fitxers.
 
-        * Usualment
- cal indicar com a nom d’usuari “anonymous” i com a contrasenya
-s’accepta qualsevol text, però per convenció s’escriu el correuelectrònic de l’usuari. 
-Servei FTP – Accés public / Accés coropratiu
+  * Usualment cal indicar com a nom d’usuari “anonymous” i com a contrasenya
+s’accepta qualsevol text, però per convenció s’escriu el correu electrònic de
+l’usuari.
 
-*   Segons l’àmbit del servei que proporciona, podem classificar els servidors FTP de la manera següent:
+== Servei FTP – Accés public / Accés coropratiu
 
-*   
+* Segons l’àmbit del servei que proporciona, podem classificar els servidors FTP
+de la manera següent:
 
-*   
-   Servidor públic. Molts servidors FTP a Internet ofereixen serveid’accés anònim a mode de repositoris de programari perquè els usuaris el
- puguin utilitzar. N’hi ha que actuen com a rèpliques (miralls, mirrors)
- d’altres repositoris per tal d’apropar les baixades a l’usuari. Aquestservei és usualment només de lectura (pel client) i en sistemesGNU/Linux s’ubica sovint en els directoris /var/ftp o /var/ftp/pub.
-*   
+  * Servidor públic. Molts servidors FTP a Internet ofereixen servei d’accés
+  anònim a mode de repositoris de programari perquè els usuaris el puguin
+  utilitzar. N’hi ha que actuen com a rèpliques (miralls, mirrors) d’altres
+  repositoris per tal d’apropar les baixades a l’usuari. Aquest servei és
+  usualment només de lectura (pel client) i en sistemes GNU/Linux s’ubica
+  sovint en els directoris /var/ftp o /var/ftp/pub.
 
-*   
-   Servidor corporatiu. No cal oferir per força els serveis FTP aInternet; l’administrador de xarxa pot configurar el servidor FTP peroferir els serveis als equips que cregui oportuns. Dins d’una xarxacorporativa es pot disposar d’un o més servidors FTP que permetenl’accés als usuaris de la xarxa (tant a usuaris identificats com ausuaris anònims de la xarxa corporativa). 
-Servei FTP – Mode de transferència ASCII / Binari
+  * Servidor corporatiu. No cal oferir per força els serveis FTP a Internet;
+  l’administrador de xarxa pot configurar el servidor FTP per oferir els
+  serveis als equips que cregui oportuns. Dins d’una xarxa corporativa es pot
+  disposar d’un o més servidors FTP que permeten l’accés als usuaris de la
+  xarxa (tant a usuaris identificats com a usuaris anònims de la xarxa
+  corporativa).
 
-*   Els
- modes en què es transfereixen els fitxers entre el client i el servidor
- poden ser múltiples. Els dos més importants són aquests:
+== Servei FTP – Mode de transferència ASCII / Binari
 
-*   
+* Els modes en què es transfereixen els fitxers entre el client i el servidor
+poden ser múltiples. Els dos més importants són aquests:
 
-*   
-   ASCII. El fitxer es transmet caràcter a caràcter. Els caràcters hande correspondre als caràcters del codi bàsic ASCII. Si el fitxer contécaràcters ASCII no vàlids, la transferència fallarà. Per tant, es tracta
- d’un mode vàlid únicament per transferir text net. El receptor farà les
- conversions de caràcter necessàries per desar les dades en el formatque requereixi.
-*   
+  * ASCII. El fitxer es transmet caràcter a caràcter. Els caràcters han de
+  correspondre als caràcters del codi bàsic ASCII. Si el fitxer conté caràcters
+  ASCII no vàlids, la transferència fallarà. Per tant, es tracta d’un mode vàlid
+  únicament per transferir text net. El receptor farà les conversions de
+  caràcter necessàries per desar les dades en el format que requereixi.
 
-*   
-   Binari (binary). Quan el mode de transferència és binari, el fitxers’envia bit a bit sense interpretació de cap mena. És el mode que calusar per transmetre programes, imatges, vídeo, so, dades binàries… 
-Servei FTP - Ports
+  * Binari (binary). Quan el mode de transferència és binari, el fitxer s’envia
+  bit a bit sense interpretació de cap mena. És el mode que cal usar per
+  transmetre programes, imatges, vídeo, so, dades binàries...
 
-*   Tant en el client com en el servidor hi ha dues entitats clarament diferenciades:
+== Servei FTP - Ports
 
-*   
+* Tant en el client com en el servidor hi ha dues entitats clarament
+diferenciades:
 
-*   
-   Intèrpret del protocol: és l’encarregat de l’intercanvi d’ordres irespostes entre client i servidor. Utilitza el canal de controlestablert entre el port de sortida del client i el port 21, on escoltael servidor. És l’encarregat d’interpretar les ordres de l’aplicacióclient convertint-les en instruccions FTP, executar-les en el servidor i
- retornar les respostes al client. No s’encarrega de la transferència de
- fitxers.
-*   
+  * Intèrpret del protocol: és l’encarregat de l’intercanvi d’ordres i respostes
+  entre client i servidor. Utilitza el canal de control establert entre el port
+  de sortida del client i el port 21, on escolta el servidor. És l’encarregat
+  d’interpretar les ordres de l’aplicació client convertint-les en instruccions
+  FTP, executar-les en el servidor i retornar les respostes al client. No
+  s’encarrega de la transferència de fitxers.
 
-*   
-   Transferència de dades: és la part encarregada d’intercanviar elsfitxers i directoris entre client i servidor. En el funcionament bàsic,el canal de dades s’estableix entre un nou port del client (port dinàmic
- i específic per a la transmissió del fitxer) i el port 20 (ftp-data)del servidor. 
-Servei FTP - Ports
+  * Transferència de dades: és la part encarregada d’intercanviar els fitxers i
+  directoris entre client i servidor. En el funcionament bàsic, el canal de
+  dades s’estableix entre un nou port del client (port dinàmic i específic per
+  a la transmissió del fitxer) i el port 20 (ftp-data) del servidor.
 
-*   La connexió TCP del canal de dades entre client i servidor es pot establir de dues maneres diferents:
+* La connexió TCP del canal de dades entre client i servidor es pot establir de
+dues maneres diferents:
 
-*   
+  * Mode actiu: generalment és el mode per defecte. Abans de fer una sol·licitud
+  al servidor que impliqui transferir dades pel canal de dades, el client indica
+  al servidor el port dinàmic que utilitzarà. Per tant, el canal de dades
+  s’estableix entre aquest port dinàmic del client i el port 20 del servidor.
+  Servidor i client estableixen una nova connexió TCP per aquest canal.
 
-*   
-   Mode actiu: generalment és el mode per defecte. Abans de fer unasol·licitud al servidor que impliqui transferir dades pel canal dedades, el client indica al servidor el port dinàmic que utilitzarà. Pertant, el canal de dades s’estableix entre aquest port dinàmic del client
- i el port 20 del servidor. Servidor i client estableixen una novaconnexió TCP per aquest canal.
-*   
+image::images/active.png[]
 
-*   
-   Mode passiu: el client fa una sol·licitud de mode passiu al servidor.
- Aquest respon enviant el seu port dinàmic, per on s’establirà el canalde dades (en lloc del port 20). Llavors el client inicia una novaconnexió TCP entre un port dinàmic nou seu i el port dinàmic delservidor. Aquest és el canal de dades. 
+  * Mode passiu: el client fa una sol·licitud de mode passiu al servidor.
+ Aquest respon enviant el seu port dinàmic, per on s’establirà el canal de dades
+ (en lloc del port 20). Llavors el client inicia una nova connexió TCP entre un
+ port dinàmic nou seu i el port dinàmic del servidor. Aquest és el canal de
+ dades.
 
-image::images/[1000,1000]
+image::images/passive.png[]
 
-image::images/[1000,1000]
+== Servei FTP - Client
 
-Servei FTP - Client
+* Una vegada establerta la connexió, el client tindrà accés al sistema de
+fitxers del servidor mitjançant:
 
-*    Una vegada establerta la connexió, el client
+  * Línies de comandes
 
-*   tindrà accés al sistema de fitxers del servidor
+  * Navegador
 
-*   mitjançant
+  * Programes específics, ex Filezilla
 
-*   Línees de comandes
+* Segons els seus privilegis i la configuració del servei, els usuaris podran
+accedir a diferents zones del sistema de fitxers.
 
-*   Navegador
+* La transferència de fitxers es pot fer en binari o en text. Actualment
+s’autodetecta el tipus de fitxer i no cal especificar-ho.
 
-*   Programes específics, ex Filezilla
+* La jerarquia de fitxers s’ha de pensar de manera que sigui útil i fàcil de fer
+servir per part de l’usuari.
 
-*   Segons els seus privilegis i la configuració del
+== Servei FTP - Seguretat
 
-*   servei, els usuaris podran accedir a diferents
+* Es tracta d’un servei no segur (fins i tot l’intercanvi de claus es fa sense
+  xifrar).
 
-*   zones del sistema de fitxers.
+Per realitzar transferència de fitxers de manera segura caldria fer servir
+serveis com SSH (accés remot) o SFTP (Secure FTP) que proporcionen un canal
+segur. (22/TCP)
 
-*   La transferència de fitxers es pot fer en binari o
+També ens podem recolzar en connexions segures fent servir SSL (Secure Socket
+Layer) o TSL (Transport Layer Security) que requereixen mecanismes de xifrat i
+la utilització de certificats. Hi ha dues maneres de combinar SSL o TSL amb FTP:
 
-*   en text. Actualment s’autodetecta el tipus de
+* FTPES o FTP Explícit: el client es connecta al port original (21) i
+explícitament canvia a un mode segur TSL o SSL per transferir informació.
 
-*   fitxer i no cal especificar-ho.
+* FTPS o FTP Implícit: el client assumeix el mode segur TSL o SSL des de
+l'inici de la sessió. Normalment es fa servir el port 990 en lloc del 21.
 
-*   La jerarquia de fitxers s’ha de pensar de manera
+image::images/security.png[]
 
-*   que sigui útil i fàcil de fer servir per part de
+== Trivial FTP
 
-*   l’usuari. 
-Servei FTP - Seguretat
+El TFTP (port 69) és similar a l'FTP però no requereix autenticació d’usuari
+abans de la connexió. Simplement realitza la transferència d’arxius.
 
-*    Es tracta d’un servei no segur (fins i tot
-l’intercanvi de claus es fa sense xifrar)
+Útil per carregar o descarregar fitxers de màquines de la xarxa (routers,
+switchs).
 
-Per realitzar transferència de fitxers de manera
-
-segura caldria fer servir serveis com SSH (accés
-
-remot) o SFTP (Secure FTP) que proporcionen un
-
-canal segur. (22/TCP)
-
-També ens podem recolzar en connexions segures
-
-fent servir SSL (Secure Socket Layer) o TSL
-
-(Transport Layer Security) que requereixen
-
-mecanismes de xifrat i la utilització de certificats. Hi
-
-ha dues maneres de convinar SSL o TSL amb FTP:
-
-▪ FTPES o FTP Explícit: el client es connecta al port
-
-original (21) i explícitament canvia a un mode segur TSL
-
-o SSL per transferir informació.
-
-▪ FTPS o Implícit: el client assumeix el mode segur TSL o
-
-SSL des de l'inici de la sessió. Normalment es fa servir el
-
-port 990 en lloc del 21
-
-image::images/[1000,1000]
-
-*    Trivial FTP (port 69)
-Similar a FTP però no requereix
-
-autenticació d’usuari abans de la
-
-connexió.
-
-Simplement realitza la transferència
-
-d’arxius.
-
-Útil per carregar o descarregar fitxers de
-
-màquines de la xarxa (routers, switchs)
-
-Juntament amb UDP, DHCP, i IP , permet
-
-per exemple que un ordinador carregui
-
+Juntament amb UDP, DHCP, i IP, permet, per exemple, que un ordinador carregui
 un SO. (Màquines sense Disc Dur).
 
-▪ La tarja de xarxa ha de suportar el protocol
+* La targeta de xarxa ha de suportar el protocol PXE (Preboot eXecution
+Envoiroment).
 
-PXE (Preboot eXecution Envoiroment
-
-image::images/[1000,1000]
-
- 
+image::images/tftp.png[1000,1000]
