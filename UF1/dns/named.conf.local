@@ -1,0 +1,17 @@
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "inscastellet.cat" { # Configuració de la resolució directa
+    type master; # Indiquem que aquest és el servidor principal
+    file "/etc/bind/db.inscastellet.cat"; # Fitxer de resolució directa
+};
+
+zone "0.168.192.in-addr.arpa" { # Configuració de la resolució inversa
+    type master;
+    file "/etc/bind/db.0.168.192";  # Resolució inversa de la subxarxa 10.128.0.0/16
+};

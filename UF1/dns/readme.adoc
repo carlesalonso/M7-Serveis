@@ -661,3 +661,12 @@ de domini origen (el que s’està definint).
 mateix nom que el definit en el registre anterior.
 * Als noms de domini relatius (no acabats en punt) se’ls afegeix el nom de
 domini origen o nom de la zona que s’està definint.
+
+=== Exemple de configuració
+
+Els següents fitxers presenten una configuració d'exemple pel domini
+_inscastellet.cat_:
+
+- link:named.conf.local[Declaració de les zones a named.conf.local]
+- link:db.inscastellet.cat[Definició de la traducció directa a db.inscastellet.cat]
+- link:db.0.168.192[Definició de la traducció inversa a db.0.168.192]

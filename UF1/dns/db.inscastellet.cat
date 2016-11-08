@@ -1,0 +1,18 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL	604800
+inscastellet.cat.	IN	SOA	dns.inscastellet.cat. root.dns.inscatellet.cat. (
+			      2		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+@	IN	NS	dns
+dns	IN	A	192.168.0.50
+www	IN	A	192.168.0.5
+mail	IN	A	192.168.0.10
+printer	IN	A	192.168.0.15
+web	IN	CNAME	www
+@	IN	MX	10	mail
