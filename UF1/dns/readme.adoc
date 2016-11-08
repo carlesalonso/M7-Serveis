@@ -616,7 +616,12 @@ ftp.aulaSMIX.com. IN CNAME 192.168.0.180
 * Un registre MX mail echanger (servidor de correu electrònic) defineix un
 servidor de correu. Es pot posar una entrada MX per a cada servidor de correu,
 però no és obligatori que n’hi hagi cap.
+
+[source]
+.Exemple registre MX
+----
 aulaSMIX.com. IN MX 10 servidorCorreu.aulaSMIX.com.
+----
 
 El 10 és un valor numèric que expressa el grau de preferència d’aquest servidor
 de correu respecte a altres servidors de correu del domini. El valor més baix
