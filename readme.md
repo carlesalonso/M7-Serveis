@@ -18,8 +18,9 @@ Materials per al mòdul *M7 - Serveix de xarxa* del cicle de *Sistemes microinfo
 
 ### UF 2: correu electrònic i transmissió d’arxius
 
-1. Correu electrònic
-2. FTP
+1. FTP
+  - [Teoria](UF2/ftp)
+2. Correu electrònic
 
 ### UF 3: servidor web i servidor intermediari (proxy)
 
