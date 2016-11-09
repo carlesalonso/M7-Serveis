@@ -1,0 +1,85 @@
+= Pràctica servidor DHCP
+
+:encoding: utf-8
+:lang: ca
+:toc: left
+:!numbered:
+//:teacher:
+
+ifdef::teacher[]
+== (Versió del professor):
+endif::teacher[]
+
+////
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+////
+
+<<<
+
+== Objectiu de la pràctica
+
+En aquesta pràctica configurarem un servidor FTP. L'objectiu és tenir un
+espai de només lectura on compartir documents amb accés obert, un espai propi
+per a cadascun dels usuaris del sistema, i un espai compartit. També implantarem
+una capa SSL per tal de transmetre la informació xifrada.
+
+== Preparatius
+
+* Utilitzarem l'entorn de xarxa de les pràctiques anteriors. Configurarem
+_legolas_ (172.16.100.2) com a servidor FTP.
+
+* Qualsevol màquina podrà actuar com a client del FTP. Si tenim el servei DNS
+funcionant, podrem accedir-hi directament pel nom del servidor, en cas contrari
+ho haurem de fer utilitzant la seva IP.
+
+* Si no tenim el servei DHCP funcionant, haurem d'assignar una IP fixa a PC1
+per tal que es pugui connectar a la xarxa.
+
+* Seguint els passos de les pràctiques anteriors, totes les màquines han de
+mostrar un prompt personalitzat i hi ha d'haver un usuari amb el vostre nom i
+permisos per utilitzar *sudo*.
+
+[IMPORTANT]
+====
+Cal que configureu el vostre terminal perquè al prompt aparegui el vostre nom i
+la data ressaltats en diferents colors. *Això és imprescindible per avaluar
+les captures*.
+====
+
+== Apartat 1: Preparació de la màquina *legolas*
+
+Com hem fet amb les altres màquines, clonarem _legolas_ a partir de _base_, i
+li configurarem la xarxa i els usuaris.
+
+Com que _legolas_ és a la xarxa 172.16.100.0 però volem que es pugui comunicar
+amb les xarxes 172.16.2.0 i 172.16.3.0, haurem d'afegir les rutes adequades,
+igual que vam fer en el seu moment amb _sauron_.
+
+.Entregar
+====
+*Captura del contingut del fitxer `/etc/network/interfaces` de _legolas_.*
+====
+
+.Entregar
+====
+*Captura de la taula d'enrutament.*
+====
+
+== Apartat 2: Instal·lador del servidor FTP a _legolas_
+
+Utilitzarem el programa *vsFTPd* (_very secure FTP daemon_). A diferència
+d'altres programes d'FTP, el _vsFTPd_ incorpora diverses característiques de
+seguretat, com no permetre la connexió a l'usuari _root_, o permetre, de forma
+senzilla, que un usuari no pugui navegar per tot el sistema de fitxers del
+servidor.
