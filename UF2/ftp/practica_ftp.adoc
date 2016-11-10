@@ -1,4 +1,4 @@
-= Pràctica servidor DHCP
+= Pràctica servidor FTP
 
 :encoding: utf-8
 :lang: ca
@@ -83,3 +83,76 @@ d'altres programes d'FTP, el _vsFTPd_ incorpora diverses característiques de
 seguretat, com no permetre la connexió a l'usuari _root_, o permetre, de forma
 senzilla, que un usuari no pugui navegar per tot el sistema de fitxers del
 servidor.
+
+Amb la configuració per defecte el servidor FTP ja permet l'accés a qualsevol
+usuari del sistema. Per comprovar-ne el funcionament, utilitzarem una màquina
+en el mateix segment de xarxa com, per exemple, _sauron_.
+
+La instal·lació base de Debian ja inclou un client de FTP en línia d'ordres
+(després ja passarem a client gràfic) que s'anomena, com és d'esperar, _ftp_.
+
+Crea un fitxer de text al teu _home_ de _legolas_. Mira l'ajuda de l'ordre
+_ftp_ i comprova que des de _sauron_ pots connectar al servei FTP de _legolas_
+utilitzant el teu nom d'usuari i contrasenya. Descarrega't el fitxer que acabes
+de crear.
+
+.Entregar
+====
+*Captura de la transacció entre FTP entre _sauron_ i _legolas_.*
+====
+
+== Apartat 3: Configuració de l'enrutament
+
+Voldrem que es pugui accedir a _legolas_ tant des de les altres xarxes internes
+com des d'Internet (que en el nostre esquema no és més que la xarxa del propi
+institut).
+
+Per poder fer això hem de configurar els dos routers per tal que adrecin els
+paquets que es dirigeixen al port 21 del router cap a _legolas_. Això ho fem
+amb l'_iptables_, de forma similar a com en el seu moment vam configurar el
+NAT de _sauron_.
+
+----
+iptables -t nat -A PREROUTING -p tcp --dport 21 -j DNAT --to-destination 172.16.100.2:21
+dpkg-reconfigure iptables-persistent
+----
+
+A la primera línia estem indicant que volem afegir (-A) una regla relacionada
+amb traducció d'adreces (-t nat). Diem que als paquets amb destí el port 21
+(--dport 21) TCP (-p TCP) se'ls ha de modificar el destí (-j DNAT) i fer que
+vagin a 172.16.100.2 (--to-destination 172.16.100.2).
+
+A la segona línia reconfigurem el paquet _iptables-persistent_ per tal de
+guardar els canvis de regles que hem fet de forma permanent.
+
+Un cop fet això, ja podrem connectar al servei FTP des de l'ordinador amfitrió
+i, de fet, des de qualsevol ordinador del centre.
+
+Utilitza el client _filezilla_ per connectar al servei FTP de _legolas_.
+
+.Entregar
+====
+*Captura de la transacció entre FTP entre l'ordinador amfitrió i _legolas_.*
+====
+
+Hem de configurar _saruman_ d'una forma similar a _sauron_ per tal que els
+clients de les xarxes 172.16.2.0 i 172.16.3.0 puguin accedir al servidor FTP.
+
+Recorda instal·lar el paquet _iptables-persistent_ (només l'havíem instal·lat
+a _sauron_). Mira't bé l'exemple que hem fet per _sauron_ i dedueix les dues
+regles que hem d'afegir a _saruman_.
+
+.Entregar
+====
+*Captura de la configuració _iptables_ de _saruman_.*
+====
+
+Un cop tenim _saruman_ configurat, hauríem de poder accedir al servidor FTP des
+de qualsevol ordinador de qualsevol de les tres xarxes internet.
+
+.Entregar
+====
+*Captura de la connexió al servei FTP des de _PC1_.*
+====
+
+== Apartat 4: Configuració de l'accés anònim
