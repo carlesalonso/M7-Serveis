@@ -210,7 +210,7 @@ corresponent a la zona i dels equips dels subdominis que no s’hagin delegat.
 Aquesta informació s’emmagatzema en la **base de dades de zona**.
 ====
 
-=== Delegació de  zones
+=== Delegació de zones
 
 [IMPORTANT]
 ====
@@ -300,12 +300,12 @@ RIR (Regional Internet Registries).
 
 * El procés de resolució o cerca es pot realitzar de dues maneres:
 ** Mode **recursiu**.
-** Mode **Iteratiu**.
+** Mode **iteratiu**.
 
 [NOTE]
 ====
-La especificació DNS estableix que tots els servidors DNS han de suportar el
-mode de cerca Iteratiu.
+L'especificació DNS estableix que tots els servidors DNS han de suportar el
+mode de cerca iteratiu.
 ====
 
 [NOTE]
@@ -317,7 +317,7 @@ es consulten entre ells de manera iterativa.
 .Resolució de noms recursiva
 image::images/recursiu.jpg[]
 
-.Resolucuó de noms iterativa
+.Resolució de noms iterativa
 image::images/iteratiu.jpg[]
 
 === Resolució inversa
