@@ -135,7 +135,7 @@ al 9 i el guió. Les majúscules i minúscules són indiferents.
 * L'arbre DNS té una única **arrel**.
 * El nom del node arrel és una **cadena buida**.
 
-* Un domini absolut o **FQDN** ("Fully Qualified Domin Name"") és el nom
+* Un domini absolut o **FQDN** ("Fully Qualified Domain Name"") és el nom
 format per tots els nodes des del domini fins a l'arrel.
 * Com que el nom del node arrel és una cadena buida tots els FQDN acaben en
 punt (.).
