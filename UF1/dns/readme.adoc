@@ -151,14 +151,15 @@ treballa sobretot amb una organització geogràfica.
 ** Organitzacionals
 *** .com, agrupa organitzacions comercials
 *** .edu, reuneix organitzacions educatives
-*** .net, agrupa a organitzacions dedicades a Internet a a les TI
+*** .net, agrupa a organitzacions dedicades a Internet o a les tecnologies de
+la informació.I
 *** .org, reuneix organitzacions no comercials
 *** .gov, agrupa organitzacions governamentals
 ** Geogràfics
 *** S'anomenen segons la codificació establerta a l'estàndard ISO 3166
 *** .es, .fr, .de, gb,....
 ** De resolució inversa
-** Aques dominis són especials i s'utilitzen per a proporcionar traducció de IP
+** Aquest domini és especial i s'utilitza per a proporcionar traducció d'IP
 a nom.
 **** .in-addr.arpa
 
