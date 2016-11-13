@@ -30,9 +30,10 @@ endif::teacher[]
 == Objectiu de la pràctica
 
 En aquesta pràctica configurarem un servidor FTP. L'objectiu és tenir un
-espai de només lectura on compartir documents amb accés obert, un espai propi
-per a cadascun dels usuaris del sistema, i un espai compartit. També implantarem
-una capa SSL per tal de transmetre la informació xifrada.
+espai de només lectura on compartir documents amb accés obert, un espai
+compartit accessible des de la xarxa interna, i un espai propi per a cadascun
+dels usuaris del sistema. També implantarem una capa SSL per tal de transmetre
+la informació xifrada.
 
 == Preparatius
 
@@ -66,15 +67,57 @@ Com que _legolas_ és a la xarxa 172.16.100.0 però volem que es pugui comunicar
 amb les xarxes 172.16.2.0 i 172.16.3.0, haurem d'afegir les rutes adequades,
 igual que vam fer en el seu moment amb _sauron_.
 
+ifndef::teacher[]
 .Entregar
 ====
 *Captura del contingut del fitxer `/etc/network/interfaces` de _legolas_.*
 ====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
 
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug eth0
+iface eth0 inet static
+address 172.16.100.2
+netmask 255.255.255.0
+gateway 172.16.100.254
+
+post-up route add -net 172.16.2.0 netmask 255.255.255.0 gw 172.16.100.1
+post-up route add -net 172.16.3.0 netmask 255.255.255.0 gw 172.16.100.1
+pre-down route del -net 172.16.2.0
+pre-down route del -net 172.16.3.0
+====
+endif::teacher[]
+
+ifndef::teacher[]
 .Entregar
 ====
 *Captura de la taula d'enrutament.*
 ====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+route -n
+
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         172.16.100.254  0.0.0.0         UG    0      0        0 eth0
+172.16.2.0      172.16.100.1    255.255.255.0   UG    0      0        0 eth0
+172.16.3.0      172.16.100.1    255.255.255.0   UG    0      0        0 eth0
+172.16.100.0    0.0.0.0         255.255.255.0   U     0      0        0 eth0
+====
+endif::teacher[]
 
 == Apartat 2: Instal·lador del servidor FTP a _legolas_
 
@@ -148,7 +191,7 @@ regles que hem d'afegir a _saruman_.
 ====
 
 Un cop tenim _saruman_ configurat, hauríem de poder accedir al servidor FTP des
-de qualsevol ordinador de qualsevol de les tres xarxes internet.
+de qualsevol ordinador de qualsevol de les tres xarxes internes.
 
 .Entregar
 ====
@@ -156,3 +199,561 @@ de qualsevol ordinador de qualsevol de les tres xarxes internet.
 ====
 
 == Apartat 4: Configuració de l'accés anònim
+
+La primera tasca a realitzar és permetre l'accés anònim (de només lectura).
+
+Per això hem de crear primer un directori on es deixaran els fitxers públics i
+on accedirà l'usuari anònim.
+
+Crearem el directori _ftpusers_ dins de _/home_. I dins de _ftpusers_ crearem
+un directori per cada usuari del servei FTP (que no sigui un usuari del
+sistema). En aquest cas crearem el directori _anonymous_ per l'usuari
+anònim. El directori _anonymous_ ha de tenir com a grup propietari el grup
+_ftp_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la sortida de `ls -ld` sobre el nou directori.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+drwxr-xr-x 2 root ftp 4096 Nov 11 10:54 anonymous/
+====
+endif::teacher[]
+
+Ara activem l'accés anònim editant el fitxer de configuració
+_/etc/vsftpd.conf_. Cal configurar les opcions `anonymous_enable` i
+`anon_root`.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de les modificacions a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+# Allow anonymous FTP? (Disabled by default).
+anonymous_enable=YES
+anon_root=/home/ftpusers/anonymous
+----
+====
+endif::teacher[]
+
+Un cop activat l'accés anònim, crea un fitxer dins del seu _home_. Comprova
+que el fitxer es pot descarregar accedint com usuari anònim des de l'ordinador
+físic.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de l'accés anònim.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+$ ftp 192.168.1.90
+ftp: connect: Connection refused
+ftp> joan@sequoia:~$ ftp 192.168.1.90
+Connected to 192.168.1.90.
+220 (vsFTPd 3.0.2)
+Name (192.168.1.90:joan): anonymous
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ls
+200 PORT command successful. Consider using PASV.
+150 Here comes the directory listing.
+-rw-r--r--    1 0        0              15 Nov 11 11:06 anon.txt
+226 Directory send OK.
+ftp> get anon.txt
+local: anon.txt remote: anon.txt
+200 PORT command successful. Consider using PASV.
+150 Opening BINARY mode data connection for anon.txt (15 bytes).
+226 Transfer complete.
+15 bytes received in 0.00 secs (395.9037 kB/s)
+ftp>
+====
+endif::teacher[]
+
+Prova a connectar amb l'usuari anònim a un servei FTP d'un company des del
+teu ordinador.
+
+== Apartat 5: Separació de la configuració del FTP en xarxes
+
+A la nostra configuració final voldrem que l'usuari anònim pugui connectar des
+de qualsevol lloc, però que la resta d'usuaris només ho puguin fer si es
+connecten des de la xarxa local.
+
+Per aconseguir això hem de crear dos fitxers de configuració i indicar-li al
+vsFTPd quin fitxer aplicar depenent d'on ve la connexió.
+
+Aquest apartat utilitza les idees de configuració que s'expliquen al fitxer
+_/usr/share/doc/vsftpd/examples/PER_IP_CONFIG_ de la pròpia instal·lació
+del vsFTPd.
+
+Fixa't en l'explicació d'aquest exemple i crea dues còpies del fitxer de
+configuració actual, una que s'apliqui a la xarxa interna i l'altra als
+accessos des de l'exterior. Només cal afegir una opció a la configuració i
+crear el fitxer _hosts.allow_.
+
+Per veure si ens està funcionant correctament, podem modificar el missatge de
+benvinguda a cadascun dels fitxers de configuració i comprovar que surt el
+missatge corresponent segons l'origen de la connexió. El missatge de
+benvinguda es configura a l'opció _ftpd_banner_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Canvis al fitxer de configuració*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+# Activem la configuració diferenciada segons l'adreça IP:
+tcp_wrappers=YES
+----
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Fitxer /etc/hosts.allow*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+# /etc/hosts.allow: list of hosts that are allowed to access the system.
+#                   See the manual pages hosts_access(5) and hosts_options(5).
+#
+# Example:    ALL: LOCAL @some_netgroup
+#             ALL: .foobar.edu EXCEPT terminalserver.foobar.edu
+#
+# If you're going to protect the portmapper use the name "rpcbind" for the
+# daemon name. See rpcbind(8) and rpc.mountd(8) for further information.
+#
+
+vsftpd: 172.16.100.0/24: setenv VSFTPD_LOAD_CONF /etc/vsftpd.lan.conf
+vsftpd: 172.16.2.0/24: setenv VSFTPD_LOAD_CONF /etc/vsftpd.lan.conf
+vsftpd: 172.16.3.0/24: setenv VSFTPD_LOAD_CONF /etc/vsftpd.lan.conf
+----
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació accés exterior*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+$ ftp 192.168.1.90
+Connected to 192.168.1.90.
+220 Accés FTP. Usuaris externs.
+Name (192.168.1.90:joan): anonymous
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp>
+----
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació accés intern*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+$ ftp 172.16.100.2
+Connected to 172.16.100.2.
+220 Accés FTP. Usuaris interns.
+Name (172.16.100.2:root): anonymous
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp>
+----
+====
+endif::teacher[]
+
+== Apartat 6: Configuració de l'espai compartit
+
+El següent pas serà crear un espai de només lectura accessible només des de la
+xarxa interna. Per fer això, crearem un usuari de sistema que no podrà
+connectar-se directament a _legolas_, però sí utilitzar el servei de FTP.
+
+El _vsFTPd_ permet crear llistes d'usuaris virtuals només per al FTP, que no
+siguin usuaris del sistema, però això excedeix l'objectiu d'aquesta pràctica.
+
+Quan un usuari de FTP es connecta, es situa al seu _home_, però pot navegar a
+qualsevol ruta del sistema mentre hi tingui accés de lectura i execució.
+
+Habitualment, no volem que els usuaris de FTP puguin navegar per tot el
+sistema. Pels usuaris que sí que volem que puguin navegar per tot el sistema i
+executar-hi programes els donarem accés per _ssh_ (ho veurem a la UF4).
+
+Anem a crear primer un usuari només per FTP, sense accés local (ni _ssh_). Per
+fer-ho, hem de configurar un _shell_ inexistent.
+
+Editem el fitxer _/etc/shells_ i afegim al final la línia `/usr/sbin/nologin`.
+Aquesta és la manera estàndard d’afegir un shell que negarà les conexions _ssh_
+i locals.
+
+Tots el usuaris tenen un shell per defecte que ha d'estar present a la llista
+de _/etc/shells_. El que farem es crear nous usuaris que tindran el shell
+_/usr/sbin/nologin_, de forma que seran vàlids, però no es podran autenticar
+en el nostre sistema localment o per ssh.
+
+Ara crearem un usuari només per accés al FTP. Utilitzarem l'ordre _useradd_ amb
+una colla de modificadors. Mira el manual d'aquesta ordre per aconseguir que:
+
+- el nom de l'usuari serà _ftpuser_.
+- l'usuari ha de pertànyer al grup _ftp_.
+- el _home_ de l'usuari serà _/home/ftpusers/ftpuser_.
+- el directori _home_ s'ha de crear automàticament.
+- el _shell_ per defecte de l'usuari serà _/usr/sbin/nologin_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Ordre utilitzada per crear l'usuari _ftp_*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+useradd -g ftp -d /home/ftpusers/ftpuser -m -s /usr/sbin/nologin ftpuser
+----
+====
+endif::teacher[]
+
+A continuació li hen d'assignar una contrasenya a l'usuari.
+
+ifndef::teacher[]
+.Entregar
+====
+*Ordre utilitzada per donar una contrasenya a l'usuari _ftp_*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+passwd ftpuser
+----
+====
+endif::teacher[]
+
+Podem comprovar que l'usuari _ftpuser_ no pot connectar-se directament al
+sistema. En canvi, sí que pot connectar a través de FTP.
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació que l'usuari _ftpuser_ pot connectar-se al servei FTP.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+Una altra mesura que voldrem prendre és assegurar que l'usuari _ftpuser_ no
+pugui navegar per tot el sistema de fitxers. Per això simularem que l'arrel del
+sistema de fitxers és el seu _home_. D'això se'n diu _engabiar_ l'usuari al seu
+_home_.
+
+Per a engabiar els usuaris al seu _home_ editeu _/etc/vsftpd.conf_ i
+descomenteu la línia:
+
+----
+chroot_local_user=YES
+----
+
+Cal reiniciar el servei per tal que els canvis tinguin efecte.
+
+ifndef::teacher[]
+.Entregar
+====
+*Instrucció per reiniciar el servei vsftpd.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+systemctl restart vsftpd
+----
+====
+endif::teacher[]
+
+Si provem de connectar-nos, apareixerà l'error:
+
+----
+500 OOPS: vsftpd: refusing to run with writable root inside chroot()
+----
+
+Això pass perquè el vsftpd no permet l'accés amb escriptura als directoris
+_home_ dels usuaris quan _chroot_local_user_ està activat. Cal treure el permís
+d'escriptura al _home_ de _ftpuser_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Instrucció per treure el permís d'escriptura al _home_ de l'usuari _ftpuser_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+----
+chmod a-w /home/ftpusers/ftpuser
+----
+====
+endif::teacher[]
+
+Comprovem ara que podem connectar i que no podem navegar fora del _home_.
+
+Finalment, voldrem assegurar que l'usuari _ftpuser_ és l'únic usuari (a banda
+de l'accés anònim) que pot connectar des de l'exterior.
+
+Per això li direm al vsFTPd que utilitzi una llista d'usuaris per saber qui pot
+i qui no pot connectar-se.
+
+Al fitxer _vsftpd.conf_ hem d'afegir les següents directives:
+
+----
+userlist_enable=YES
+userlist_file=/etc/vsftpd.userlist
+userlist_deny=NO
+----
+
+La primera indica que utilitzarem una llista d'usuaris, la segona especifica
+la ruta al fitxer que contindrà aquesta llista, i la tercera indica que la
+llista és dels usuaris que poden connectar (l'alternativa seria que tots els
+usuaris poguessin connectar, excepte els de la llista).
+
+Edita ara el fitxer _/etc/vsftpd.userlist_. En aquest fitxer hem de posar un
+usuari per línia, i hem de llistar els usuaris que podran connectar-se al FTP.
+En el nostre cas, són l'usuari _ftpuser_ i l'usuari _anonymous_.
+
+Després de reiniciar el servei, comprova que només aquests dos usuaris poden
+connectar-se, però que es denega l'accés a qualsevol altre usuari del sistema.
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació que _ftpuser_ i _anonymous_ poden connectar, però que el teu usuari
+habitual no.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+Amb això ja tenim l'usuari comú ben configurat.
+
+== Apartat 7: Configuració de l'espai per a cada usuari
+
+Passem ara a la configuració de l'accés al servei FTP des de la xarxa interna.
+Recorda que el fitxer de configuració per a la xarxa interna és
+_/etc/vsftpd.lan.conf_.
+
+Un tema important a recordar és que el fitxer _/etc/vsftpd.conf_ es llegeix
+__sempre__. Si els usuaris es connecten des de la xarxa local, es llegeix el
+fitxer _/etc/vsftpd.lan.conf_ després d'haver llegit l'altre. Això significa que
+cal refer a _/etc/vsftpd.lan.conf_ totes les configuracions que no s'apliquin
+als usuaris interns. Per exemple, cal especificar _userlist_enable=NO_. També
+farem que els usuaris no estiguin engabiats quan connecten des de la xarxa
+interna.
+
+Repassa tot el fitxer i assegura't que és adequat per als usuaris interns.
+
+ifndef::teacher[]
+.Entregar
+====
+*Canvis fets a _/etc/vsftpd.lan.conf_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+Des de la xarxa interna deixarem que connectin tots els usuaris que existeixin
+a _legolas_ i, a més, deixarem que puguin pujar fitxers al servei FTP.
+
+Per fer això, activarem la possibilitat d'escriptura amb l'opció
+
+----
+write_enable = YES
+----
+
+Comprova que amb aquest canvi un usuari pot, a més de baixar fitxers del
+servidor, pujar-hi els seus propis fitxers (evidentment, només allà on
+tingui permís d'escriptura).
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació que un usuari pot pujar fitxers al servidor.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+== Apartat 8: Configuració de la capa de xifratge SSL
+
+Un defecte important del protocol FTP és que no incorpora cap mecanisme de
+xifrat. Ara mateix, si connectem des del nostre ordinador físic a _legolas_ per
+FTP, qualsevol usuari amb accés al nostre ordinador, a _sauron_ o al propi
+_legolas_ podria capturar fàcilment el nostre usuari i contrasenya.
+
+Comprova amb el _tcpdump_ des de _sauron_ que és fàcil capturar la contrasenya
+d'un usuari que es connecta al servei FTP des de la xarxa externa. Captura la
+contrasenya de l'usuari _ftpuser_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura on es vegi l'usuari i contrasenya capturades pel _tcpdump_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+Per evitar això afegirem una capa de xifrat per sobre de la connexió FTP.
+
+Comprova que tens el program OpenSSL instal·lat.
+
+El següent pas serà generar un certificat digital. Amb aquest certificat el
+servidor podrà demostrar als clients que s'han connectat almenys una vegada
+que segueix essent el mateix servidor (i no una falsificació).
+
+Creem un directori on guardar els certificats digitals que generem, per exemple,
+_/etc/pki/tls_.
+
+Ens situem en aquest directori i creem el certificat:
+
+----
+openssl req -sha256 -x509 -nodes -days 365 -newkey rsa:2048 -keyout vsftpd.key.pem -out vsftpd.cert.pem
+----
+
+Les opcions que estem utilitzant són:
+
+- req: permet generar un certificat.
+- x509: per generar un significat autosignat. Aquest tipus de certificats no
+es consideren segurs a Internet perquè és impossible per un host que es connecta
+per primera vegada al servidor saber si el servidor és realment qui diu que és.
+Típicament, utilitzarem un certificat signat una empresa certificadora per
+servidors connectats a Internet.
+- newkey rsa:2048: crea el certificat i una clau privada per poder-lo utilitzar.
+rsa és el sistema de xifrat a utilitzar i 2048 és la mida de la clau en bits.
+- keyout vsftpd.key.pem: el nom del fitxer on es guardarà la clau privada.
+- out vsftpd.cert.pem: el nom del fitxer on es guardarà el certificat.
+- days 365: la quantitat de dies en què el certificat tindrà validesa. Un cop
+passat aquest temps, el certificat s'ha de renovar.
+- nodes: signica "no DES". Evita que el fitxer amb la clau privada es xifri. Si
+es xifra, caldrà una contrasenya per accedir-hi cada cop que es necessiti, però
+serà més segur, ja que fins i tot en cas que un atacant pogués obtenir el
+fitxer, no podria llegir-lo si no endevina la clau de xifrat.
+
+L'OpenSSL ens fa algunes preguntes quan genera el certificat. No és
+imprescindible, però podem introduir almenys el FQDN de _legolas_.
+
+Ara configurem vsftpd per activar l'SSL. Hem d'afegir/modificar les opcions
+següents:
+
+----
+rsa_cert_file=/etc/pki/tls/vsftpd.cert.pem
+rsa_private_key_file=/etc/pki/tls/vsftpd.key.pem
+ssl_enable=YES
+allow_anon_ssl=NO
+force_local_data_ssl=YES
+force_local_logins_ssl=YES
+ssl_tlsv1=YES
+ssl_sslv2=NO
+ssl_sslv3=NO
+require_ssl_reuse=NO
+ssl_ciphers=HIGH
+----
+
+Reiniciem el servidor i ja podem connectar-nos amb una certa seguretat. Fins ara
+ho hem fet amb el programa _ftp_ en línia d'ordres. Si provem, veurem que ens
+dóna un error, perquè aquest programa no permet fer connexions xifrades.
+
+Podríem utilitzar _lftp_, per exemple, i seguir connectant amb línia d'ordres,
+o provar el _filezilla_ i fer-ho des d'entorn gràfic, el més habitual.
+
+Instal·la el _filezilla_ al teu ordinador físic.
+
+Configura la connexió de _ftpuser_ al Filezilla. Tingues en compte que:
+
+- Hem de dir-li que utilitzi TLS (el xifrat).
+- Hem de dir-li que connecti de forma activa. Per defecte es connecta de forma
+passiva, però això falla tal com tenim configurat el NAT a _sauron_ (només
+hem redirigit un port a _legolas_, i la connexió passiva utilitza un altre
+port).
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura on es vegi el Filezilla connectat a _legolas_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
+
+Finalment, podem comprovar amb el _tcpdump_ des de _sauron_ que ara ja no ens
+és possible obtenir el nom d'usuari i contrasenya de _ftpuser_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del _tcpdump_ on es vegi alguna informació del certificat digital.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+====
+endif::teacher[]
