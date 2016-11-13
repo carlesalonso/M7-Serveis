@@ -20,6 +20,7 @@ Materials per al mòdul *M7 - Serveix de xarxa* del cicle de *Sistemes microinfo
 
 1. FTP
   - [Teoria](UF2/ftp)
+  - [Pràctica](UF2/ftp/practica_ftp.adoc)
 2. Correu electrònic
 
 ### UF 3: servidor web i servidor intermediari (proxy)
