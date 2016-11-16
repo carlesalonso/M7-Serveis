@@ -624,10 +624,7 @@ iface lo inet loopback
 # The primary network interface
 allow-hotplug eth0
 auto eth0
-iface eth0 inet static
-address 192.168.1.90
-netmask 255.255.255.0
-gateway 192.68.1.1
+iface eth0 inet dhcp
 
 allow-hotplug eth1
 auto eth1
@@ -635,8 +632,10 @@ iface eth1 inet static
 address 172.16.100.254
 netmask 255.255.255.0
 ### Rutes estatiques ###
-post-up route add -net 172.16.0.0 netmask 255.255.0.0 gw 172.16.100.1
-pre-down route del -net 172.16.0.0 netmask 255.255.0.0 gw 172.16.100.1
+post-up route add -net 172.16.2.0 netmask 255.255.255.0 gw 172.16.100.1
+post-up route add -net 172.16.3.0 netmask 255.255.255.0 gw 172.16.100.1
+pre-down route del -net 172.16.2.0 netmask 255.255.0.0 gw 172.16.100.1
+pre-down route del -net 172.16.3.0 netmask 255.255.0.0 gw 172.16.100.1
 ----
 ====
 endif::teacher[]
