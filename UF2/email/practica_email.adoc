@@ -1,0 +1,510 @@
+= Pràctica servidor correu electrònic
+
+:encoding: utf-8
+:lang: ca
+:toc: left
+:!numbered:
+//:teacher:
+
+ifdef::teacher[]
+== (Versió del professor):
+endif::teacher[]
+
+////
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+////
+
+<<<
+
+== Objectiu de la pràctica
+
+L'objectiu principal de la pràctica és configurar un servidor de correu
+electrònic capaç d'enviar i rebre correus als servidors que configurin els
+altres companys.
+
+També es configurarà un client gràfic per tal de poder accedir al correu d'un
+usuari remotament.
+
+A partir d'aquí, s'afegiran mesures bàsiques de seguretat, com un filtre
+antispam.
+
+== Preparació de l'entorn
+
+Intentarem que tots els servidors de correu es puguin comunicar entre ells.
+
+Per fer això, assignarem una IP fixa com a IP pública del router *sauron* de
+cada xarxa interna, i configurarem un servidor DNS al centre que permeti
+localitzar-los fàcilment.
+
+El servidor DNS que configurarem entre tots té la IP 192.168.2.1. Cada router
+*sauron* tindrà una IP del rang 192.168.2.10-192.168.2.30.
+
+Demana una IP pel teu router *sauron* i apunta-la:
+
+- IP assignada
+
+Configura *sauron* amb la IP assignada.
+
+- Entrega config sauron.
+
+
+
+== Apartat 1: Preparació de la màquina *gandalf*
+
+Clonarem _gandalf_ de _base_ i li configurarem el nom i la xarxa, segons
+l'esquema general de la nostra xarxa.
+
+Com vam fer amb _legolas_ i amb _sauron_ modificarem les seves taules
+d'enrutament per tal que conegui l'estructura de la nostra LAN.
+
+També caldrà assignar-li els servidors DNS.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del contingut del fitxer `/etc/network/interfaces` de _gandalf_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+== Apartat 2: Instal·lador del servidor de correu electrònic a _gandalf_
+
+Hi ha diversos programes que podem utilitzar per configurar un servidor
+de correu electrònic en GNU/Linux. Els més utilitzats són _exim_, _sendmail_ i
+_postfix_.
+
+Utilitzarem aquest últim per l'equilibri que té entre dificultat de configuració
+i prestacions.
+
+Instal·leu el _postfix_ a _gandalf_.
+
+Durant la instal·lació se'ns farà una sèrie de preguntes que definiran la
+configuració bàsica del servidor.
+
+La primera és el tipus de servidor que estem configurant. En el nostre cas
+triarem _Internet Site_, ja que volem proporcionar un servei de correu que
+funcioni tan a dins com a fora de la nostra LAN.
+
+La segona pregunta fa referència al FQDN que hem d'utilitzar per defecte.
+Això és, el nom de domini complet que utilitzarà el servidor quan no se li
+especifiqui un altre. Aquest FQDN és el que apareix després de l'arrova a les
+adreces de correu.
+
+És important que aquest FQDN es pugui resoldre correctament (és a dir, hi hagi
+un servidor DNS que tradueixi correctament el nom a la IP) tant a dins de la
+LAN com a la resta d'Internet (en el nostre cas, a la xarxa de l'institut).
+
+Per fer això utilitzarem el nom de domini *nomcognom.institut.lan*, on _nom_
+i _cognom_ són el teu nom i el teu primer cognom.
+
+== Apartat 3: comprovació de la configuració en local
+
+Només amb aquesta configuració bàsica els usuaris de la màquina local ja es
+poden enviar missatges.
+
+Crea un segon usuari a _gandalf_. Utilitza el client de correu _mutt_ per
+enviar un missatge des d'aquest usuari cap al teu usuari habitual.
+
+Després, entra amb el teu usuari habitual i utilitza _mutt_ per llegir el
+missatge.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del missatge rebut.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+== Apartat 4: Configuració del servidor DNS a la xarxa local
+
+Per tal que els usuaris es puguin enviar missatges entre les diverses
+màquines de la nostra xarxa és imprescindible que el servidor DNS funcioni
+correctament.
+
+[WARNING]
+====
+Si no tens un servidor DNS funcionant, se't proporcionarà una màquina _bilbo_
+amb una configuració DNS bàsica ja feta.
+====
+
+Afegeix una nova zona a la configuració del bind a _bilbo_. La nova zona es
+correspon al nom de domini que has utilitzat a l'apartat anterior,
+*nomcognom.institut.lan* i ha de resoldre el servidor de correu a _gandalf_.
+
+Concretament, has de crear:
+
+- un registre _SOA_ que doni l'autoritat de la zona a _bilbo_.
+- un registre _NS_ que indiqui que _bilbo_ és el servidor DNS de la zona.
+- un registre _A_ que tradueixi el nom de _bilbo_ a la seva IP.
+- un registre _A_ que tradueixi el nom de _gandalf_ a la seva IP.
+- un registre _MX_ que indiqui que el servidor de correu de la zona és _gandalf_.
+- un registre _CNAME_ que assigni l'àlies _mail_ a _gandalf_.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del fitxer _/etc/bind/named.conf.local_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del fitxer de la zona.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació que la nova zona funciona correctament.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+== Apartat 5: Comprovació del servidor de correu des de la xarxa local
+
+Per comprovar que podem enviar un missatge de forma remota es pot fer amb
+l'ordre _telnet_. L'ordre _telnet_ és molt versàtil perquè permet
+connectar-se a un ordinador remot per qualsevol port i intercanviar dades
+en format text. Com que el servidor de correu funciona així, l'ús de
+_telnet_ és ideal per a provar-lo.
+
+Des de qualsevol ordinador de la xarxa local prova de connectar-te a _gandalf_
+amb l'ordre:
+
+----
+telnet gandalf.nomcognom.institut.lan smtp
+----
+
+El primer paràmetre és l'ordinador on volem connectar, mentre que el segon és
+el port, que es pot posar en format numèric o identificar pel seu nom.
+
+Ara, utilitzant com a referència l'exemple que hi ha a la secció
+_Protocol SMTP - exemple_ dels apunts de teoria, envia un missatge simulant
+que ets un dels usuaris de _gandalf_ cap a l'altre usuari.
+
+ifndef::teacher[]
+.Entregar
+====
+*Conversa amb _gandalf_ utilitzant _telnet_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+Un cop hagis aconseguit enviar el missatge, connecta a _gandalf_ amb l'usuari
+que l'ha de rebre i comprova que efectivament l'ha rebut.
+
+ifndef::teacher[]
+.Entregar
+====
+*Missatge rebut a _gandalf_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+== Apartat 6: Configuració d'un certificat SSL
+
+Com vam fer amb el servidor FTP, voldrem que el nostre correu viatgi xifrat,
+així que crearem un certificat SSL.
+
+Crearem un certificat auto-signat que és l'opció més senzilla.
+
+[TIP]
+====
+En cas de muntar un servidor de correu electrònic que es connecti realment a
+Internet, necessitarem un certificat digital firmat per una autoritat
+certificadora. _Let's encrypt_, per exemple, proporciona certificats de forma
+gratuïta i fàcils de gestionar.
+====
+
+Per crear el certificat podem executar:
+
+----
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/mail.key -out /etc/ssl/certs/mailcert.pem
+----
+
+i acceptar les opcions per defecte.
+
+== Apartat 7: Configuració del Postfix - servei _submission_
+
+El Postfix té dos fitxer de configuració principals: _main.cf_, que especifica
+les opcions de configuració, i _master.cf_, que especifica els serveix que
+ha d'executar el postfix.
+
+Primer configurarem el fitxer _/etc/postfix/master.cf_.
+
+Afegeix una nova instància _smtpd_ anomenada _submission_ que enviarà correu
+de clients de confiança i que els enviarà a qualsevol lloc que s'especifiqui.
+Fer-ho així ens permet que els nostres usuaris puguin utilitzar el servidor
+per enviar correu a altres servidors, però que els usuaris desconeguts només
+puguin utilitzar el nostre servidor com a destinació de missatges.
+
+Descomenta la configuració de _submission_ i afegeix les opcions adequades
+per activar el xifrat SASL:
+
+----
+submission inet n       -       -       -       -       smtpd
+  -o syslog_name=postfix/submission
+  -o smtpd_tls_wrappermode=no
+  -o smtpd_tls_security_level=encrypt
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_relay_restrictions=permit_mynetworks,permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+  -o smtpd_sasl_type=dovecot
+  -o smtpd_sasl_path=private/auth
+----
+
+El Postfix té un munt d'opcions diferents, cadascuna de les quals té assignat
+un valor per defecte. En podem obtenir una llista completa amb l'ordre
+`man 5 postconf`.
+
+Les opcions que s'introdueixen amb `-o` sobreescriuren aquests valors per
+defecte o que s'han definit de forma general a la configuració. És a dir, a
+la configuració (_main.cf_) posarem les opcions que volem que s'apliquin a
+tots els serveis del _postfix_, mentre que ara, a _master.cf_ estem modificant
+opcions que només tindran efecte a _submission_.
+
+Bàsicament el que hem fet és activar el servei _submission_ amb xifrat TLS
+per obtenir connexions externes segures. També li hem dit que utilitzarem
+_dovecot_ com a Mail Delivery Agent.
+
+El detall més important aquí és a la directiva `smtpd_relay_restrictions`.
+Aquí estem indicant qui tindrà permís per enviar correu des d'aquest servidor
+cap a un servidor extern. Aquest permís serà imprescindible per poder enviar
+correu a altres companys de classe. Li hem indicat que qualsevol usuari que
+vingui de la xarxa local, o ve que s'hagi autenticat correctament ho podrà fer,
+i es denegarà això en qualsevol altre cas.
+
+== Apartat 8: Configuració del Postfix - opcions generals
+
+Passem ara a la configuració general del servidor a `main.cf`. Començarem
+esborrant tot el contingut (hi ha una còpia del fitxer original a
+`/usr/share/postfix/main.cf.dist` per si calgués recuperar-lo).
+
+Aquí configurarem la informació general de la nostra xarxa:
+
+----
+myhostname = mail.domain.com
+myorigin = /etc/mailname
+mydestination = mail.domain.com, domain.com, localhost, localhost.localdomain
+relayhost =
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+----
+
+[WARNING]
+====
+Les opcions `myhostname`, `mydestination` i `mynetworks` s'han omplert amb un
+exemple i cal que les adaptis a la teva situació.
+====
+
+El fitxer `/etc/mailname`, d'on està agafant el domini utilitzat a les adreces,
+s'ha creat durant la instal·lació amb el nom de domini que hem indicat. L'opció
+`myorigin` s'utilitza per poblar el camp _From_ dels correus electrònics
+sortints.
+
+L'opció `mydestination` indica els dominis pels quals el Postfix accepta correus
+com a destinació final.
+
+L'opció `relayhost` s'ha deixat en blanc per evitar que es pugui utilitzar el
+nostre servidor com a _relay_, és a dir, que accepti correu per altres
+destinacions i que els reenviï a un altre servidor concret. Això només és útil
+per xarxes corporatives amb més d'un servidor de correu.
+
+A continuació configurarem els àlies. Els àlies són noms d'adreces de correus
+que no es corresponen amb els noms dels usuaris sinó, el correu dels quals
+s'entrega a algun dels usuaris.
+
+----
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+----
+
+Aquí hem indicat que els àlies es defineixen al fitxer `/etc/aliases`. Aquestes
+opcions ja són així per defecte, però val la pena explicitar-les perquè és
+comú que més endavant es vulguin modificar.
+
+Configurem el xifratge de les connexions amb SSL:
+
+----
+smtpd_tls_cert_file=/etc/ssl/certs/mailcert.pem
+smtpd_tls_key_file=/etc/ssl/private/mail.key
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_tls_security_level=may
+smtpd_tls_protocols = !SSLv2, !SSLv3
+----
+
+Hem indicat on hi ha el certificat i la seva clau associada (que hem generat en
+un apartat anterior), hem activat el TLS (és la versió moderna del SSL), i hem
+configurat el cau on s'han de guardar les sessions TLS. Hem indicat que l'ús
+de TLS és opcional perquè així ho demana l'estàndard (RFC2487). Finalment,
+s'han desactivat les versions 2 i 3 de SSL perquè tenen vulnerabilitats
+conegudes.
+
+Una altra opció que és vàlida per defecte però que val la pena especificar
+explícitament per si la volem modificar més endavant és `local_recipient_maps`:
+
+----
+local_recipient_maps = proxy:unix:passwd.byname $alias_maps
+----
+
+Aquesta opció li diu al Postfix que rebutgi correus dirigits a usuaris que
+no es puguin localitzar a una llista. El comportament alternatiu, si no
+posem aquesta opció, és acceptar primer qualsevol correu i retornar-lo després
+si no es pot entregar. Això, però, és problemàtic perquè sovint l'spam utilitza
+adreces de correu que pertanyen a usuaris inocents i que començarien a rebre
+missatges de correu no entregat.
+
+== Apartat 9: configuració dels àlies
+
+Hi ha una colla d'adreces de correu virtuals que convé que existeixin en
+qualsevol servidor SMTP. Per exemple, el protocol SMTP especifica que els
+servidors de correu han de tenir una adreça _postmaster_. També és
+habitual tenir adreces anomenades _hostmaster_, _abuse_, _webmaster_ o
+similars.
+
+Igualment, és habitual que el correu enviat a _root_ es readreci a un usuari
+sense privilegis del sistema (l'usuari de treball habitual de l'administrador).
+
+Configurarem els àlies al fitxer `/etc/aliases`:
+
+----
+mailer-daemon: postmaster
+postmaster: root
+nobody: root
+hostmaster: root
+usenet: root
+news: root
+webmaster: root
+www: root
+ftp: root
+abuse: root
+root: elteuusuari
+----
+
+Després de modificar aquest fitxer cal executar l'ordre `newaliases` per tal
+que el Postfix vegi els canvis que hi hem fet.
+
+== Apartat 10: Configuració del protocol IMAP
+
+Fins ara hem configurat el servidor SMTP. Per llegir i enviar correu
+remotament, però, necessitem també configurar un Mail Delivery Agent.
+
+Utilitzarem el _dovecot_ (una altra opció seria el _courier_) i només
+configurarem el protocol IMAP (deixarem de banda el POP3 per no allargar més
+la pràctica).
+
+Instal·lem els paquets necessaris:
+
+----
+apt-get install dovecot-core dovecot-imapd
+----
+
+El fitxer principal de configuració és `/etc/dovecot/dovecot.conf`. Primer
+buidarem el fitxer (fa referència a una colla de fitxers petits de
+`/etc/dovecot/conf.d` que ara mateix no volem).
+
+Utilitzarem la següent configuració:
+
+----
+disable_plaintext_auth = no
+mail_privileged_group = mail
+mail_location = mbox:~/mail:INBOX=/var/mail/%u
+userdb {
+  driver = passwd
+}
+passdb {
+  args = %s
+  driver = pam
+}
+protocols = "imap"
+----
+
+Això activa l'autenticació en text pla (això és, sense xifrar, cosa que no és
+problema perquè ja utilitzem una capa TLS per sobre). També indiquem que
+utilitzi el grup _mail_ del sistema per accedir a les bústies locals, la
+localització d'aquestes bústies, que utilitzi els usuaris i contrasenyes del
+sistema per validar els usuaris (en sistemes amb molts usuaris faríem que
+els usuaris de correu electrònic es definissin en una base de dades, en comptes
+de crear un compte d'usuari al servidor per a cadascú), i que utilitzi només
+el protocol _IMAP_.
+
+També farem que es creï una carpeta de basura (_Trash_) i una carpeta de correu
+enviat (_Sent_) per a cada bústia:
+
+----
+protocol imap {
+  mail_plugins = " autocreate"
+}
+plugin {
+  autocreate = Trash
+  autocreate2 = Sent
+  autosubscribe = Trash
+  autosubscribe2 = Sent
+}
+----
+
+A continuació, obrirem un _socket_ que permeti al Postfix afegir-se al sistema
+d'autenticació del Dovecot:
+
+----
+service auth {
+  unix_listener /var/spool/postfix/private/auth {
+    group = postfix
+    mode = 0660
+    user = postfix
+  }
+}
+----
+
+I finalment afegirem la configuració del SSL:
+
+----
+ssl=required
+ssl_cert = </etc/ssl/certs/mailcert.pem
+ssl_key = </etc/ssl/private/mail.key
+----
+
+Noteu que els símbols _<_ no són un error: indiquen al Dovecot que el
+certificat i clau s'han de llegir del fitxer especificat.
+
+Per activar la configuració farem:
+
+----
+newaliases
+postfix restart
+systemctl restart dovecot
+----
