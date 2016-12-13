@@ -205,7 +205,7 @@ Des de qualsevol ordinador de la xarxa local prova de connectar-te a _gandalf_
 amb l'ordre:
 
 ----
-telnet gandalf.nomcognom.institut.lan smtp
+telnet gandalf.nom.cognom.lan smtp
 ----
 
 El primer paràmetre és l'ordinador on volem connectar, mentre que el segon és
