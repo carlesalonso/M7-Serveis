@@ -36,102 +36,28 @@ altres companys.
 També es configurarà un client gràfic per tal de poder accedir al correu d'un
 usuari remotament.
 
-A partir d'aquí, s'afegiran mesures bàsiques de seguretat, com un filtre
-antispam.
+== Preparatius
 
-== Preparació de l'entorn
+* Utilitzarem l'entorn de xarxa local creat durant les pràctiques anteriors.
 
-Intentarem que tots els servidors de correu es puguin comunicar entre ells.
+* Concretament, crearem la màquina *gandalf* com a servidor de correu
+electrònic. El router *sauron* ha d'estar engegat per permetre la comunicació
+amb l'exterior.
 
-Per fer això, assignarem una IP fixa com a IP pública del router *sauron* de
-cada xarxa interna, i configurarem un servidor DNS al centre que permeti
-localitzar-los fàcilment.
+* També necessitarem tenir en funcionament el servidor DNS *bilbo* i el router
+*saruman* per tal que les peticions DNS circulin per la xarxa.
 
-El servidor DNS que configurarem entre tots té la IP 192.168.2.1. Cada router
-*sauron* tindrà una IP del rang 192.168.2.10-192.168.2.30.
+* Totes les màquines han de mostrar un prompt personalitzat i hi ha d'haver un
+usuari amb el vostre nom i permisos per utilitzar *sudo*.
 
-Demana una IP pel teu router *sauron* i apunta-la:
-
-- IP assignada
-
-Configura *sauron* amb la IP assignada.
-
-- Entrega config sauron.
-
-
-
-== Apartat 1: Preparació de la màquina *gandalf*
-
-Clonarem _gandalf_ de _base_ i li configurarem el nom i la xarxa, segons
-l'esquema general de la nostra xarxa.
-
-Com vam fer amb _legolas_ i amb _sauron_ modificarem les seves taules
-d'enrutament per tal que conegui l'estructura de la nostra LAN.
-
-També caldrà assignar-li els servidors DNS.
-
-ifndef::teacher[]
-.Entregar
+[IMPORTANT]
 ====
-*Captura del contingut del fitxer `/etc/network/interfaces` de _gandalf_.*
+Cal que configureu el vostre terminal perquè al prompt aparegui el vostre nom i
+la data ressaltats en diferents colors. *Això és imprescindible per avaluar
+les captures*.
 ====
-endif::teacher[]
-ifdef::teacher[]
-.Solució
-endif::teacher[]
 
-== Apartat 2: Instal·lador del servidor de correu electrònic a _gandalf_
-
-Hi ha diversos programes que podem utilitzar per configurar un servidor
-de correu electrònic en GNU/Linux. Els més utilitzats són _exim_, _sendmail_ i
-_postfix_.
-
-Utilitzarem aquest últim per l'equilibri que té entre dificultat de configuració
-i prestacions.
-
-Instal·leu el _postfix_ a _gandalf_.
-
-Durant la instal·lació se'ns farà una sèrie de preguntes que definiran la
-configuració bàsica del servidor.
-
-La primera és el tipus de servidor que estem configurant. En el nostre cas
-triarem _Internet Site_, ja que volem proporcionar un servei de correu que
-funcioni tan a dins com a fora de la nostra LAN.
-
-La segona pregunta fa referència al FQDN que hem d'utilitzar per defecte.
-Això és, el nom de domini complet que utilitzarà el servidor quan no se li
-especifiqui un altre. Aquest FQDN és el que apareix després de l'arrova a les
-adreces de correu.
-
-És important que aquest FQDN es pugui resoldre correctament (és a dir, hi hagi
-un servidor DNS que tradueixi correctament el nom a la IP) tant a dins de la
-LAN com a la resta d'Internet (en el nostre cas, a la xarxa de l'institut).
-
-Per fer això utilitzarem el nom de domini *nomcognom.institut.lan*, on _nom_
-i _cognom_ són el teu nom i el teu primer cognom.
-
-== Apartat 3: comprovació de la configuració en local
-
-Només amb aquesta configuració bàsica els usuaris de la màquina local ja es
-poden enviar missatges.
-
-Crea un segon usuari a _gandalf_. Utilitza el client de correu _mutt_ per
-enviar un missatge des d'aquest usuari cap al teu usuari habitual.
-
-Després, entra amb el teu usuari habitual i utilitza _mutt_ per llegir el
-missatge.
-
-ifndef::teacher[]
-.Entregar
-====
-*Captura del missatge rebut.*
-====
-endif::teacher[]
-ifdef::teacher[]
-.Solució
-endif::teacher[]
-
-== Apartat 4: Configuració del servidor DNS a la xarxa local
+== Apartat 1: Configuració del servidor DNS a la xarxa local
 
 Per tal que els usuaris es puguin enviar missatges entre les diverses
 màquines de la nostra xarxa és imprescindible que el servidor DNS funcioni
@@ -144,8 +70,8 @@ amb una configuració DNS bàsica ja feta.
 ====
 
 Afegeix una nova zona a la configuració del bind a _bilbo_. La nova zona es
-correspon al nom de domini que has utilitzat a l'apartat anterior,
-*nomcognom.institut.lan* i ha de resoldre el servidor de correu a _gandalf_.
+correspon al nom de domini *nom.cognom.lan* i ha de resoldre el servidor de
+correu a _gandalf_.
 
 Concretament, has de crear:
 
@@ -180,6 +106,87 @@ ifndef::teacher[]
 .Entregar
 ====
 *Comprovació que la nova zona funciona correctament.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+== Apartat 2: Preparació de la màquina *gandalf*
+
+Clonarem _gandalf_ de _base_ i li configurarem el nom i la xarxa, segons
+l'esquema general de la nostra xarxa.
+
+Com vam fer amb _legolas_ i amb _sauron_ modificarem les seves taules
+d'enrutament per tal que conegui l'estructura de la nostra LAN.
+
+També caldrà assignar-li els servidors DNS.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del contingut del fitxer `/etc/network/interfaces` de _gandalf_.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+== Apartat 3: Instal·lador del servidor de correu electrònic a _gandalf_
+
+Hi ha diversos programes que podem utilitzar per configurar un servidor
+de correu electrònic en GNU/Linux. Els més utilitzats són _exim_, _sendmail_ i
+_postfix_.
+
+Utilitzarem aquest últim per l'equilibri que té entre dificultat de configuració
+i prestacions.
+
+Instal·leu el _postfix_ a _gandalf_.
+
+Durant la instal·lació se'ns farà una sèrie de preguntes que definiran la
+configuració bàsica del servidor.
+
+La primera és el tipus de servidor que estem configurant. En el nostre cas
+triarem _Internet Site_, ja que volem proporcionar un servei de correu que
+funcioni tan a dins com a fora de la nostra LAN.
+
+La segona pregunta fa referència al FQDN que hem d'utilitzar per defecte.
+Això és, el nom de domini complet que utilitzarà el servidor quan no se li
+especifiqui un altre. Aquest FQDN és el que apareix després de l'arrova a les
+adreces de correu.
+
+És important que aquest FQDN es pugui resoldre correctament (és a dir, hi hagi
+un servidor DNS que tradueixi correctament el nom a la IP) tant a dins de la
+LAN com a la resta d'Internet (en el nostre cas, a la xarxa de l'institut).
+
+Per fer això utilitzarem el nom de domini *nom.cognom.lan*, on _nom_
+i _cognom_ són el teu nom i el teu primer cognom.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura de la resposta donada.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
+== Apartat 4: comprovació de la configuració en local
+
+Només amb aquesta configuració bàsica els usuaris de la màquina local ja es
+poden enviar missatges.
+
+Crea un segon usuari a _gandalf_. Utilitza el client de correu _mutt_ per
+enviar un missatge des d'aquest usuari cap al teu usuari habitual.
+
+Després, entra amb el teu usuari habitual i utilitza _mutt_ per llegir el
+missatge.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura del missatge rebut.*
 ====
 endif::teacher[]
 ifdef::teacher[]
@@ -254,10 +261,20 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/privat
 
 i acceptar les opcions per defecte.
 
+ifndef::teacher[]
+.Entregar
+====
+*Sortida de l'ordre anterior.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
 == Apartat 7: Configuració del Postfix - servei _submission_
 
-El Postfix té dos fitxer de configuració principals: _main.cf_, que especifica
-les opcions de configuració, i _master.cf_, que especifica els serveix que
+El Postfix té dos fitxers de configuració principals: _main.cf_, que especifica
+les opcions de configuració, i _master.cf_, que especifica els serveis que
 ha d'executar el postfix.
 
 Primer configurarem el fitxer _/etc/postfix/master.cf_.
@@ -304,6 +321,16 @@ correu a altres companys de classe. Li hem indicat que qualsevol usuari que
 vingui de la xarxa local, o ve que s'hagi autenticat correctament ho podrà fer,
 i es denegarà això en qualsevol altre cas.
 
+ifndef::teacher[]
+.Entregar
+====
+*Captura dels canvis a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
 == Apartat 8: Configuració del Postfix - opcions generals
 
 Passem ara a la configuració general del servidor a `main.cf`. Començarem
@@ -342,8 +369,18 @@ nostre servidor com a _relay_, és a dir, que accepti correu per altres
 destinacions i que els reenviï a un altre servidor concret. Això només és útil
 per xarxes corporatives amb més d'un servidor de correu.
 
+ifndef::teacher[]
+.Entregar
+====
+*Captura dels canvis a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
 A continuació configurarem els àlies. Els àlies són noms d'adreces de correus
-que no es corresponen amb els noms dels usuaris sinó, el correu dels quals
+que no es corresponen amb els noms dels usuaris reals i el correu dels quals
 s'entrega a algun dels usuaris.
 
 ----
@@ -354,6 +391,16 @@ alias_database = hash:/etc/aliases
 Aquí hem indicat que els àlies es defineixen al fitxer `/etc/aliases`. Aquestes
 opcions ja són així per defecte, però val la pena explicitar-les perquè és
 comú que més endavant es vulguin modificar.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura dels canvis a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
 
 Configurem el xifratge de les connexions amb SSL:
 
@@ -374,6 +421,16 @@ de TLS és opcional perquè així ho demana l'estàndard (RFC2487). Finalment,
 s'han desactivat les versions 2 i 3 de SSL perquè tenen vulnerabilitats
 conegudes.
 
+ifndef::teacher[]
+.Entregar
+====
+*Captura dels canvis a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
 Una altra opció que és vàlida per defecte però que val la pena especificar
 explícitament per si la volem modificar més endavant és `local_recipient_maps`:
 
@@ -387,6 +444,16 @@ posem aquesta opció, és acceptar primer qualsevol correu i retornar-lo despré
 si no es pot entregar. Això, però, és problemàtic perquè sovint l'spam utilitza
 adreces de correu que pertanyen a usuaris inocents i que començarien a rebre
 missatges de correu no entregat.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura dels canvis a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
 
 == Apartat 9: configuració dels àlies
 
@@ -417,6 +484,16 @@ root: elteuusuari
 
 Després de modificar aquest fitxer cal executar l'ordre `newaliases` per tal
 que el Postfix vegi els canvis que hi hem fet.
+
+ifndef::teacher[]
+.Entregar
+====
+*Captura dels canvis a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
 
 == Apartat 10: Configuració del protocol IMAP
 
@@ -501,6 +578,16 @@ ssl_key = </etc/ssl/private/mail.key
 Noteu que els símbols _<_ no són un error: indiquen al Dovecot que el
 certificat i clau s'han de llegir del fitxer especificat.
 
+ifndef::teacher[]
+.Entregar
+====
+*Captura dels canvis a la configuració.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+endif::teacher[]
+
 Per activar la configuració farem:
 
 ----
@@ -508,3 +595,158 @@ newaliases
 postfix restart
 systemctl restart dovecot
 ----
+
+== Apartat 11: Accés des de l'exterior
+
+Intentarem que tots els servidors de correu es puguin comunicar entre ells.
+
+Per fer això, assignarem una IP fixa com a IP pública del router *sauron* de
+cada xarxa interna, i configurarem un servidor DNS al centre que permeti
+localitzar-los fàcilment.
+
+El servidor DNS que configurarem entre tots té la IP 192.168.2.1. Cada router
+*sauron* tindrà una IP del rang 192.168.2.10-192.168.2.30. La xarxa de cada
+persona rebrà el domini *nom.cognom.lan*.
+
+Demana una IP pel teu router *sauron* i apunta la línia que s'ha d'afegir a
+la configuració de la zona del DNS a 192.168.2.1:
+
+ifndef::teacher[]
+.Entregar
+====
+*Registre de recurs del DNS amb la teva configuració*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+Configura *sauron* amb la IP assignada.
+
+ifndef::teacher[]
+.Entregar
+====
+*Configuració de xarxa de _sauron_*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+Finalment, com vam fer a la pràctica de FTP, hem d'obrir ports a *sauron* i
+dirigir-los a *gandalf*.
+
+Primer mirarem quins ports té oberts *gandalf*. Utilitza l'eina *nmap* des
+de *sauron* per descobrir quins ports té oberts *gandalf*.
+
+ifndef::teacher[]
+.Entregar
+====
+*Sortida de _nmap_*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+Utilitza *iptables* a *sauron* per redirigir els ports relacionats amb el
+correu electrònic cap a *gandalf*.
+
+Recorda fer els canvis permanents, i que pots revisar-los amb l'ordre
+`iptables -t nat -L`.
+
+ifndef::teacher[]
+.Entregar
+====
+*Ordres iptables utilitzades*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+ifndef::teacher[]
+.Entregar
+====
+*Sortida de l'ordre `iptables -t nat -L`*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+== Apartat 12: Configuració d'un client gràfic
+
+A la nostra màquina física instal·larem el programa *icedove* (*icedove* és
+simplement el nom que el client de correu *thunderbird* dins de la distribució
+Debian).
+
+Configurarem l'adreça de correu del nostre usuari a *gandalf* i li indicarem
+qui és el nostre servidor (el nom que ha rebut el nostre *sauron* a la xarxa
+de l'institut).
+
+Un cop configurat, el primer que hem de comprovar és que podem enviar-nos i
+rebre missatges a nosaltres mateixos.
+
+ifndef::teacher[]
+.Entregar
+====
+*Comprovació que podem rebre i enviar correus entre els usuaris de *gandalf*.
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+Després, un cop ja sabem que el nostre servidor funciona bé, hem d'intentar
+enviar un correu electrònic a un dels nostres companys.
+
+ifndef::teacher[]
+.Entregar
+====
+*Recepció d'un correu d'un altre company.*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+
+[IMPORTANT]
+====
+La nostra pràctica acaba aquí, però si volem configurar un servidor de correu
+que funcioni a Internet cal tenir en compte alguns aspectes més:
+====
+
+- El DNS públic ha de tenir configurats correctaments els registres A, PTR i
+MX.
+- Hem d'instal·lar i configurar un filtre anti-spam al servidor. Actualment
+el problema de l'spam en el correu electrònic és molt important, i el nostre
+servidor es pot veure ràpidament saturat si no el configurem bé.
+- Hem de tenir una IP fixa. La major part de servidors SMTP importants (gmail,
+yahoo, etc.) no accepten correu de servidors que tinguin una IP dinàmica.
+- Hem d'assegurar la configuració del servidor. A banda de les opcions que hem
+vist en aquesta pràctica, el postfix té opcions que permeten restringir els
+correus que accepta depenent de qui els envia, on van dirigits, etc. És
+important que la nostra configuració sigui bastant restringida per evitar que
+es pugui utilitzar el nostre servidor per enviar spam.
