@@ -192,13 +192,13 @@ serveis com SSH (accés remot) o SFTP (Secure FTP) que proporcionen un canal
 segur. (22/TCP)
 
 També ens podem recolzar en connexions segures fent servir SSL (Secure Socket
-Layer) o TSL (Transport Layer Security) que requereixen mecanismes de xifrat i
-la utilització de certificats. Hi ha dues maneres de combinar SSL o TSL amb FTP:
+Layer) o TLS (Transport Layer Security) que requereixen mecanismes de xifrat i
+la utilització de certificats. Hi ha dues maneres de combinar SSL o TLS amb FTP:
 
 * FTPES o FTP Explícit: el client es connecta al port original (21) i
-explícitament canvia a un mode segur TSL o SSL per transferir informació.
+explícitament canvia a un mode segur TLS o SSL per transferir informació.
 
-* FTPS o FTP Implícit: el client assumeix el mode segur TSL o SSL des de
+* FTPS o FTP Implícit: el client assumeix el mode segur TLS o SSL des de
 l'inici de la sessió. Normalment es fa servir el port 990 en lloc del 21.
 
 image::images/security.png[]
