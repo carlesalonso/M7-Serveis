@@ -660,7 +660,8 @@ ifdef::teacher[]
 endif::teacher[]
 
 Utilitza *iptables* a *sauron* per redirigir els ports relacionats amb el
-correu electrònic cap a *gandalf*.
+correu electrònic cap a *gandalf*. Revisa com ho vam fer pel servidor FTP a
+la pràctica anterior i modifica les instruccions pel cas actual.
 
 Recorda fer els canvis permanents, i que pots revisar-los amb l'ordre
 `iptables -t nat -L`.
