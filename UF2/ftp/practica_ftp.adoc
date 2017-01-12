@@ -156,14 +156,15 @@ amb l'_iptables_, de forma similar a com en el seu moment vam configurar el
 NAT de _sauron_.
 
 ----
-iptables -t nat -A PREROUTING -p tcp --dport 21 -j DNAT --to-destination 172.16.100.2:21
+iptables -t nat -A PREROUTING -p tcp -i eth0 --dport 21 -j DNAT --to-destination 172.16.100.2:21
 dpkg-reconfigure iptables-persistent
 ----
 
 A la primera línia estem indicant que volem afegir (-A) una regla relacionada
 amb traducció d'adreces (-t nat). Diem que als paquets amb destí el port 21
-(--dport 21) TCP (-p TCP) se'ls ha de modificar el destí (-j DNAT) i fer que
-vagin a 172.16.100.2 (--to-destination 172.16.100.2).
+(--dport 21) TCP (-p TCP) que arribin des de l'interfícia externa (-i eth0)
+se'ls ha de modificar el destí (-j DNAT) i fer que vagin a 172.16.100.2
+(--to-destination 172.16.100.2).
 
 A la segona línia reconfigurem el paquet _iptables-persistent_ per tal de
 guardar els canvis de regles que hem fet de forma permanent.
