@@ -606,7 +606,7 @@ cada xarxa interna, i configurarem un servidor DNS al centre que permeti
 localitzar-los fàcilment.
 
 El servidor DNS que configurarem entre tots té la IP 192.168.2.1. Cada router
-*sauron* tindrà una IP del rang 192.168.2.10-192.168.2.30. La xarxa de cada
+*sauron* tindrà una IP del rang 192.168.2.100-192.168.2.130. La xarxa de cada
 persona rebrà el domini *nom.cognom.lan*.
 
 Demana una IP pel teu router *sauron* i apunta la línia que s'ha d'afegir a
