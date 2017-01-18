@@ -1,0 +1,72 @@
+= Pràctica servidor HTTP
+
+:encoding: utf-8
+:lang: ca
+:toc: left
+:!numbered:
+//:teacher:
+
+ifdef::teacher[]
+== (Versió del professor):
+endif::teacher[]
+
+////
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+////
+
+<<<
+
+== Objectiu de la pràctica
+
+
+== Preparatius
+
+* Utilitzarem l'entorn de xarxa de les pràctiques anteriors. Configurarem
+_legolas_ (172.16.100.2) com a servidor HTTP.
+
+* Qualsevol màquina podrà actuar com a client del HTTP. Si tenim el servei DNS
+funcionant, podrem accedir-hi directament pel nom del servidor, en cas contrari
+ho haurem de fer utilitzant la seva IP.
+
+* Si no tenim el servei DHCP funcionant, haurem d'assignar una IP fixa a PC1
+per tal que es pugui connectar a la xarxa.
+
+* Seguint els passos de les pràctiques anteriors, totes les màquines han de
+mostrar un prompt personalitzat i hi ha d'haver un usuari amb el vostre nom i
+permisos per utilitzar *sudo*.
+
+[IMPORTANT]
+====
+Cal que configureu el vostre terminal perquè al prompt aparegui el vostre nom i
+la data ressaltats en diferents colors. *Això és imprescindible per avaluar
+les captures*.
+====
+
+== Apartat 1: Instal·lació de l'Apache a *legolas*
+
+- Web per defecte
+- Web per un altre port
+- Fitxer d'inici (index.html)
+- Activació PHP. Instal·lació MariaDB.
+- ServerName, ServerAlies, Virtual Hosts. Subdomini.
+- Configuració DNS.
+- Posar o no www.
+- Subdirectoris. Directory, Alias.
+- Canvi pàgina error.
+- Revisió registre d'accés
+- .htaccess. Accés privat.
+- Activar/desactivar mòduls. Per exemple, autoindex.
+- Hotlinking
+- HTTPS. Readreçar sempre a HTTPS.
+- Web personals.
