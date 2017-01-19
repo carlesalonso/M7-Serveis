@@ -314,6 +314,7 @@ indica l'estat i els dos següents expliquen la naturalesa exacta de l'error.
 |30x |Readreçament |Aquests codis indiquen que el recurs ja no es troba en la ubicació especificada
 |40x |Error a causa del client |Aquests codis indiquen que la sol·licitud és incorrecta
 |50x |Error del servidor |Aquests codis indiquen que existeix un error intern en el servidor
+|========
 
 == Tipus de servidors HTTP
 
@@ -547,24 +548,25 @@ Podem trobar diferents servidors HTTP al mercat:
 
 De l'anterior llista els més implantats al mercat són: Apache i nginx.
 
-Fitxers de configuració
+== Configuració de l'Apache
 
-Fitxer de configuració principal
+=== Fitxer de configuració principal
 
 L'Apache llegeix les seves directives des de fitxers de configuració de text
-pla. El fitxer de configuració principal s'anomena usualment httpd.conf. La
+pla. El fitxer de configuració principal s'anomena usualment _httpd.conf_. La
 localització d'aquest fitxer es pot configurar quan es compila, però es pot
-sobreescriure amb l'opció -f de línia de comandes. A més, es poden incloure
-altres fitxers de configuració utilitzant la directiva Include, i es poden
+sobreescriure amb l'opció _-f_ de línia de comandes. A més, es poden incloure
+altres fitxers de configuració utilitzant la directiva `Include`, i es poden
 usar comodins per incloure diversos fitxers de configuració. Qualsevol
-directiva es pot posar en qualsevol d'aquests fitxers. Els canvis en els
+directiva es pot posar en qualsevol d'aquests fitxers. _**Els canvis en els
 fitxers de configuració principals només són reconeguts per l'Apache a
-l'engegar-lo o reiniciar-lo.
+l'engegar-lo o reiniciar-lo.**_
 
 El servidor també llegeix un fitxer que conté tipus de documents MIME; el nom
-del fitxer s'assigna amb la directiva TypesConfig, i és mime.types per defecte.
+del fitxer s'assigna amb la directiva `TypesConfig`, i és _mime.types_ per
+defecte.
 
-Sintaxis dels fitxers de configuració
+=== Sintaxis dels fitxers de configuració
 
 Els fitxers de configuració de l'Apache contenen una directiva per línia. La
 contrabarra “\” es pot utilitzar com a últim caràcter d'una línia per indicar
@@ -577,9 +579,9 @@ comentaris, i s'ignoren. No es poden incloure a la mateixa línia que una
 directiva.
 
 Es poden comprovar els errors de sintaxis dels fitxers de configuració
-utilitzant la comanda apachectl configtest.
+utilitzant la comanda `apachectl configtest`.
 
-Mòduls
+=== Mòduls
 
 L'Apache és un servidor modular. Això implica que en el nucli del servidor
 només s'inclou la funcionalitat més bàsica. Altres capacitats esteses
@@ -587,27 +589,27 @@ s'implementen en mòduls que es poden carregar a l'Apache. Per defecte, una
 conjunt bàsic de mòduls s'inclouen en el servidor en temps de compilació. Si
 el servidor es compila per usar mòduls carregats dinàmicament, llavors els
 mòduls es poden compilar per separat i s'afegeixen en qualsevol moment
-utilitzant la directiva LoadModule. En cas contrari, l'Apache s'ha de
+utilitzant la directiva `LoadModule`. En cas contrari, l'Apache s'ha de
 recompilar per afegir o treure mòduls. Les directives de configuració poden
 incloure's de forma condicional a la presència d'un mòdul. Això fa posant-les
-dins d'un bloc <IfModule>.
+dins d'un bloc `<IfModule>`.
 
 Per veure quins mòduls hi ha compilats actualment en el servidor, es pot usar
-l'opció de línia de comandes -l.
+l'opció de línia de comandes _-l_.
 
-Àmbit de les directives
+=== Àmbit de les directives
 
 Les directives situades en el fitxer de configuració principal s'apliquen a tot
 el servidor. Si es vol canviar la configuració només per una part del servidor,
 es pot assignar un àmbit a les directives, posant-les en una secció
-<Directory>, <DirectoryMatch>, <Files>, <FilesMatch>, <Location>, i
-<LocationMatch>. Aquestes seccions limiten l'aplicació de les directives que
+`<Directory>`, `<DirectoryMatch>`, `<Files>`, `<FilesMatch>`, `<Location>`, i
+`<LocationMatch>`. Aquestes seccions limiten l'aplicació de les directives que
 engloben a localitzacions particulars del sistema de fitxers o URL. També es
 poden niar, cosa que permet una configuració molt afinada.
 
 L'Apache té la capacitat de servir diversos llocs web simultàniament. Això
-s'anomena virtual hosting. També es pot assignar un àmbit a les directives
-posant-les dins de seccions <VirtualHost>, de manera que només s'aplicaran a
+s'anomena **virtual hosting**. També es pot assignar un àmbit a les directives
+posant-les dins de seccions `<VirtualHost>`, de manera que només s'aplicaran a
 les sol·licituds d'un lloc web en particular.
 
 Tot i que la major part de directives es poden posar en qualsevol d'aquestes
@@ -615,25 +617,25 @@ seccions, algunes d'elles no tenen sentit en alguns contextos. Per exemple, les
 directives que controlen la creació de processos només es poden posar en el
 context del servidor principal.
 
-Fitxers .htaccess
+=== Fitxers .htaccess
 
-L'Apache permet la gestió descentralitzada de la configuració via fitxer
+L'Apache permet la gestió descentralitzada de la configuració via fitxers
 especials situats dins de l'arbre de la web. Els fitxers especials s'anomenen
-habitualment .htaccess, però es pot especificar qualsevol nom a la directiva
-AccessFileName. Les directives situades a un fitxer .htaccess s'apliquen al
-directori on és el fitxer, i tots els subdirectoris. Els fitxers .htaccess
+habitualment _.htaccess_, però es pot especificar qualsevol nom a la directiva
+`AccessFileName`. Les directives situades a un fitxer _.htaccess_ s'apliquen al
+directori on és el fitxer, i tots els subdirectoris. Els fitxers _.htaccess_
 segueixen la mateixa sintaxi que els fitxers de configuració principals. Com
-que els fitxers .htaccess es llegeixen a cada petició, els canvis que s'hi
+que els fitxers _.htaccess_ es llegeixen a cada petició, els canvis que s'hi
 facis tindran efecte immediat.
 
-Per veure quines directives es poden posar en fitxers .htaccess, cal comprovar
-el Context de la directiva. L'administrador del servidor pot controlar quines
-directives hi poden anar si configura la directiva AllowOverride en els
+Per veure quines directives es poden posar en fitxers _.htaccess_, cal comprovar
+el _Context_ de la directiva. L'administrador del servidor pot controlar quines
+directives hi poden anar si configura la directiva `AllowOverride` en els
 fitxers de configuració principals.
 
-Configuració de l'Apache 2 sota Debian GNU/Linux
+== Configuració de l'Apache 2 sota Debian GNU/Linux
 
-Si instal·lem el paquet apache2 inclòs a la distribució, ens trobarem amb una
+Si instal·lem el paquet _apache2_ inclòs a la distribució, ens trobarem amb una
 estructura diferent a la que es crea per defecte si baixem el codi de l'Apache
 i ens el compilem nosaltres mateixos.
 
@@ -643,194 +645,233 @@ com sigui possible, per tal de poder automatitzar els canvis i fer
 l'administració del servidor tan fàcil com es pugui.
 
 Degut a l'ús de variables d'entorn, l'Apache s'ha d'arrencar i parar amb
-/etc/init.d/apache2 o apache2ctl. Cridar /usr/bin/apache2 directament no
+`/etc/init.d/apache2` o `apache2ctl`. Cridar `/usr/bin/apache2` directament no
 funcionarà amb la configuració per defecte. Per tal de cridar l'Apache amb
-arguments de línia de comandes, cal cridar apache2ctl amb aquests mateixos
+arguments de línia de comandes, cal cridar `apache2ctl` amb aquests mateixos
 arguments.
 
-Fitxers i directoris a /etc/apache2
+== Fitxers i directoris a _/etc/apache2_
 
-apache2.conf: aquest és el fitxer de configuració principal.
-envvars: conté variables d'entorn que poden usar-se a la configuració. Alguns
-paràmetres, com l'usuari i el fitxer pid, han d'anar aquí per tal que altres
-scripts els puguin usar. També es pot utilitzar per canviar algunes opcions per
-defecte que utilitza l'apache2ctl.
-conf.d/: els fitxers d'aquest directori s'inclouen amb aquesta línia present a
-l'apache2.conf: Include /etc/apache2/conf.d. Aquest és un bon lloc per afegir
-directives de configuració addicionals.
-httpd.conf: fitxer buit, inclòs a l'apache2.conf.
-magic: fitxer buit.
-mods-available/: aquest directori conté una sèrie de fitxers .load i .conf.
-Els fitxers .load contenen les directives de configuració de l'Apache
-necessàries per carregar el mòdul en qüestió. El fitxer .conf respectiu conté
-les directives de configuració necessàries per utilitzar el mòdul en qüestió.
-mods-enabled/ : per activar realment un mòdul per l'Apache, és necessari crear
-un enllaç simbòlic en aquest directori cap als fitxer .load (i el .conf, si
-existeix) associats amb el mòdul a mods-available/. Per exemple:
+**apache2.conf**: aquest és el fitxer de configuració principal.
+
+**envvars**: conté variables d'entorn que poden usar-se a la configuració.
+Alguns paràmetres, com l'usuari i el fitxer pid, han d'anar aquí per tal que
+altres scripts els puguin usar. També es pot utilitzar per canviar algunes
+opcions per defecte que utilitza l'`apache2ctl`.
+
+**conf.d/**: els fitxers d'aquest directori s'inclouen amb aquesta línia
+present a l'_apache2.conf_: `Include /etc/apache2/conf.d`. Aquest és un bon
+lloc per afegir directives de configuració addicionals.
+
+**httpd.conf**: fitxer buit, inclòs a l'apache2.conf.
+
+**magic**: fitxer buit.
+
+**mods-available/**: aquest directori conté una sèrie de fitxers _.load_ i
+_.conf_. Els fitxers _.load_ contenen les directives de configuració de
+l'Apache necessàries per carregar el mòdul en qüestió. El fitxer _.conf_
+respectiu conté les directives de configuració necessàries per utilitzar el
+mòdul en qüestió.
+
+**mods-enabled/**: per activar realment un mòdul per l'Apache, és necessari
+crear un enllaç simbòlic en aquest directori cap als fitxer _.load_ (i el
+_.conf_, si existeix) associats amb el mòdul a _mods-available/_. Per exemple:
+
+----
 cgi.load -> /etc/apache2/mods-available/cgi.load
-ports.conf: les directives de configuració que especifiquen per quins ports i
-adreces IP s'escoltarà.
-sites-available/: com mods-available/, excepte que conté directives de
+----
+
+**ports.conf**: les directives de configuració que especifiquen per quins ports
+i adreces IP s'escoltarà.
+
+**sites-available/**: com _mods-available/_, excepte que conté directives de
 configuració per diferents hosts virtuals que poden usar-se amb l'Apache. Noteu
 que el hostname no té perquè coincidir exactament amb el nom del fitxer.
-'default' és el host per defecte.
-sites-enabled/: similar en funcionalitat al mods-enables/, sites-enabled conté
-enllaços simbòlics a llocs de sites-available/ que l'administrador desitja
-habilitar.
+'_default_' és el host per defecte.
 
-Eines
+**sites-enabled/**: similar en funcionalitat al _mods-enabled/_, _sites-enabled_
+conté enllaços simbòlics a llocs de _sites-available/_ que l'administrador
+desitja habilitar.
 
-Les eines a2enmod i a2dismod permeten habilitar i deshabilitar mòduls
+=== Eines
+
+Les eines `a2enmod` i `a2dismod` permeten habilitar i deshabilitar mòduls
 utilitzant el sistema de configuració que s'ha explicat.
 
-a2ensite i a2dissite fan essencialment el mateix que les eines anteriors, però
-per llocs en comptes de per mòduls.
+`a2ensite` i `a2dissite` fan essencialment el mateix que les eines anteriors,
+però per llocs en comptes de per mòduls.
 
-Seccions de configuració
+== Seccions de configuració
 
 Les directives presents als fitxers de configuració poden ésser d'aplicació per
 a tot el servidor, o pot ser que la seva aplicació es limiti només a
 determinats directoris, fitxers, hosts, o URL.
 
-Tipus de seccions de configuració
+=== Tipus de seccions de configuració
 
 Existeixen dos tipus bàsics de seccions de configuració. Per una banda, la
 majoria de les seccions de configuració s'avaluen per a cada petició que es
 rep i s'apliquen les directives que s'inclouen a les diferents seccions només
 a les peticions que s'adeqüen a determinades característiques. Per altra banda,
-les seccions de tipus <IfDefine> i <IfModule> s'avaluen només a l'iniciar o
+les seccions de tipus `<IfDefine>` i `<IfModule>` s'avaluen només a l'iniciar o
 reiniciar el servidor. Si a l'iniciar el servidor les condicions són les
 adequades, les directives que inclouen aquestes seccions s'aplicaran a totes
 les peticions que es rebin. En cas contrari, les directives que inclouen
 s'ignoraran completament.
 
-Sistemes de fitxers i espai web
+=== Sistemes de fitxers i espai web
 
 Les seccions de configuració usades amb més freqüència són les que canvien la
 configuració d'àrees del sistema de fitxers o de l'espai web. En primer lloc,
 és important comprendre la diferència que existeix entre aquests dos conceptes.
+
 El sistema de fitxers és la visió dels discs des del punt de vista del sistema
 operatiu. Per exemple, en una instal·lació estàndard, l'Apache serà a
-/usr/local/apache2 en un sistema Unix o a C:/Program Files/Apache Group/Apache2
-en un sistema Windows (cal tenir en compte que amb l'Apache sempre s'han
-d'utilitzar barres /, fins i tot en Windows). Contràriament, l'espai web és el
-que presenta el servidor web i visualitza el client. Així, la ruta /dir/ a
-l'espai web es correspon a la ruta /usr/local/apache2/htdocs/dir en el sistema
-de fitxers en una instal·lació estàndard a Unix. L'espai web no ha de tenir
-correspondència directa amb el sistema de fitxers, perquè les pàgines web es
-poden generar de forma dinàmica a partir de bases de dades o poden venir
-d'altres ubicacions.
+_/usr/local/apache2_ en un sistema Unix o a
+_C:/Program Files/Apache Group/Apache2_ en un sistema Windows (cal tenir en
+compte que amb l'Apache sempre s'han d'utilitzar barres /, fins i tot en
+Windows).
 
-Seccions relacionades amb el sistema de fitxers
+Contràriament, l'espai web és el que presenta el servidor web i
+visualitza el client. Així, la ruta _/dir/_ a l'espai web es correspon a la ruta
+_/usr/local/apache2/htdocs/dir_ en el sistema de fitxers en una instal·lació
+estàndard a Unix.
 
-Les seccions <Directory> i <Files>, junt amb les seves contrapartides que
+L'espai web no ha de tenir correspondència directa amb el sistema de fitxers,
+perquè les pàgines web es poden generar de forma dinàmica a partir de bases de
+dades o poden venir d'altres ubicacions.
+
+== Seccions relacionades amb el sistema de fitxers
+
+Les seccions `<Directory>` i `<Files>`, junt amb les seves contrapartides que
 utilitzen expressions regulars, apliquen les seves directives a àrees del
-sistema de fitxers. Les directives incloses en una secció <Directory>
+sistema de fitxers. Les directives incloses en una secció `<Directory>`
 s'apliquen al directori del sistema de fitxers especificat i als seus
-subdirectoris. El mateix resultat es pot obtenir utilitzant fitxers .htaccess.
-Per exemple, a la següent configuració, s'activaran els índexs de directori
-per al directori /var/web/dir1 i els seus subdirectoris:
+subdirectoris. El mateix resultat es pot obtenir utilitzant fitxers _.htaccess_.
 
+Per exemple, a la següent configuració, s'activaran els índexs de directori
+per al directori _/var/web/dir1_ i els seus subdirectoris:
+
+----
 <Directory /var/web/dir1>
 Options +Indexes
 </Directory>
+----
 
-Les directives incloses en una secció <Files> s'aplicaran a qualsevol fitxer
+Les directives incloses en una secció `<Files>` s'aplicaran a qualsevol fitxer
 el nom del qual s'especifiqui, sense tenir en compte a quin directori es troba.
+
 Per exemple, les següents directives de configuració, quan es col·loquen a la
 secció principal del fitxer de configuració, deneguen l'accés a qualsevol
-fitxer anomenat private.html sense tenir en compte on es trobi.
+fitxer anomenat _private.html_ sense tenir en compte on es trobi.
 
+----
 <Files private.html>
 Ordre allow,deny
 Deny from all
 </Files>
+----
 
 Per referir-se a fitxers que es trobin en un determinat lloc del sistema de
-fitxers, es poden combinar les seccions <Files> i <Directory>. Per exemple,
-la següent configuració denegarà l'accés a /var/web/dir1/private.html,
-/var/web/dir1/subdir2/private.html, /var/web/dir1/subdir3/private.html, i
-qualsevol altra aparició de private.html que es trobi a /var/web/dir1/ o
-qualsevol dels seus subdirectoris.
+fitxers, es poden combinar les seccions `<Files>` i `<Directory>`.
 
+Per exemple, la següent configuració denegarà l'accés a
+_/var/web/dir1/private.html_, _/var/web/dir1/subdir2/private.html_,
+_/var/web/dir1/subdir3/private.html_, i qualsevol altra aparició de
+_private.html_ que es trobi a _/var/web/dir1/_ o qualsevol dels seus
+subdirectoris.
+
+----
 <Directory /var/web/dir1>
 <Files private.html>
 Order allow,deny
 Deny from all
 </Files>
 </Directory>
+----
 
-Seccions relacionades amb l'espai web
-La secció <Location> i la seva contrapartida que usa expressions regulars,
-canvien la configuració per al contingut de l'espai web. Per exemple, la
-següent configuració evita que s'accedeixi a qualsevol URL que comenci per
-/private. En concret, s'aplicarà a peticions que vagin dirigides a
+== Seccions relacionades amb l'espai web
+
+La secció `<Location>` i la seva contrapartida que usa expressions regulars,
+canvien la configuració per al contingut de l'espai web.
+
+Per exemple, la següent configuració evita que s'accedeixi a qualsevol URL que
+comenci per _/private_. En concret, s'aplicarà a peticions que vagin dirigides a
 http://elteulloc.exemple.com/private, http://elteulloc.exemple.com/private123,
-i a http://elteulloc.exemple.com/private/dir/file.html, aixó com també a
-qualsevol altra petició que comenci per /private.
+i a http://elteulloc.exemple.com/private/dir/file.html, així com també a
+qualsevol altra petició que comenci per _/private_.
 
+----
 <Location /private>
 Order Allow,Deny
 Deny from all
 </Location>
+----
 
-La secció <Location> pot no tenir res a veure amb el sistema de fitxers.
+La secció `<Location>` pot no tenir res a veure amb el sistema de fitxers.
 
-Caràcters comodí i expressions regulars
+== Caràcters comodí i expressions regulars
 
-Les seccions <Directory>, <Files>, i <Location> poden usar caràcters comodí.
-El caràcter * equival a qualsevol seqüència de caràcters, ? equival a qualsevol
-caràcter individual, i [seq] equival a qualsevol caràcter contingut a seq.
+Les seccions `<Directory>`, `<Files>`, i `<Location>` poden usar caràcters
+comodí. El caràcter * equival a qualsevol seqüència de caràcters, ? equival a
+qualsevol caràcter individual, i `[seq]` equival a qualsevol caràcter contingut a
+_seq_.
 
 Si es necessita un sistema d'equivalències més flexible, cada secció té una
-contrapart que accepta expressions regulars: <DirectoryMatch>, <FilesMatch>,
-i <LocationMatch>.
+contrapart que accepta expressions regulars: `<DirectoryMatch>`, `<FilesMatch>`,
+i `<LocationMatch>`.
 
 A continuació es mostra un exemple en què una secció de configuració que usa
 caràcters comodí modifica la configuració de tots els directoris d'usuari:
 
+----
 <Directory /home/*/public_html>
 Options Indexes
 </Directory>
+----
 
 Utilitzant expressions regulars, podem denegar l'accés a molts tipus de fitxer
 d'imatges d'un sol cop:
 
+----
 <FilesMatch \.(?i:gif|jpe?g|png)$>
 Order allow,deny
 Deny from all
 </FilesMatch>
+----
 
-Què usar a cada moment
+== Què usar a cada moment
 
 Decidir quan s'han d'utilitzar seccions que s'apliquin sobre el sistema de
 fitxers i quan seccions que s'apliquin sobre l'espai web és bastant fàcil.
 Quan es tracta de directives que s'apliquen a objectes que resideixen al
-sistema de fitxers, sempre s'ha d'usar <Directory> o <Files>. Quan es tracta
+sistema de fitxers, sempre s'ha d'usar `<Directory>` o `<Files>`. Quan es tracta
 de directives que s'apliquen a objectes que no resideixen al sistema de
 fitxers (per exemple, una pàgina web generada a partir d'una base de dades),
-s'utilitza <Location>.
+s'utilitza `<Location>`.
 
-És important no usar mai <Location> quan es tracta de restringir l'accés a
+És important no usar mai `<Location>` quan es tracta de restringir l'accés a
 objectes al sistema de fitxers. Això es deu a què diverses URL diferents
 poden correspondre's amb una mateixa ubicació al sistema de fitxers, cosa que
 fa que la restricció pugui ésser evitada. Per exemple, considerem la següent
 configuració:
 
+----
 <Location /dir/>
 Order allow,deny
 Deny from all
 </Location>
+----
 
 La restricció funciona si es produeix una petició a
 http://elteulloc.exemple.com/dir/. Però, què passaria si es tracta d'un
-sistema de fitxer que no distingeix majúscules de minúscules? Llavors, la
+sistema de fitxers que no distingeix majúscules de minúscules? Llavors, la
 restricció que s'ha establert podria evitar-se fàcilment fent una petició a
-http://elteulloc.exemple.com/DIR/. Una secció <Directory>, contràriament,
+http://elteulloc.exemple.com/DIR/. Una secció `<Directory>`, contràriament,
 s'aplicarà a qualsevol contingut que se serveixi des d'aquesta ubicació,
 independentment de com s'anomeni.
 
-Adreces IP i ports d'escolta (binding)
+== Adreces IP i ports d'escolta (binding)
 
 En aquesta secció s'explica com configurar l'Apache per a què escolti en
 adreces IP i ports específics.
@@ -843,35 +884,41 @@ es pot combinar a més amb la possibilitat d'utilitzar hosts virtuals,
 funcionalitat amb la qual un servidor Apache pot respondre a peticions en
 diverses adreces IP, diversos noms de hosts, i diversos ports.
 
-La directiva Listen li indica al servidor que accepti peticions entrants
+La directiva `Listen` li indica al servidor que accepti peticions entrants
 només en els ports i en les combinacions de ports i adreces que s'especifiquin.
-Si només s'especifica un nombre de port a la directiva Listen, el servidor
+Si només s'especifica un nombre de port a la directiva `Listen`, el servidor
 escoltarà en aquest port, en totes les interfícies de xarxa de la màquina.
 Si s'especifica una adreça IP i un port, el servidor escoltarà només a la
 interfície de xarxa a què correspongui aquesta adreça IP, i només en el port
-indicat. Es poden utilitzar diverses directives Listen per especificar
+indicat. Es poden utilitzar diverses directives `Listen` per especificar
 diverses adreces IP i port d'escolta. El servidor respondrà a les peticions
 de totes les adreces i ports que s'incloguin.
 
 Per exemple, per fer que el servidor accepti connexions tant en el port 80 com
 en el port 8000, es pot utilitzar:
 
+----
 Listen 80
 Listen 8000
+----
 
 Per fer que el servidor accepti connexions en dues interfícies de xarxa i ports
 específics, s'usa:
 
+----
 Listen 192.170.2.1:80
 Listen 192.170.2.5:8000
+----
 
 Les adreces Ipv6 s'han d'escriure entre claudàtors, com en el següent exemple:
 
+----
 Listen [2001:db8::a00:20ff:fea7:ccea]:80
+----
 
-Podem comprovar quins serveis escolten per quins ports amb netstat -tlnp
+Podem comprovar quins serveis escolten per quins ports amb `netstat -tlnp`
 
-Com funciona aquest mecanisme en hosts virtuals
+=== Com funciona aquest mecanisme en hosts virtuals
 
 El Listen no implementa hosts virtuals. Només li diu al servidor principal a
 quines adreces i ports ha d'escoltar. Si no s'utilitzen directives
