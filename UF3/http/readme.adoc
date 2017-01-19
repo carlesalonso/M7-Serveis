@@ -10,22 +10,22 @@
 
 == Què és un servidor HTTP?
 
-Es defineix un servidor HTTP o servidor web com un programa que implementa el
-protocol HTTP, per realitzar les seves tasques. Aquest programa s’executa
+Es defineix un *servidor HTTP* o *servidor web* com un programa que implementa
+el protocol HTTP, per realitzar les seves tasques. Aquest programa s’executa
 contínuament en un ordinador, quedant a l’espera de rebre sol·licituds o
 peticions dels clients, efectuades mitjançant un altre programa que anomenem
-navegador web. El servidor respon a les peticions, mitjançant pàgines web que
+*navegador web*. El servidor respon a les peticions, mitjançant pàgines web que
 es mostraran en el navegador del client.
 
-El protocol HTTP, Hypertext Transfer Protocol, està implementat en la capa
-d’aplicació del model OSI de TCP/IP. Permet la transferència de hipertexts, i
-pàgines HTML (Hipertext Markup Language) que poden contenir imatges, texts,
+El *protocol HTTP*, _Hypertext Transfer Protocol_, està implementat en la capa
+d’aplicació del model OSI de TCP/IP. Permet la transferència de _hipertexts_, i
+_pàgines HTML_ (_Hypertext Markup Language_) que poden contenir imatges, texts,
 fitxers, etc.
 
-El servidor HTTP, un cop ha rebut una petició d’un client, prepara la pàgina
+El _servidor HTTP_, un cop ha rebut una petició d’un client, prepara la pàgina
 HTML, amb les imatges, arxius, etc., que llegeix connectant amb un servidor
 d'aplicacions, directament des d'un arxiu (*.html, *.htm, *.xml, ...), o bé
-que és el resultat de processar algun script. Posteriorment, en funció de com
+que és el resultat de processar algun _script_. Posteriorment, en funció de com
 estigui configurat el servidor HTTP, torna el resultat al programa navegador
 del client.
 
@@ -37,18 +37,18 @@ d'interpretar el codi HTML rebut, mostrant les fonts, la disposició del text,
 els colors i els objectes de la pàgina.
 
 En la primera versió del protocol HTTP (1.0), el client només podia invocar
-tres operacions en el servidor: GET per demanar una pàgina, HEAD per demanar
-la capçalera de una pàgina i POST per enviar dades a una URL.
+tres operacions en el servidor: _GET_ per demanar una pàgina, _HEAD_ per demanar
+la capçalera d'una pàgina i _POST_ per enviar dades a una URL.
 
 Essent una mica més estricte, el funcionament del protocol es el següent:
 
 - El client envia una petició al servidor. Aquesta petició està formada per un
-mètode que s’invoca al servidor (URI) i una versió del protocol utilitzat,
-seguida per un missatge de compatibilitat de versió de MIME amb els paràmetres
+mètode que s’invoca al servidor (_URI_) i una versió del protocol utilitzat,
+seguida per un missatge de compatibilitat de versió de _MIME_ amb els paràmetres
 de la petició, la informació del client i un cos opcional amb més dades per al
 servidor.
 
-----
+    ----
 GET /~jqueral/ HTTP/1.1
 Host ies-sabadell.xtec.net
 User-Agent Mozilla/5.0 (X11; U; Linux i686; ca; rv:1.9.0.15) Gecko/2009102815 Iceweasel/3.0.6 (Debian-3.0.6-3)
@@ -59,7 +59,7 @@ Accept-Charset ISO-8859-1,utf-8;q=0.7,*;q=0.7
 Keep-Alive 300
 Connection keep-alive
 Cookie MOODLEID_usuarimoodle=%25E9%25C3%251FB%25A2GET /index.html
-----
+    ----
 
 - El servidor respon amb una línia d'estat, que inclou la versió del protocol
 del missatge i si la petició ha tingut èxit o no, un codi de resultat, seguit
@@ -67,7 +67,7 @@ d’un missatge de compatibilitat de versió de MIME amb informació del servido
 metainformació (dades sobre la informació), de l'entitat sol·licitada i un cos
 opcional amb l’entitat sol·licitada.
 
-----
+    ----
 HTTP/1.1 200 OK
 Date Wed, 09 Dec 2009 22:49:26 GMT
 Server Apache/2.2.9 (Debian) PHP/5.2.6-1+lenny4 with Suhosin-Patch mod_ssl/2.2.9 OpenSSL/0.9.8g mod_perl/2.0.4 Perl/v5.10.0
@@ -84,41 +84,47 @@ Content-Type text/html;charset=UTF-8
 <hr>
 <h2> Exemple de comunicació HTTP <h2>
 <hr>
-----
+    ----
 
 El protocol HTTP 1.0 tenia unes limitacions importants d’escalabilitat i
 rendiment, que van ser superades per la nova versió HTTP 1.1. Les
 característiques principals de la nova versió 1.1 són:
 
-Connexions persistents (keep-alive): la idea de les connexions persistents és
-reutilitzar la mateixa connexió TCP per enviar i rebre múltiples sol·licituds i
-respostes HTTP, en comptes d'obrir una nova connexió per cada parella de
-sol·licitud i resposta. Això té els següents avantatges:
+- *Connexions persistents* (_keep-alive_): la idea de les connexions persistents
+és reutilitzar la mateixa connexió TCP per enviar i rebre múltiples
+sol·licituds i respostes HTTP, en comptes d'obrir una nova connexió per cada
+parella de sol·licitud i resposta. Això té els següents avantatges:
 
-Menys ús de la CPU i la memòria (perquè hi ha menys connexions obertes
-simultàniament).
-HTTP pipelining: permet enviar diverses sol·licituds HTTP utilitzant el mateix
-socket, abans de rebre les respostes corresponents.
-Es redueix la congestió de la xarxa (menys connexions).
-Es redueix la latència entre connexions successives, perquè ens estalviem la
-negociació de la connexió TCP.
-Podem rebre errors sense perdre la connexió TCP.
-Transmissió per “trossos” d'informació (Chunked Transfer Encoding) en comptes
-d'enviar tota la informació en un sol paquet. Això permet l'streaming.
-Nous mètodes que s'afegeixen als ja existents (GET, POST i HEAD): DELETE,
+    - Menys ús de la CPU i la memòria (perquè hi ha menys connexions obertes
+    simultàniament).
+    - _HTTP pipelining_: permet enviar diverses sol·licituds HTTP utilitzant el
+		mateix socket, abans de rebre les respostes corresponents.
+    - Es redueix la congestió de la xarxa (menys connexions).
+    - Es redueix la latència entre connexions successives, perquè ens estalviem
+		la negociació de la connexió TCP.
+    - Podem rebre errors sense perdre la connexió TCP.
+
+- Transmissió per “trossos” d'informació (_Chunked Transfer Encoding_) en
+comptes d'enviar tota la informació en un sol paquet. Això permet l'streaming.
+
+- Nous mètodes que s'afegeixen als ja existents (GET, POST i HEAD): DELETE,
 TRACE, PUT, PATCH, COPY, MOVE, LINK, UNLINK, OPTIONS, WRAPPED...
-Nou mètode d’autenticació (Digest access authentication).
-Ús de proxies HTTP.
-Suport a host virtuals basats en nom. Per fer-ho possible, es va obligà que les
-peticions HTTP/1.1 incorporessin un nou camp de capçalera anomenat Host.
-Negociació de continguts. Els clients i els servidors poden, mitjançant
+
+- Nou mètode d’autenticació (_Digest access authentication_).
+
+- Ús de *proxies* HTTP.
+
+- Suport a *host virtuals* basats en nom. Per fer-ho possible, es va obligà que
+les peticions HTTP/1.1 incorporessin un nou camp de capçalera anomenat _Host_.
+
+- *Negociació de continguts*. Els clients i els servidors poden, mitjançant
 l’intercanvi de capçaleres, negociar característiques comunes. Quan el servidor
 ofereix la informació en diverses representacions, el client pot seleccionar la
 que més l’interessi. Per exemple, si tenim un servidor amb la informació en
 diferents idiomes, un client pot sol·licitar el contingut segons el seu idioma
 de preferència.
 
-Breu història i evolució del protocol HTTP
+== Breu història i evolució del protocol HTTP
 
 L'any 1980, Tim Berners-Lee, un investigador del CERN a Ginebra, va dissenyar
 un sistema de navegació d’hipertext i desenvolupà, amb l’ajut d'en Robert
@@ -134,27 +140,28 @@ nasqué la World Wide Web.
 
 El protocol HTTP ha passat per vàries etapes:
 
-HTTP/0.9: primera versió. Definia un protocol senzill a nivell d’aplicació per
+- HTTP/0.9: primera versió. Definia un protocol senzill a nivell d’aplicació per
 la distribució de dades per les xarxes.
-HTTP/1.0: La millora més destacada va ser l’ús de capçaleres (headers) amb
+- HTTP/1.0: La millora més destacada va ser l’ús de capçaleres (headers) amb
 metainformació de les dades que es transmeten.
-HTTP/1.1: va ser definit en el RFC 2616 i integra en una sola especificació a
+- HTTP/1.1: va ser definit en el RFC 2616 i integra en una sola especificació a
 l’anterior HTTP/1.0 amb afegits definits en els RFC 2109, 2145 i 2617.
+
 Actualment l'HTTP/1.1 és una especificació estable que aconsegueix l’objectiu
 de ser un estàndard, i que soluciona les debilitats de versions anteriors. Però
 encara avui hi ha problemes sense resoldre en el protocol, per exemple, l’estat
 de les connexions segueix sense que es pugui mantenir, a menys que s'utilitzin
-mecanismes auxiliars com les cookies.
+mecanismes auxiliars com les _cookies_.
 
-El protocol HTTP
+== El protocol HTTP
 
-Introducció al protocol HTTP
+=== Introducció al protocol HTTP
 
 El propòsit del protocol HTTP és permetre la transferència d'arxius
 (principalment en format HTML) entre un navegador (el client) i un servidor
 web, localitzat mitjançant una cadena de caràcters denominada adreça URL.
 
-Comunicació entre el navegador i el servidor
+=== Comunicació entre el navegador i el servidor
 
 La comunicació entre el navegador i el servidor es duu a terme en dues etapes:
 
@@ -167,26 +174,26 @@ En realitat, la comunicació es realitza en més etapes si es considera el
 processament de la sol·licitud en el servidor. Atès que només ens ocupem del
 protocol HTTP, no s'explicarà la part del processament en el servidor.
 
-Sol·licitud HTTP
+=== Sol·licitud HTTP
 
 Una sol·licitud HTTP és un conjunt de línies que el navegador envia al
 servidor. Inclou:
 
-Una línia de sol·licitud: és una línia que especifica el tipus de document
+- *Una línia de sol·licitud*: és una línia que especifica el tipus de document
 sol·licitat, el mètode que s'aplicarà i la versió del protocol utilitzada. La
 línia està formada per tres elements que han d'estar separats per un espai:
 
-El mètode
-L'adreça URL
-La versió del protocol utilitzada pel client (en general serà HTTP/1.1)
+    - El mètode
+    - L'adreça URL
+    - La versió del protocol utilitzada pel client (en general serà HTTP/1.1)
 
-Els camps de capçalera de la sol·licitud: és un conjunt de línies opcionals
+- Els *camps de capçalera de la sol·licitud*: és un conjunt de línies opcionals
 que permeten aportar informació addicional sobre la sol·licitud i/o el client
 (navegador, sistema operatiu, etc.). Cadascuna d'aquestes línies està formada
 per un nom que descriu el tipus de capçalera seguit de dos punts (:) i el
 valor de la capçalera.
 
-El cos de la sol·licitud: és un conjunt de línies opcionals que s'han de
+- El *cos de la sol·licitud*: és un conjunt de línies opcionals que s'han de
 separar de les línies precedents per una línia en blanc i, per exemple,
 permeten que s'enviïn dades amb una comanda POST durant la transmissió de
 dades al servidor utilitzant un formulari.
@@ -203,7 +210,7 @@ tornada de carro i avanç de línia):
 		COS DE LA sol·licitud
 ----
 
-Comandes
+=== Comandes
 
 .Ordres HTTP
 [options="header"]
@@ -216,7 +223,7 @@ Comandes
 |DELETE |Esborra el recurs situat a la URL especificada
 |========
 
-Capçaleres
+=== Capçaleres
 
 .Capçaleres HTTP
 [options="header"]
@@ -241,27 +248,27 @@ Capçaleres
 |User-Agent |Cadena amb informació sobre el client, per exemple, el nom i la versió del navegador i el sistema operatiu
 |========
 
-Resposta HTTP
+== Resposta HTTP
 
 Una resposta HTTP és un conjunt de línies que el servidor envia al navegador.
 
 Està constituïda per:
 
-Una línia d'estat: és una línia que especifica la versió del protocol
+- Una *línia d'estat*: és una línia que especifica la versió del protocol
 utilitzada i l'estat de la sol·licitud en procés mitjançant un text explicatiu
 i un codi. La línia està composta per tres elements que han d'estar separats
 per un espai:
 
-La versió del protocol utilitzada
-El codi d'estat
-El significat del codi
+    - La versió del protocol utilitzada
+    - El codi d'estat
+    - El significat del codi
 
-Els camps de la capçalera de resposta: és un conjunt de línies opcionals que
+- Els camps de la *capçalera de resposta*: és un conjunt de línies opcionals que
 permeten aportar informació addicional sobre la resposta i/o el servidor.
 Cadascuna d'aquestes línies està composta per un nom que qualifica el tipus
 de capçalera, seguit per dos punts (:) i pel valor de la capçalera.
 
-El cos de la resposta: conté el document sol·licitat.
+- El cos de la resposta: conté el document sol·licitat.
 
 Per tant, una resposta HTTP posseeix la següent sintaxis:
 
@@ -275,7 +282,7 @@ Per tant, una resposta HTTP posseeix la següent sintaxis:
 
 RFC 2068 que defineix el protocol HTTP 1.1: http://www.ietf.org/rfc/rfc2068.txt
 
-Capçaleres de resposta
+=== Capçaleres de resposta
 
 .Capçaleres de resposta
 [options="headers"]
@@ -292,7 +299,7 @@ Capçaleres de resposta
 |Server |Característiques del servidor que ha enviat la resposta
 |========
 
-Els codis de resposta
+=== Els codis de resposta
 
 Són els codis que es veuen quan el navegador no pot mostrar la pàgina
 sol·licitada. El codi de resposta està format per tres dígits: el primer
@@ -308,9 +315,9 @@ indica l'estat i els dos següents expliquen la naturalesa exacta de l'error.
 |40x |Error a causa del client |Aquests codis indiquen que la sol·licitud és incorrecta
 |50x |Error del servidor |Aquests codis indiquen que existeix un error intern en el servidor
 
-Tipus de servidors HTTP
+== Tipus de servidors HTTP
 
-Servidors basats en processos
+=== Servidors basats en processos
 
 Aquest disseny és el predecessor de tots els altres. Es basa en l'obtenció de
 paral·lelisme mitjançant la duplicació del procés d'execució.
@@ -321,7 +328,7 @@ creant una còpia exacta que atendrà aquesta connexió. Sobre aquesta opció de
 disseny s'hi poden aplicar optimitzacions importants, com les que va incloure
 l'Apache amb la tècnica de pre-fork.
 
-Tècnica pre-fork: Consisteix en la creació prèvia d'un grup de processos i el
+_Tècnica pre-fork_: Consisteix en la creació prèvia d'un grup de processos i el
 seu manteniment fins que sigui necessària la seva utilització.
 
 Els principals avantatges d'aquest disseny resideixen en la simplicitat
@@ -329,14 +336,14 @@ d’implementació i la seva seguretat. El gran desavantatge d'aquest disseny é
 el baix rendiment: la creació o eliminació d'un procés són tasques pesades
 per al sistema operatiu i consumeixen una gran quantitat de temps.
 
-Servidors basats en fils (threads)
+=== Servidors basats en fils (threads)
 
 Aquest tipus de disseny avui dia és molt més comú que el basat en processos.
 Els conceptes bàsics respecte al funcionament d'un servidor basat en processos
 són aplicables també a aquest model.
 
 La principal diferència entre els dos models resideix en el propi concepte de
-fil. L'avantatge és que la creació d'un fil no és tan costosa com la d'un
+_fil_. L'avantatge és que la creació d'un fil no és tan costosa com la d'un
 procés. Diversos fils d'un mateix procés poden compartir dades entre ells,
 ja que comparteixen el mateix espai de memòria. El model de servidor basat
 en fils hereta moltes de les característiques dels servidors basats en
@@ -344,7 +351,7 @@ processos, entre elles la de la simplicitat en el seu disseny i implementació.
 D'altra banda, el compartir l'espai de memòria implica un risc de seguretat que
 no tenen els servidors basats en processos
 
-Servidors basats en sockets dirigits per esdeveniments
+=== Servidors basats en sockets dirigits per esdeveniments
 
 Aquests servidors basen el seu funcionament en la utilització de lectures i
 escriptures asíncrones sobre sockets. Normalment, aquests servidors utilitzen
@@ -357,39 +364,39 @@ principalment la seva velocitat. El seu principal desavantatge és que la
 concurrència és simulada; és a dir, existeix només un procés i només un fil,
 des del qual s'atenen totes les connexions.
 
-Socket: no són més que punts o mitjans de comunicació entre dues aplicacions
+*Socket*: no són més que punts o mitjans de comunicació entre dues aplicacions
 que permeten que un procés parli (emeti o rebi informació) amb un altre procés
 estant els dos en distintes màquines.
 
-Tipus d'aplicacions web
+== Tipus d'aplicacions web
 
 Per dur a terme tot el procés que es realitza entre el servidor HTTP i els
-clients, que podríem anomenar servei web, trobem programes que s'executen quan
+clients, que podríem anomenar _servei web_, trobem programes que s'executen quan
 es realitzen les peticions o les respostes HTTP. Aquests programes es coneixen
-com aplicacions web, i en podem trobar de dos tipus: aplicacions web clients i
-aplicacions web servidor.
+com *aplicacions web*, i en podem trobar de dos tipus: _aplicacions web clients_
+i _aplicacions web servidor_.
 
-Les aplicacions web client s’executen a la màquina del client. Són aplicacions,
-anomenades scripts o plugins, codificades en diferents llenguatges, que executa
-el programa navegador client. Els scripts es codifiquen majoritàriament en Java
-o Javascript i quan es vol implementa algun altre llenguatge, es fa mitjançant
-els plugins. El navegador client ha de tenir la capacitat per poder executar
-aquest scripts i plugins.
+Les *aplicacions web client* s’executen a la màquina del client. Són
+aplicacions, anomenades scripts o plugins, codificades en diferents llenguatges,
+que executa el programa navegador client. Els scripts es codifiquen
+majoritàriament en Java o Javascript i quan es vol implementa algun altre
+llenguatge, es fa mitjançant els plugins. El navegador client ha de tenir la
+capacitat per poder executar aquest scripts i plugins.
 
-Les aplicacions web servidor, s’executen al servidor web, generant codi HTML i
+Les *aplicacions web servidor*, s’executen al servidor web, generant codi HTML i
 enviant-lo al client a través del protocol HTTP. L’ús de les aplicacions
 servidor permeten que el client pugui visualitzar les pàgines web amb un
 navegador bàsic, ja que no és necessari executar cap codi al client, però
 tenen l'inconvenient de sobrecarregar el servidor.
 
-Nocions de seguretat en HTTP
+== Nocions de seguretat en HTTP
 
-Introducció a SSL
+=== Introducció a SSL
 
-L'SSL (Secure Socket Layers) és un procés que administra la seguretat de les
+L'*SSL* (_Secure Socket Layers_) és un procés que administra la seguretat de les
 transaccions que es realitzen a través d'Internet. L'estàndard SSL va ser
 desenvolupat per Netscape, juntament amb Mastercard, Bank of America, MCI i
-Silicon Graphics. Es basa en un procés de xifrat de clau pública que garanteix
+Silicon Graphics. Es basa en un procés de xifrat de _clau pública_ que garanteix
 la seguretat de les dades que s'envien a través d'Internet. El seu principi
 consisteix en l'establiment d'un canal de comunicació segur (xifrat) entre dos
 equips (el client i el servidor) després d'una fase d'autenticació.
@@ -400,127 +407,88 @@ també connexions a través dels protocols FTP, POP i IMAP. SSL actua com una
 capa addicional que permet garantir la seguretat de les dades i que se situa
 entre la capa de l'aplicació i la capa de transport.
 
-Com funciona SSL 2.0
+=== Com funciona SSL 2.0
 
 La seguretat de les transaccions a través de SSL 2.0 es basa en l'intercanvi
 de claus entre un client i un servidor. Una transacció segura SSL es realitza
 d'acord al següent model:
 
-Primer, el client es connecta al servidor comercial protegit per SSL i demana
-l'autenticació. El client també envia la llista dels criptosistemes que
+- Primer, el client es connecta al servidor comercial protegit per SSL i demana
+l'autenticació. El client també envia la llista dels _criptosistemes_ que
 suporta, classificada en ordre descendent per la longitud de la clau.
 
-El servidor que rep la sol·licitud envia un certificat al client que conté la
-clau pública del servidor signat per una entitat de certificació (CA), i també
+- El servidor que rep la sol·licitud envia un certificat al client que conté la
+clau pública del servidor signat per una _entitat de certificació_ (CA), i també
 el nom del criptosistema que és  més amunt a la llista de compatibilitats (la
 longitud de la clau de xifrat - 40 o 128 bits - serà la del criptosistema
 compartit que té la grandària de clau de major longitud).
 
-El client verifica la validesa del certificat (i per tant, l'autenticitat del
+- El client verifica la validesa del certificat (i per tant, l'autenticitat del
 venedor), després crea una clau secreta a l'atzar (més precisament un suposat
-bloc aleatori), xifra aquesta clau amb la clau pública del servidor i envia
-el resultat del servidor (clau de sessió).
+_bloc aleatori_), xifra aquesta clau amb la clau pública del servidor i envia
+el resultat del servidor (*clau de sessió*).
 
-El servidor és capaç de desxifrar la clau de sessió amb la seva clau privada.
+- El servidor és capaç de desxifrar la clau de sessió amb la seva clau privada.
 D'aquesta manera, hi ha dues entitats que comparteixen una clau que només ells
 coneixen. Les transaccions restants poden realitzar-se utilitzant la clau de
 sessió, garantint la integritat i la confidencialitat de les dades que
 s'intercanvien.
 
-Introducció a SHTTP
+== Altres conceptes importants en entorn web
 
-L'S-HTTP (Secure HTTP) és un procés de transaccions HTTP que es basa en el
-perfeccionament del protocol HTTP creat el 1994 per l'EIT (Enterprise
-Integration Technologies). Aquest procés fa possible establir una connexió
-segura per a transaccions de comerç electrònic mitjançant missatges xifrats, i
-garantir als clients la confidencialitat dels números de targetes bancàries i
-la seva informació personal. La companyia Terisa Systems va desenvolupar una
-de les implementacions de SHTTP per a incloure una connexió segura entre els
-servidors i els clients Web.
-
-Com funciona SHTTP
-
-A diferència de l'SSL, que funciona transportant capes, l'SHTTP garanteix la
-seguretat del missatge mitjançant el protocol HTTP, que marca individualment
-els documents HTML amb certificats. Mentre que l'SSL és independent de
-l'aplicació utilitzada i pot xifrar tot tipus de comunicació, l'SHTTP està
-íntimament relacionat amb el protocol HTTP i xifra missatges de forma
-individual.
-
-Els missatges SHTTP es basen en tres components:
-
-El missatge HTTP.
-Les preferències criptogràfiques del remitent.
-Les preferències del destinatari.
-
-Així, per a desxifrar un missatge SHTTP, el destinatari analitza els
-encapçalats del missatge per a determinar el tipus de mètode que es va
-utilitzar per a xifrar el missatge. Després, basant-se en les seves
-preferències criptogràfiques presents i passades, i en les preferències
-criptogràfiques passades del remitent, el destinatari pot desxifrar el missatge.
-
-La naturalesa complementària de SHTTP i SSL
-
-Quan l'SSL i l'SHTTP competien, moltes persones es van adonar que aquests dos
-protocols de seguretat eren complementaris, ja que no treballaven al mateix
-nivell. L'SSL garanteix una connexió segura a Internet, mentre que l'SHTTP
-garanteix intercanvis HTTP assegurats.
-
-Altres conceptes importants en entorn web
-
-CGI (Common Gateway Interface): conjunt de regles que regeixen el intercanvi
+*CGI* (_Common Gateway Interface_): conjunt de regles que regeixen el intercanvi
 d’informació entre els servidors HTTP i els programes.
 
-Aplicació CGI: aplicació que s’executa quan el servidor Web rep una adreça URL
+*Aplicació CGI*: aplicació que s’executa quan el servidor Web rep una adreça URL
 amb el nom d'un programa CGI i els paràmetres que aquest necessita, per
 construir dinàmicament documents.
 
-API (Application Programming Interface): conjunt de rutines, protocols i eines
-per construir aplicacions que donen accés a un objecte.
+*API* (_Application Programming Interface_): conjunt de rutines, protocols i
+eines per construir aplicacions que donen accés a un objecte.
 
-ISAPI (Internet Server Application Programming Interface, API de servidor
+*ISAPI* (_Internet Server Application Programming Interface_, API de servidor
 d’Internet): Funcions que són carregades a memòria quan s’arrenca el servidor
 Web, per a ésser executats de forma més ràpida. Es poden aplicar filtres
 sobre ells.
 
-URL (Uniform Resource Locator, Localitzador Uniforme de Recursos): més conegut
-com adreça d’Internet o adreça WWW.
+*URL* (_Uniform Resource Locator_, Localitzador Uniforme de Recursos): més
+conegut com adreça d’Internet o adreça WWW.
 
-MIME (Multipurpose Internet Mail Extensions, Extensions de Correu Internet
+*MIME* (_Multipurpose Internet Mail Extensions_, Extensions de Correu Internet
 Multipropòsit): Convencions o especificacions dirigides a què es puguin
 intercanviar a través d'Internet tot tipus d’arxius: text, àudio, vídeo, etc.
 de forma transparent per l’usuari.
 
-DNS (Domain Name Systems): és un sistema de noms que permet traduir un nom de
-domini a una adreça IP i viceversa.
+*DNS* (_Domain Name Systems_): és un sistema de noms que permet traduir un nom
+de domini a una adreça IP i viceversa.
 
-UTF-8 (Unicode Transformation Format): és una norma de transmissió de longitud
-variable per a caràcters codificats utilitzant Unicode.
+*UTF-8* (_Unicode Transformation Format_): és una norma de transmissió de
+longitud variable per a caràcters codificats utilitzant _Unicode_.
 
-Introducció a les URL
+== Introducció a les URL
 
-La URL (Localitzador Uniforme de Recursos) d'una aplicació Web és l'expressió
-que permet indicar un recurs. És una cadena de caràcters ASCII imprimibles
-dividida en cinc parts:
+La *URL* (_Localitzador Uniforme de Recursos_) d'una aplicació Web és
+l'expressió que permet indicar un recurs. És una cadena de caràcters ASCII
+imprimibles dividida en cinc parts:
 
-El nom del protocol: és, en certa manera, el llenguatge que s'usa per a
+- El *nom del protocol*: és, en certa manera, el llenguatge que s'usa per a
 comunicar-se en la xarxa. El protocol més usat és l'HTTP, que permet
 l'intercanvi de pàgines Web en format HTML. També poden usar-se altres
-protocols (FTP, News, Mailto, etcètera).
+protocols (_FTP_, _News_, _Mailto_, etcètera).
 
-Nom d'usuari i contrasenya: permet especificar els paràmetres requerits per a
-accedir a un servidor segur. No es recomana aquesta opció ja que la contrasenya
-circula en la URL sense prèvia codificació.
+- *Nom d'usuari i contrasenya*: permet especificar els paràmetres requerits per
+a accedir a un servidor segur. No es recomana aquesta opció ja que la
+contrasenya circula en la URL sense prèvia codificació.
 
-El nom del servidor: és el nom de domini d'un ordinador que allotja el recurs
-sol·licitat. És possible usar l'adreça IP del servidor.
+- El *nom del servidor*: és el nom de domini d'un ordinador que allotja el
+recurs sol·licitat. És possible usar l'adreça IP del servidor.
 
-El nombre de port: és el nombre associat a un servei que li indica al servidor
-quin tipus de recurs s'està sol·licitant. El port que es vincula amb el
+- El *número de port*: és el nombre associat a un servei que li indica al
+servidor quin tipus de recurs s'està sol·licitant. El port que es vincula amb el
 protocol HTTP de forma predeterminada és el nombre 80. Quan s'accedeix al
 servei Web del servidor pel port per defecte, no cal especificar-lo.
 
-La ruta d'accés al recurs: aquesta última part li indica al servidor on es
+- La *ruta d'accés al recurs*: aquesta última part li indica al servidor on es
 troba el recurs, que generalment és la ubicació (directori) i el nom de
 l'arxiu sol·licitat.
 
@@ -537,9 +505,11 @@ La URL permet enviar paràmetres al servidor col·locant un signe d'interrogaci�
 després del nom de l'arxiu i després les dades en format ASCII. Per tant,
 podríem enviar dues variables al servidor seguint el següent format:
 
+----
 http://és.mostra.net/forum/?cat=1&page=2
+----
 
-Manipulació d'URL
+=== Manipulació d'URL
 
 Al manipular certes parts d'una URL, un intrús pot fer que un servidor Web li
 permeti accedir a pàgines Web a les quals suposadament no tenia accés. En llocs
@@ -565,17 +535,17 @@ En l'exemple anterior, si el dissenyador de la pàgina Web no ha previst un cas
 on les dades no estiguin representats per un nombre, la pàgina Web pot entrar
 en un estat no previst i brindar informació en un missatge d'error.
 
-Servidors HTTP més freqüents
+== Servidors HTTP més freqüents
 
-De servidors HTTP es poden trobar de diferents al mercat:
+Podem trobar diferents servidors HTTP al mercat:
 
-IIS, Internet Information Services de Microsoft
-Apache, The Apache Software Foundation
-Weblogic, BEA Systems, inc.
-Tomcat, The Apache Software Foundation
-Cherokee, Cherokee – Albaro López
+- IIS, Internet Information Services de Microsoft
+- Apache, The Apache Software Foundation
+- nginx, Igor Sysoev
+- Tomcat, The Apache Software Foundation
+- GWS, Google
 
-De la anterior llista els mes implementats al mercat son: IIS i Apache.
+De l'anterior llista els més implantats al mercat són: Apache i nginx.
 
 Fitxers de configuració
 
