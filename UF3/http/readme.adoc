@@ -920,19 +920,19 @@ Podem comprovar quins serveis escolten per quins ports amb `netstat -tlnp`
 
 === Com funciona aquest mecanisme en hosts virtuals
 
-El Listen no implementa hosts virtuals. Només li diu al servidor principal a
+El `Listen` no implementa hosts virtuals. Només li diu al servidor principal a
 quines adreces i ports ha d'escoltar. Si no s'utilitzen directives
-<VirtualHost>, el servidor es comporta de la mateixa manera amb totes les
-peticions que s'acceptin. Tanmateix, el <VirtualHost> es pot utilitzar per
+`<VirtualHost>`, el servidor es comporta de la mateixa manera amb totes les
+peticions que s'acceptin. Tanmateix, el `<VirtualHost>` es pot utilitzar per
 especificar un comportament diferent en una o diverses adreces IP i ports. Per
 implementar un host virtual, s'ha d'indicar primer al servidor que escolti en
-aquelles adreces i ports a utilitzar. Llavors s'ha de crear  una secció
-<VirtualHost> amb una adreça i ports específics per determinar el comportament
+aquelles adreces i ports a utilitzar. Llavors s'ha de crear una secció
+`<VirtualHost>` amb una adreça i ports específics per determinar el comportament
 d'aquest host virtual. Cal tenir en compte que si s'especifica a una secció
-<VirtualHost> una adreça i port en els quals el servidor no estigui escoltant,
+`<VirtualHost>` una adreça i port en els quals el servidor no estigui escoltant,
 no es podrà accedir a aquest host virtual.
 
-Fitxers de registre (Log Files)
+== Fitxers de registre (Log Files)
 
 Per a administrar de forma efectiva un servidor web, és necessari tenir
 registres de l'activitat i el rendiment del servidor, així com de qualsevol
@@ -940,10 +940,10 @@ problema que hagi pogut ocórrer durant la seva operació. El servidor Apache
 ofereix capacitats molt àmplies de registre d'aquest tipus d'informació, però
 només veurem la seva configuració per defecte.
 
-Registre d'errors (Error Log)
+=== Registre d'errors (Error Log)
 
 El registre d'errors del servidor, el nom i ubicació del qual s'especifica amb
-la directiva ErrorLog, és el més important de tots els registres. L'Apache
+la directiva `ErrorLog`, és el més important de tots els registres. L'Apache
 enviarà qualsevol informació de diagnòstic i registrarà qualsevol error que
 trobi al processar peticions al fitxer de registre seleccionat. És el primer
 lloc on s'ha de mirar quan sorgeix un problema al iniciar el servidor o durant
@@ -951,18 +951,20 @@ la seva operació normal, perquè amb freqüència s'hi troba informació detall
 de què ha anat mal i com solucionar el problema.
 
 El registre d'errors s'escriu normalment en un fitxer (el nom de qual sol
-ésser error_log en sistemes Unix i error.log en Windows). En sistemes Unix
-també és possible fer que el servidor enviï els missatges d'error al syslog,
+ésser *error_log* en sistemes Unix i *error.log* en Windows). En sistemes Unix
+també és possible fer que el servidor enviï els missatges d'error al _syslog_,
 o passar-los a un programa mitjançant un pipe.
 
-El format del registre d'errors és relativament llibre i descriptiu. No obstant
+El format del registre d'errors és relativament lliure i descriptiu. No obstant
 això, hi ha certa informació que s'inclou a casi totes les entrades d'un
 registre d'errors. Per exemple, aquest és un missatge típic:
 
+----
 [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1] client denied by server configuration: /export/home/live/ap/htdocs/test
+----
 
 El primer element de l'entrada és la data i l'hora del missatge. El segon
-element indica la gravetat de l'error que s'ha produït. La directiva LogLevel
+element indica la gravetat de l'error que s'ha produït. La directiva `LogLevel`
 s'utilitza per controlar els tipus d'errors que s'envien al registre d'errors
 segons la seva gravetat. La tercera part conté l'adreça IP del client que ha
 generat l'error. Després de l'adreça IP hi ha el missatge d'error pròpiament
@@ -985,14 +987,16 @@ Si es fan proves, sol ser útil monitoritzar de forma continuada el registre
 d'errors per comprovar si hi ha algun problema. En sistemes Unix, això es pot
 fer usant:
 
+----
 tail -f error_log
+----
 
-Registre d'accés (Access Log)
+=== Registre d'accés (Access Log)
 
 El servidor emmagatzema al registre d'accés informació sobre totes les
 peticions que processa. La ubicació del fitxer de registre i el contingut que
-es registra es poden modificar amb la directiva CustomLog. Es pot usar la
-directiva LogFormat per a simplificar la selecció dels continguts que es vol
+es registra es poden modificar amb la directiva `CustomLog`. Es pot usar la
+directiva `LogFormat` per a simplificar la selecció dels continguts que es vol
 que s'incloguin als registres. Aquesta secció explica com configurar el
 servidor per a què registri la informació que es consideri oportuna al registre
 d'accés.
@@ -1002,206 +1006,224 @@ en la gestió dels registres. El següent pas és analitzar la informació que
 contenen per produir estadístiques que siguin d'utilitat.
 
 El format del registre d'accés és altament configurable. El format s'especifica
-utilitzant una cadena de caràcters de format similar a les de printf en
+utilitzant una cadena de caràcters de format similar a les de _printf_ en
 llenguatge C.
 
-Mapatge d'URL a localitzacions en el sistema de fitxers
+== Mapatge d'URL a localitzacions en el sistema de fitxers
 
 En aquesta secció s'explica com l'Apache utilitza la URL d'una sol·licitud per
 determinar la localització en el sistema de fitxers d'on servir un fitxer.
 
-DocumentRoot
+=== DocumentRoot
 
 Per decidir quin fitxer serveix en resposta a una sol·licitud donada, el
 comportament per defecte de l'Apache és agafar la ruta-URL de la sol·licitud
 (la part de la URL que segueix al nom del host i el port) y l'afegeix al final
-del DocumentRoot que s'especifica als fitxers de configuració. Per tant, els
-fitxers i directoris dins del DocumentRoot formen l'arbre de documents bàsic
+del `DocumentRoot` que s'especifica als fitxers de configuració. Per tant, els
+fitxers i directoris dins del `DocumentRoot` formen l'arbre de documents bàsic
 que serà visible des de la web.
 
-Per exemple, si el DocumentRoot s'assigna a /var/www/html, llavor una
+Per exemple, si el `DocumentRoot` s'assigna a _/var/www/html_, llavors una
 sol·licitud a http://www.example.com/fish/guppies.html implicaria servir el
-fitxer /var/www/html/fish/guppies.html al client.
+fitxer _/var/www/html/fish/guppies.html_ al client.
 
 L'Apache també és capaç de tenir hosts virtual, de manera que el servidor rebi
 sol·licituds per més d'un host. En aquest cas, es pot especificar un
-DocumentRoot diferent per cadascun dels hosts virtuals.
+`DocumentRoot` diferent per cadascun dels hosts virtuals.
 
-Fitxers externs al DocumentRoot
+=== Fitxers externs al DocumentRoot
 
 Freqüentment es donen circumstàncies en què és necessari permetre l'accés web
-a parts del sistema de fitxer que no són estrictament sota del DocumentRoot.
+a parts del sistema de fitxer que no són estrictament sota del `DocumentRoot`.
 L'Apache ofereix diverses formes d'aconseguir-ho. En sistemes Unix, els
 enllaços simbòlics poden portar altres parts del sistema de fitxers sota del
-DocumentRoot. Per raons de seguretat, l'Apache seguirà enllaços simbòlics
-només si la configuració d'Options pel directori rellevant inclou
-FollowSymLinks o SymLinksIfOwnerMatch.
+`DocumentRoot`. Per raons de seguretat, l'Apache seguirà enllaços simbòlics
+només si la configuració d'`Options` pel directori rellevant inclou
+`FollowSymLinks` o `SymLinksIfOwnerMatch`.
 
-Alternativament, la directiva Alias maparà qualsevol part del sistema de
+Alternativament, la directiva `Alias` maparà qualsevol part del sistema de
 fitxers dins de l'espai web. Per exemple, amb
 
+----
 Alias /docs /var/web
+----
 
 la URL http://www.example.com/docs/dir/file.html se servirá des de
-/var/web/dir/file.html. La directiva ScriptAlias funciona de la mateixa
+_/var/web/dir/file.html_. La directiva `ScriptAlias` funciona de la mateixa
 manera, amb l'efecte addicional que tot el contingut carregat a la ruta
 objectiu es tracta com scripts CGI.
 
 Per situacions en què és requereix flexibilitat addicional, es poden usar
-les directives AliasMatch i ScriptAliasMatch per utilitzar expressions
+les directives `AliasMatch` i `ScriptAliasMatch` per utilitzar expressions
 regulars en la concordança.
 
-Autenticació, autorització i control d'accés
+== Autenticació, autorització i control d'accés
 
-L'autenticació és qualsevol procés mitjançant el qual es verifica que algú és
-qui diu ésser. L'autorització és qualsevol procés pel qual a algú se li permet
-ésser on vol anar, o tenir la informació que vol tenir.
+L'**autenticació** és qualsevol procés mitjançant el qual es verifica que algú
+és qui diu ésser. L'**autorització** és qualsevol procés pel qual a algú se li
+permet ésser on vol anar, o tenir la informació que vol tenir.
 
 Si al lloc web hi ha informació sensible o dirigida només a un petit grup de
 persones, cal assegurar-se que les persones que veuen aquestes pàgines siguin
 les persones que es vol.
 
-Prerequisits
+=== Prerequisits
 
 Les directives tractades en aquest apartat han d'anar al fitxer de configuració
-principal del servidor (típicament dins d'una secció <Directory>), o en fitxers
-de configuració per directoris (fitxers .htaccess).
+principal del servidor (típicament dins d'una secció `<Directory>`), o en
+fitxers de configuració per directoris (fitxers _.htaccess_).
 
-Si es planeja utilitzar fitxers .htaccess, necessitarà tenir una configuració
+Si es planeja utilitzar fitxers _.htaccess_, necessitarà tenir una configuració
 al servidor que permeti posar directives d'autenticació en aquests fitxers.
-Això s'aconsegueix amb la directiva AllowOverride, la qual especifica quines
+Això s'aconsegueix amb la directiva `AllowOverride`, la qual especifica quines
 directives, en cas que n'hi hagi, es poden col·locar als fitxers de
 configuració per directoris.
 
-Pel cas de l'autenticació, es necessitarà una directiva AllowOverride com la
+Pel cas de l'autenticació, es necessitarà una directiva `AllowOverride` com la
 següent:
 
+----
 AllowOverride AuthConfig
+----
 
-Posada en funcionament
+=== Posada en funcionament
 
 Anem a protegir amb contrasenya un directori del servidor.
 
 Caldrà crear un fitxer de contrasenyes. Aquest fitxer s'ha de col·locar en
 algun lloc no accessible mitjançant la web. Per exemple, si els documents es
-serveixen des de /usr/local/apache/htdocs, es podria posar el fitxer o fitxers
-de contrasenyes a /usr/local/apache/passwd.
+serveixen des de _/usr/local/apache/htdocs_, es podria posar el fitxer o fitxers
+de contrasenyes a _/usr/local/apache/passwd_.
 
-Per a crear un fitxer de contrasenyes s'utilitza la utilitat htpasswd que ve
+Per a crear un fitxer de contrasenyes s'utilitza la utilitat `htpasswd` que ve
 amb l'Apache:
 
+----
 htpasswd -c /usr/local/apache/passwd/passwords rbowen
+----
 
-L'htpasswd demanarà la contrasenya, i després la tornarà a demanar per a
+L'`htpasswd` demanarà la contrasenya, i després la tornarà a demanar per a
 confirmar-la:
 
+----
 # htpasswd -c /usr/local/apache/passwd/passwords rbowen
 New password: mypassword
 Re-type new password: mypassword
 Adding password for user rbowen
+----
 
 El següent pas és configurar el servidor per a què sol·liciti una contrasenya
 i dir-li al servidor a quins usuaris se'ls permet l'accés. Això es pot fer
-editant el fitxer httpd.conf o utilitzant un fitxer .htaccess. Per exemple, si
-es vol protegir el directori /usr/local/apache/htdocs/secret, es poden
+editant el fitxer _httpd.conf_ o utilitzant un fitxer _.htaccess_. Per exemple,
+si es vol protegir el directori _/usr/local/apache/htdocs/secret_, es poden
 utilitzar les següents directives, ja sigui posant-les al fitxer
-/usr/local/apache/htdocs/secret/.htaccess, o a httpd.conf, dins d'una secció
-<Directory /usr/local/apache/apache/htdocs/secret>.
+_/usr/local/apache/htdocs/secret/.htaccess_, o a _httpd.conf_, dins d'una secció
+`<Directory /usr/local/apache/apache/htdocs/secret>`.
 
+----
 AuthType Basic
 AuthName "Restricted Files"
 AuthUserFile /usr/local/apache/passwd/passwords
 Require user rbowen
+----
 
 Anem a examinar cadascuna d'aquestes directives per separat. La directiva
-AuthType selecciona el mètode que s'utilitzarà per autenticar l'usuari. El
-mètode més comú és Basic, i aquest mètode està implementat a mod_auth. És
+`AuthType` selecciona el mètode que s'utilitzarà per autenticar l'usuari. El
+mètode més comú és `Basic`, i aquest mètode està implementat a *mod_auth*. És
 important ser conscient, tanmateix, que l'autenticació bàsica envia la
 contrasenya des del client fins al servidor sense xifrar. Per tant, aquest
 mètode no s'hauria d'utilitzar per a informació altament sensible. L'Apache
-suporta un altre mètode d'autenticació: AuthType Digest. Aquest mètode està
-implementat a mod_auth_digest i és molt més segur.
+suporta un altre mètode d'autenticació: `AuthType Digest`. Aquest mètode està
+implementat a *mod_auth_digest* i és molt més segur.
 
-La directiva AuthName estableix el Domini a utilitzar en l'autenticació. El
+La directiva `AuthName` estableix el _Domini_ a utilitzar en l'autenticació. El
 domini compleix dues funcions importants. Primer, el client freqüentment
 presenta aquesta informació a l'usuari com a part del quadre de diàleg per
 obtenir la contrasenya. Segon, s'utilitza pel client per determinar quina
 contrasenya enviar per a una àrea autenticada donada.
 
 Així, per exemple, una vegada que el client s'hagi autenticat a l'àrea
-“Restricted Files”, automàticament s'intentarà usar la mateixa contrasenya
+“_Restricted Files_”, automàticament s'intentarà usar la mateixa contrasenya
 en qualsevol àrea del mateix servidor que estigui marcada amb el domini
-“Restricted Files”. Per tant, es pot evitar que es demani a un usuari la
+“_Restricted Files_”. Per tant, es pot evitar que es demani a un usuari la
 contrasenya més d'una vegada si es comparteix el mateix domini per múltiples
 àrees restringides.
 
-La directiva AuthUserFile estableix la ruta al fitxer de contrasenya que
-acabem de crear amb htpasswd. Si hi ha un gran nombre d'usuaris, seria bastant
+La directiva `AuthUserFile` estableix la ruta al fitxer de contrasenya que
+acabem de crear amb `htpasswd`. Si hi ha un gran nombre d'usuaris, seria bastant
 lent haver de cercar en un fitxer de text pla l'autenticació de l'usuari de
 cada una de sol·licituds. L'Apache també té la capacitat d'emmagatzemar la
 informació de l'usuari en arxius ràpids de bases de dades. El mòdul
-mod_auth_dbm proporciona la directiva AuthDBMUserFile. Aquests arxius es poden
-crear i manipular amb el programa dbmmanage. Molts altres tipus d'opcions
-d'autenticació estan disponibles a partir de mòduls de terceres parts, i es
-poden consultar a la base de dades de mòduls de l'Apache.
+*mod_auth_dbm* proporciona la directiva `AuthDBMUserFile`. Aquests arxius es
+poden crear i manipular amb el programa `dbmmanage`. Molts altres tipus
+d'opcions d'autenticació estan disponibles a partir de mòduls de terceres
+parts, i es poden consultar a la base de dades de mòduls de l'Apache.
 
-Finalment, la directiva Require proporciona la part de l'autorització del
+Finalment, la directiva `Require` proporciona la part de l'autorització del
 procés, establint l'usuari al qual se li permet accedir a aquesta àrea del
 servidor.
 
-Permetre l'accés a més d'una persona
+=== Permetre l'accés a més d'una persona
 
 Les directives anteriors només permeten que una persona (específicament algú
-amb nom d'usuari rbowen) accedeixi al directori. En la major part dels
+amb nom d'usuari _rbowen_) accedeixi al directori. En la major part dels
 casos, es voldrà permetre l'accés a més d'una persona. Per això s'utilitza
-la directiva AuthGroupFile.
+la directiva `AuthGroupFile`.
 
 Si es desitja permetre l'entrada a més d'una persona, caldrà crear un fitxer
 de grup que associï noms de grup amb una llista d'usuaris pertanyents a aquest
 grup. El format d'aquest fitxer és molt senzill, i es pot crear amb qualsevol
 editor. El contingut serà similar a aquest:
 
+----
 GroupName: rbowen dpitts sungo rshersey
+----
 
 Això és només una llista de membres del grup, escrits en una línia i separats
 per espais.
 
 Per afegir un usuari a un fitxer de contrasenyes ja existent, s'escriu:
 
+----
 htpasswd /usr/local/apache/passwd/passwords dpitts
+----
 
 S'obtindrà la mateixa resposta que abans, però el nou usuari s'afegirà al
 fitxer existent, en comptes de crear un nou fitxer. És la opció -c la que fa
 que es creï un nou fitxer de contrasenyes.
 
-Després, cal modificar el fitxer .htaccess per tal que sigui com el següent:
+Després, cal modificar el fitxer _.htaccess_ per tal que sigui com el següent:
 
+----
 AuthType Basic
 AuthName "By Invitation Only"
 AuthUserFile /usr/local/apache/passwd/passwords
 AuthGroupFile /usr/local/apache/passwd/groups
 Require group GroupName
+----
 
-Ara, es permetrà l'accés a qualsevol que estigui llistat al grup GroupName, i
-que figura al fitxer password, si escriu la contrasenya correcta.
+Ara, es permetrà l'accés a qualsevol que estigui llistat al grup `GroupName`, i
+que figura al fitxer _password_, si escriu la contrasenya correcta.
 
 Existeix una altra forma de permetre l'entrada a múltiples usuaris que és
 menys específica. En comptes de crear un fitxer de grup, es pot utilitzar només
 la següent directiva:
 
+----
 Require valid-user
+----
 
-Utilitzant això en comptes de la línia Require user rbowen, es permetrà l'accés
-a qualsevol que estigui llistat al fitxer de contrasenyes i que hagi introduït
-correctament la seva contrasenya.
+Utilitzant això en comptes de la línia `Require user rbowen`, es permetrà
+l'accés a qualsevol que estigui llistat al fitxer de contrasenyes i que hagi
+introduït correctament la seva contrasenya.
 
 Fins i tot es pot emular el comportament del grup aquí, mantenint només un
 fitxer de contrasenya per a cada grup. L'avantatge d'aquesta tècnica és que
 l'Apache només ha de verificar un fitxer, en comptes de dos. El desavantatge
 és que s'ha de mantenir un grup de fitxers de contrasenya i recordar
-referir-se al correcte a la directiva AuthUserFile.
+referir-se al correcte a la directiva `AuthUserFile`.
 
-Possibles problemes
+=== Possibles problemes
 
 Per la manera com l'autenticació bàsica està especificada, el nom d'usuari i
 contrasenya ha de verificar-se cada vegada que se sol·licita un document del
@@ -1218,195 +1240,221 @@ del rendiment de l'equip servidor en particular, però es pot esperar observar
 una disminució un cop s'insereixin unes centenes d'entrades, i potser llavors
 cal considerar un mètode diferent d'autenticació.
 
-Quina altra cosa senzilla i efectiva es pot fer?
+=== Quina altra cosa senzilla i efectiva es pot fer?
 
 L'autenticació per nom d'usuari i contrasenya és només una part de la història.
 Freqüentment es desitja permetre l'accés als usuaris basant-se en alguna cosa
 més que qui són. Per exemple, d'on vénen.
 
-Les directives Allow i Deny possibiliten permetre i rebutjar l'accés depenent
-del nom o l'adreça de la màquina que sol·licita un document. La directiva
-Order va de la mà de les altres dues, i li diu a l'Apache en quin ordre aplicar
-els filtres.
+Les directives `Allow` i `Deny` possibiliten permetre i rebutjar l'accés
+depenent del nom o l'adreça de la màquina que sol·licita un document. La
+directiva `Order` va de la mà de les altres dues, i li diu a l'Apache en quin
+ordre aplicar els filtres.
 
 L'ús d'aquestes directives és:
 
+----
 Allow from address
+----
 
-on address és una adreça IP (o una adreça IP parcial) o un nom de domini
-completament qualificat (FQDN), o un nom de domini parcial. Es poden
+on _address_ és una adreça IP (o una adreça IP parcial) o un _nom de domini
+completament qualificat_ (**FQDN**), o un nom de domini parcial. Es poden
 proporcionar múltiples adreces o noms de domini.
 
 Per exemple, si tenim a algú que envia missatges no desitjats al nostre fòrum,
 i volem que no torni a accedir, podríem fer:
 
+----
 Deny from 205.252.46.165
+----
 
 Els visitants que vinguin d'aquesta adreça no podran veure el contingut afectat
 per aquesta directiva. Si, contràriament, tenim el nom de la màquina, també
 el podríem usar:
 
+----
 Deny from host.example.com
+----
 
 I, si volguéssim bloquejar l'accés d'un domini sencer, podem especificar només
 part d'una adreça o nom de domini:
 
+----
 Deny from 192.101.205
 Deny from cyberthugs.com moreidiots.com
 Deny from ke
+----
 
-L'ús d'Order permet assegurar-se que efectivament està restringint l'accés al
-grup al qual vol permetre l'accés, combinant una directiva Deny i una Allow:
+L'ús d'`Order` permet assegurar-se que efectivament està restringint l'accés al
+grup al qual vol permetre l'accés, combinant una directiva `Deny` i una `Allow`:
 
+----
 Order deny,allow
 Deny from all
 Allow from dev.example.com
+----
 
-Només amb la directiva Allow no es faria el que es vol, perquè permetria
+Només amb la directiva `Allow` no es faria el que es vol, perquè permetria
 entrar a la gent provinent d'aquella màquina, i addicionalment a qualsevol
 persona. El que es volia era deixar entrar només als primers.
 
-Directoris web per cada usuari
+== Directoris web per cada usuari
 
 En sistema amb múltiples usuaris, es pot permetre que cada usuari tingui un
-lloc web al seu directori personal utilitzant la directiva UserDir. Els
+lloc web al seu directori personal utilitzant la directiva `UserDir`. Els
 visitants a la URL http://exemple.com/~nomusuari/ obtindran contingut del
 directori personal de l'usuari nomusuari, del subdirectori especificat a la
-directiva UserDir.
+directiva `UserDir`.
 
-Configurant la ruta amb UserDir
+=== Configurant la ruta amb UserDir
 
-La directiva UserDir especifica el directori del qual es carregarà el contingut
-per cada usuari. Aquesta directiva pot adoptar diverses formes.
+La directiva `UserDir` especifica el directori del qual es carregarà el
+contingut per cada usuari. Aquesta directiva pot adoptar diverses formes.
 
 Si es dóna una ruta que no comenci amb una barra, s'assumeix que és una ruta
 relativa al directori personal de l'usuari especificat. Donada la configuració:
 
+----
 UserDir public_html
+----
 
 la URL http://exemple.com/~rbowen/file.html es traduirà a la ruta de fitxer
-/home/rbowen/public_html/file.html
+*/home/rbowen/public_html/file.html*
 
 Si es dóna una ruta començada per barra, es construirà una ruta utilitzant
 aquesta ruta, més el nom d'usuari especificat. Donada la configuració:
 
+----
 UserDir /var/html
+----
 
 la URL http://exemple.com/~rbowen/file.html es traduirà a la ruta
-/var/html/rbowen/file.html
+_/var/html/rbowen/file.html_
 
 Si es proveeix una ruta que conté un asterisc (*), s'utilitzarà una ruta en
 què l'asterisc es reemplaçarà pel nom d'usuari. Donada aquesta configuració:
 
+----
 UserDir /var/www/*/docs
+----
 
 la URL http://exemple.com/~rbowen/file.html es traduirà a la ruta
-/var/www/rbowen/dics/file.html
+_/var/www/rbowen/dics/file.html_
 
 També es poden assignar múltiples directoris o rutes.
 
+----
 UserDir public_html /var/html
+----
 
-Per la URL http://exemple.com/~rbowen/file.html, l'Apache cercarà ~rbowen. Si
-no hi és, l'Apache cercarà rbowen a /var/html. Si el troba, la URL anterior es
-traduirà a la ruta /var/html/rbowen/file.html
+Per la URL http://exemple.com/~rbowen/file.html, l'Apache cercarà _~rbowen_. Si
+no hi és, l'Apache cercarà _rbowen_ a _/var/html_. Si el troba, la URL anterior
+es traduirà a la ruta _/var/html/rbowen/file.html_
 
-Readreçant a URL externes
+=== Readreçant a URL externes
 
-La directiva UserDir es pot usar per readreçar sol·licituds de directoris
+La directiva `UserDir` es pot usar per readreçar sol·licituds de directoris
 d'usuari a URL externes.
 
+----
 UserDir http://exemple.org/users/*/
+----
 
 L'exemple de dalt dirigirà una sol·licitud de http://exemple.com/~bob/abc.html
 a http://exemple.org/users/bob/abc.html
 
-Restringir quins usuaris poden utilitzar aquesta funcionalitat
+=== Restringir quins usuaris poden utilitzar aquesta funcionalitat
 
-Utilitzant la sintaxis mostrada a la documentació de UserDir, es poden
+Utilitzant la sintaxis mostrada a la documentació de `UserDir`, es poden
 restringir quins usuaris tenen permès usar aquesta funcionalitat:
 
+----
 UserDir disabled root jro fish
+----
 
 Aquesta configuració activarà aquesta característica per a tots els usuaris
-excepte per aquells llistats a la instrucció disabled. Es pot, de forma
+excepte per aquells llistats a la instrucció `disabled`. Es pot, de forma
 similar, desactivar aquesta característica per tots els usuaris excepte uns
 quants, utilitzant una configuració com la següent:
 
+----
 UserDir disabled
 UserDir enabled rbowen krietz
+----
 
-Permetre als usuaris alterar la configuració
+=== Permetre als usuaris alterar la configuració
 
 Si es vol que els usuaris puguin modificar la configuració del servidor en el
-seu lloc web, hauran d'utilitzar fitxers .htaccess per canviar-la. Cal
-assegurar-se d'haver configurat AllowOverride a un valor suficient per les
+seu lloc web, hauran d'utilitzar fitxers _.htaccess_ per canviar-la. Cal
+assegurar-se d'haver configurat `AllowOverride` a un valor suficient per les
 directives que es vol permetre que els usuaris modifiquin.
 
-Fitxers .htaccess
+== Fitxers .htaccess
 
-Els fitxers .htaccess (o fitxers de configuració distribuïda) proveeixen una
-forma de fer canvis a la configuració en base als directors. Un fitxers, que
+Els fitxers _.htaccess_ (o **fitxers de configuració distribuïda**) proveeixen
+una forma de fer canvis a la configuració en base als directors. Un fitxers, que
 contindrà una o més directives de configuració, es posarà en un directori en
 particular, i les directives s'aplicaran a aquell directori, i a tots els
 subdirectoris d'ell.
 
-En general, els fitxers .htaccess utilitzen la mateixa sintaxis que els fitxers
-de configuració principals. El que es pot posar en aquests fitxers ve
-determinat per la directiva AllowOverride. Aquesta directiva especifica, en
-categories, quines directives se seguiran si es troben en un fitxer .htaccess.
-Si és possible posar una directiva en un fitxer .htaccess, la documentació per
-aquella directiva contendrà una secció Override, que especificarà quin valor
-s'ha de posar en l'AllowOverride per tal de permetre aquesta directiva.
+En general, els fitxers _.htaccess_ utilitzen la mateixa sintaxis que els
+fitxers de configuració principals. El que es pot posar en aquests fitxers ve
+determinat per la directiva `AllowOverride`. Aquesta directiva especifica, en
+categories, quines directives se seguiran si es troben en un fitxer _.htaccess_.
+Si és possible posar una directiva en un fitxer _.htaccess_, la documentació per
+aquella directiva contendrà una secció `Override`, que especificarà quin valor
+s'ha de posar en l'`AllowOverride` per tal de permetre aquesta directiva.
 
-Per exemple, si es consulta la documentació de la directiva AddDefaultCharset,
-ens trobarem que és permesa en fitxers .htaccess. La línia Override diu
-FileInfo. Per tant, cal tenir AllowOverride FileInfo per tal que aquesta
-directiva s'aplica en el fitxers .htaccess.
+Per exemple, si es consulta la documentació de la directiva `AddDefaultCharset`,
+ens trobarem que és permesa en fitxers _.htaccess_. La línia `Override` diu
+`FileInfo`. Per tant, cal tenir `AllowOverride FileInfo` per tal que aquesta
+directiva s'apliqui en el fitxers _.htaccess_.
 
-Quan (no) utilitzar fitxers .htaccess
+=== Quan (no) utilitzar fitxers .htaccess
 
-En general, mai s'han d'usar fitxers .htaccess a no ser que no tinguem accés al
-fitxer de configuració principal del servidor. Hi ha, per exemple, un maltès
-habitual que l'autenticació d'usuaris s'hauria de fer sempre en
-fitxers .htaccess. Aquest no és el cas. Es pot posar la configuració
-d'autenticació a la configuració principal del servidor, i aquest és, de fet,
+En general, mai s'han d'usar fitxers _.htaccess_ a no ser que no tinguem accés
+al fitxer de configuració principal del servidor. Hi ha, per exemple, el
+malentès habitual que l'autenticació d'usuaris s'hauria de fer sempre en
+fitxers _.htaccess_. Aquest no és el cas. Es pot posar la configuració
+d'autenticació a la configuració principal del servidor, i aquesta és, de fet,
 la manera preferida de fer les coses.
 
-Els fitxers .htaccess s'han de fer servir en un cas on els proveïdors de
+Els fitxers _.htaccess_ s'han de fer servir en un cas on els proveïdors de
 continguts hagin de fer canvis de configuració al servidor en base a
-directoris, però no tenen accés com a root al sistema servidor. En cas que
+directoris, però no tenen accés com a _root_ al sistema servidor. En cas que
 l'administrador del servidor no vulgui fer canvis freqüents de configuració,
 podria ser desitjable permetre als usuaris individualment fer canvis als
-fitxers .htaccess per ells mateixos. Això és particularment cert, per exemple,
+fitxers _.htaccess_ per ells mateixos. Això és particularment cert, per exemple,
 en casos on els ISP allotgen múltiples llocs d'usuaris en una sola màquina, i
 volen que els seus usuaris siguin capaços d'alterar la seva configuració.
 
-De totes formes, en general, l'ús de fitxers .htaccess s'ha d'evitar quan sigui
-possible. Qualsevol configuració que es vulgui posar en un fitxer .htaccess,
-es pot posar de forma igualment efectiva a una secció <Directory> en el fitxer
-de configuració principal del servidor.
+De totes formes, en general, l'ús de fitxers _.htaccess_ s'ha d'evitar quan
+sigui possible. Qualsevol configuració que es vulgui posar en un fitxer
+_.htaccess_, es pot posar de forma igualment efectiva a una secció
+`<Directory>` en el fitxer de configuració principal del servidor.
 
-Hi ha dues raons principals per evitar l'ús dels fitxers .htaccess.
+Hi ha dues raons principals per evitar l'ús dels fitxers _.htaccess_.
 
-La primera d'elles és el rendiment. Quan es configura l'AllowOverride per
-permetre l'ús de fitxers .htaccess, l'Apache mirarà a cada directori per si hi
-ha un fitxer .htaccess. Així, permetre els fitxer .htaccess causa una davallada
-de rendiment, tan si s'utilitzen realment com si no. A més, el fitxer .htaccess
-es carrega cada vegada que un document es sol·licita.
+La primera d'elles és el rendiment. Quan es configura l'`AllowOverride` per
+permetre l'ús de fitxers _.htaccess_, l'Apache mirarà a cada directori per si hi
+ha un fitxer _.htaccess_. Així, permetre els fitxer _.htaccess_ causa una
+davallada de rendiment, tant si s'utilitzen realment com si no. A més, el fitxer
+_.htaccess_ es carrega cada vegada que un document es sol·licita.
 
-De fet, noteu que l'Apache ha de cercar fitxers .htaccess a tots els directoris
-de nivell superior, per tal d'obtenir el conjunt total de directives que ha
-d'aplicar. Així, si se sol·licita un fitxer del directori /www/htdocs/exemple,
-l'Apache ha de cercar els següents fitxers:
+De fet, noteu que l'Apache ha de cercar fitxers _.htaccess_ a tots els
+directoris de nivell superior, per tal d'obtenir el conjunt total de directives
+que ha d'aplicar. Així, si se sol·licita un fitxer del directori
+_/www/htdocs/exemple_, l'Apache ha de cercar els següents fitxers:
 
+----
 /.htaccess
 /www/.htaccess
 /www/htdocs/.htaccess
 /www/htdocs/exemple/.htaccess
+----
 
 I per tant, per cada accés a un fitxer d'aquest directori, hi ha quatre
-accessos addicionals al sistema de fitxers, fins i tot cap d'ells existeix.
+accessos addicionals al sistema de fitxers, fins i tot si cap d'ells existeix.
 
 La segona consideració té a veure amb la seguretat. Es permet que els usuaris
 modifiquin la configuració del servidor, cosa que pot resultar en canvis sobre
@@ -1415,49 +1463,61 @@ donar als usuaris aquest privilegi. Cal notar també que donar als usuaris
 menys privilegis dels que necessitaran conduirà a sol·licituds de suport tècnic
 addicionals.
 
-L'ús de fitxers .htaccess es pot deshabilitar completament configurant la
-directiva AllowOverride a none:
+L'ús de fitxers _.htaccess_ es pot deshabilitar completament configurant la
+directiva `AllowOverride` a `none`:
 
+----
 AllowOverride None
+----
 
-Instal·lació d'un LAMP: Linux+Apache+MySQL+PHP
+== Instal·lació d'un LAMP: Linux+Apache+MySQL+PHP
 
 Un dels usos habituals de l'Apache consisteix en vincular-lo amb el llenguatge
-d'scripting PHP i amb el gestor de bases de dades MySQL amb l'objectiu de
-crear pàgines web dinàmiques. En aquesta secció veurem una manera senzilla
-d'instal·lar aquests programes i vincular-los entre ells en el Debian Lenny:
+d'scripting PHP i amb el gestor de bases de dades MySQL/MariaDB amb l'objectiu
+de crear pàgines web dinàmiques. En aquesta secció veurem una manera senzilla
+d'instal·lar aquests programes i vincular-los entre ells en el Debian Jessie:
 
- 1. Instal·lar el paquet mysql-server. Amb això instal·larem el servidor i el
- client del MySQL. La instal·lació ens demanarà que assignem una contrasenya a
- l'usuari root del MySQL (que no té res a veure amb l'usuari root del sistema).
- Aquest usuari servirà per a crear altres usuaris i les bases de dades, però
- hauríem d'evitar utilitzar-lo directament des de el servidor web.
- 2. Per simplificar la instal·lació, instal·larem el paquet phpmyadmin.
- 2.1. Fixeu-vos que aquest paquet ja instal·la l'apache2 si no el teníem, el
- libapache2-mod-php5, que és el mòdul de l'Apache encarregat d'interpretar el
- codi PHP i el php5-mysql, que és l'extensió del llenguatge PHP per accedir a
- MySQL.
- 2.2. El phpmyadmin l'utilitzarem des de l'Apache, de manera que seleccionarem
- que configuri el servidor apache2.
- 3. Amb el navegador, anem a la web del phpmyadmin: http://localhost/phpmyadmin
- 3.1. Entrem amb l'usuari root que hem creat a l'instal·lar el MySQL.
- 3.2. Per crear un nou usuari al MySQL, anem a Privileges, i Add a New User.
- Posem el nom de l'usuari, els hosts des dels que podrà connectar (en el cas
-	 habitual d'una web que accedeix a la base de dades, posaríem Local, ja que
-	 el servidor web s'està executant al mateix servidor on hi ha el MySQL, i
-	 així evitaríem els ricos que pot comportar habilitar l'accés des d'altres
-	 màquines. Per altra banda, el MySQL ve amb aquest accés remot deshabilitat.
-	 Si volguéssim habilitar-lo, hauríem d'anar al fitxer /etc/mysql/my.cnf i
-	 comentar la línia bind-address = 127.0.0.1
- 3.3. Podem crear una base de dades directament amb el nom de l'usuari, o bé
- crear-la després.
- 3.4. Després de crear la base de dades, convé crear una taula amb alguna
- informació.
- 4. Si el phpmyadmin ha funcionat i ha pogut crear l'usuari i la base de dades,
- vol dir que tot està funcionant correctament: el servidor web ja ha
- interpretat codi PHP, i ja ha accedit al MySQL. Però podem utilitzar un
- script nostre per comprovar-ho i veure com s'hauria de fer una consulta:
+1. Instal·lar el paquet _mariadb-server_. Amb això instal·larem el servidor i el
+client del MariaDB. La instal·lació ens demanarà que assignem una contrasenya a
+l'usuari root del MariaDB (que no té res a veure amb l'usuari root del sistema).
+Aquest usuari servirà per a crear altres usuaris i les bases de dades, però
+hauríem d'evitar utilitzar-lo directament des del servidor web.
 
+2. Per simplificar la instal·lació, instal·larem el paquet _phpmyadmin_.
+
+    2.1. Fixeu-vos que aquest paquet ja instal·la l'_apache2_ si no el teníem,
+    el _libapache2-mod-php5_, que és el mòdul de l'Apache encarregat
+    d'interpretar el  codi PHP i el _php5-mysql_, que és l'extensió del
+    llenguatge PHP per accedir a MySQL/MariaDB.
+
+    2.2. El _phpmyadmin_ l'utilitzarem des de l'Apache, de manera que
+    seleccionarem que configuri el servidor _apache2_.
+
+3. Amb el navegador, anem a la web del _phpmyadmin_: http://localhost/phpmyadmin
+
+    3.1. Entrem amb l'usuari root que hem creat a l'instal·lar el MySQL.
+
+    3.2. Per crear un nou usuari al MariaDB, anem a _Privileges_, i
+    _Add a New User_. Posem el nom de l'usuari, els hosts des dels que podrà
+    connectar (en el cas habitual d'una web que accedeix a la base de dades,
+    posaríem _Local_, ja que el servidor web s'està executant al mateix
+    servidor on hi ha el MariaDB, i així evitaríem els ricos que pot comportar
+    habilitar l'accés des d'altres màquines. Per altra banda, el MySQL ve amb
+    aquest accés remot deshabilitat. Si volguéssim habilitar-lo, hauríem d'anar
+    al fitxer _/etc/mysql/my.cnf_ i comentar la línia `bind-address = 127.0.0.1`
+
+    3.3. Podem crear una base de dades directament amb el nom de l'usuari, o bé
+    crear-la després.
+
+    3.4. Després de crear la base de dades, convé crear una taula amb alguna
+    informació.
+
+4. Si el _phpmyadmin_ ha funcionat i ha pogut crear l'usuari i la base de dades,
+vol dir que tot està funcionant correctament: el servidor web ja ha
+interpretat codi PHP, i ja ha accedit al MariaDB. Però podem utilitzar un
+script nostre per comprovar-ho i veure com s'hauria de fer una consulta:
+
+----
 <html>
 <body>
 <?php
@@ -1490,8 +1550,9 @@ mysql_close($link);
 ?>
 </body>
 </html>
+----
 
-on mysql_host seria 127.0.0.1, mysql_user l'usuari que hem creat,
-mysql_password la  contrasenya d'aquest usuari, my_database el nom de la
-base de dades a què volem accedir, i my_table el nom de la taula dins
+on `mysql_host` seria 127.0.0.1, `mysql_user` l'usuari que hem creat,
+`mysql_password` la contrasenya d'aquest usuari, `my_database` el nom de la
+base de dades a què volem accedir, i `my_table` el nom de la taula dins
 d'aquesta base de dades que volem visualitzar.
