@@ -29,6 +29,8 @@ endif::teacher[]
 
 == Objectiu de la pràctica
 
+L'objectiu de la pràctica és configurar un servidor Apache i veure'n les
+característiques més comunes.
 
 == Preparatius
 
@@ -55,18 +57,192 @@ les captures*.
 
 == Apartat 1: Instal·lació de l'Apache a *legolas*
 
-- Web per defecte
-- Web per un altre port
-- Fitxer d'inici (index.html)
-- Activació PHP. Instal·lació MariaDB.
-- ServerName, ServerAlies, Virtual Hosts. Subdomini.
-- Configuració DNS.
-- Posar o no www.
-- Subdirectoris. Directory, Alias.
-- Canvi pàgina error.
-- Revisió registre d'accés
-- .htaccess. Accés privat.
-- Activar/desactivar mòduls. Per exemple, autoindex.
-- Hotlinking
-- HTTPS. Readreçar sempre a HTTPS.
-- Web personals.
+La màquina *legolas* ja s'ha creat a la pràctica de FTP. En cas de no tenir-la,
+cal clonar-la de *base* i assignar-li el seu nom i configuració de xarxa.
+
+Instal·la el paquet *apache2* a *Legolas* i comprova que ja s'hi pot accedir
+des de la xarxa local. Per a comprovar que la connexió funciona des d'un
+ordinador sense entorn gràfic, pots utilitzar el navegador en línia de
+comandes *www-browser*.
+
+.Entregar
+====
+*Instal·lació de l'apache2*
+====
+
+.Entregar
+====
+*Comprovació de connexió des de la xarxa local*
+====
+
+Finalment, per poder accedir des de l'exterior de la xarxa caldrà obrir i
+readreçar correctament els ports 80 i 443 a *sauron*. Per fer això utilitzarem
+l'*iptables* igual que ja hem fet a les pràctiques anteriors.
+
+.Entregar
+====
+*Ordres de l'_iptables_ per dirigir els ports 80 i 443 cap a _legolas_*
+====
+
+Un cop fet això ja pots provar la connexió a la web per defecte des la xarxa
+del centre, utilitzant qualsevol navegador web.
+
+.Entregar
+====
+*Comprovació de connexió des de la xarxa del centre*
+====
+
+== Apartat 2: Creació de hosts virtuals
+
+En aquest apartat farem que el nostre servidor respongui a dos noms de hosts
+diferents. Per una banda, tindrem el nom per defecte, *nom.cognom.lan*, el
+mateix que vam utilitzar pel correu electrònic. A aquest afegirem el host
+*cognom.nom.lan*, que es dirigirà al mateix servidor, però a una pàgina web
+diferent.
+
+Per aconseguir això caldrà fer dues coses:
+
+1. Configurar el servidor DNS per tal que les peticions als dos dominis es
+dirigeixin correctament a la IP pública de *sauron*.
+2. Configurar l'Apache per tal que distingeixi els dos noms i mostri la pàgina
+correcta en cada cas.
+
+La primera part s'ha d'afegir al servidor DNS de l'aula, com vam fer a la
+pràctica de correu electrònic.
+
+.Entregar
+====
+*Línies que cal afegir al servidor DNS de la zona _lan_*
+====
+
+Anem a crear ara les pàgines web de cada domini.
+
+- Crea l'estructura de directoris necessària. La web del domini *nom.cognom.lan*
+es llegirà des del directori */var/www/nom*, mentre que la web del domini
+*cognom.nom.lan* es llegirà del directori */var/www/cognom*.
+
+- Crea dos fitxers *index.html*, un a cadascun dels directoris anteriors. Escriu
+un codi HTML a cadascun d'ells de manera que es vegi clarament a quin dels
+hosts virtuals hem connectat en cada cas.
+
+.Entregar
+====
+*Sortida de `ls -R` on es vegi l'estructura de fitxers i directoris de _/var/www_.*
+====
+
+.Entregar
+====
+*Cadascun dels dos fitxers _index.html_.*
+====
+
+- Crea fitxers de configuració de l'Apache, un per cada host virtual. Utilitza
+com a model el fitxer */etc/apache2/sites-available/000-default.conf*. No
+t'oblidis de configurar les directives *ServerName* i *DocumentRoot*.
+
+.Entregar
+====
+*Cadascun dels dos fitxers de configuració creats.*
+====
+
+- Activa els dos hosts virtuals que hem creat i desactiva el host per defecte.
+
+.Entregar
+====
+*Instruccions utilitzades per activar i desactivar els hosts virtuals.*
+====
+
+.Entregar
+====
+*Sortida de l'ordre `ls` on es vegin els sites actius a _sites-enabled_.*
+====
+
+- Reinicia l'Apache utilitzant l'ordre *apachectl*.
+
+- Comprova que pots accedir a cadascun dels hosts des del teu ordinador.
+
+.Entregar
+====
+*Captura del navegador connectat a cadascun dels dos sites.*
+====
+
+== Apartat 3: Configuració del primer host virtual
+
+Les següents configuracions s'han d'aplicar al site *nom.cognom.lan*.
+
+- Canvia el nom del fitxer *index.html* a *inici.html*. Fes que se serveixi
+aquest fitxer per defecte en comptes de *index.html*.
+
+- Utilitza la directiva *ServerAlias* per fer que si l'usuari utilitza el nom
+*www.nom.cognom.lan* en comptes de *nom.cognom.lan*, la pàgina es mostri
+correctament.
+
+- Crea un tercer directori dins de */var/www* anomenat *test* i posa un
+fitxer *index.html* a dins que mostri clarament quin lloc estem visitant.
+Després, utilitza la directiva *Alias* per fer que l'adreça
+*nom.cognom.lan/test* vagi a parar a aquest directori.
+
+- Configura l'Apache per tal que permiti l'ús de fitxers *.htaccess* al
+directori */var/www/test*, però assegura't que no en permet als altres
+directoris.
+
+- Utilitza un fitxer *.htaccess* per fer que per accedir al directori
+*/var/www/test* s'hagi de proporcionar un nom d'usuari i contrasenya vàlids per
+poder-hi accedir. Hi haurà dos usuaris amb permís d'accés: *nom* i *cognom*, els
+dos amb contrasenya *12345*.
+
+== Apartat 4: Configuració del segon host virtual
+
+Les següents configuracions s'han d'aplicar al site *cognom.nom.lan*.
+
+Voldrem que aquest site se serveixi sempre per HTTPS en comptes d'HTTP. Per fer
+això segueix els següents passos:
+
+- Copia el fitxer */etc/apache2/sites-available/default-ssl.conf* per utilitzar
+de model.
+
+- Modifica la copia que has fet del fitxer amb les dades adequades pel teu
+host. Pots utilitzar el mateix certificat SSL que vas utilitzar a la pràctica
+del FTP o generar-ne un de nou.
+
+- Un cop modificada la configuració, activa el nou site.
+
+- Comprova amb el navegador que podem accedir tant per HTTP com per HTTPS a
+aquest site.
+
+- Forçarem ara que qualsevol petició dirigida a HTTP es transformi
+automàticament a HTTPS. Per això, afegeix les següent línies a la configuració
+del site HTTP:
+
+----
+RewriteEngine on
+RewriteCond %{SERVER_NAME} =cognom.nom.lan [OR]
+RewriteCond %{SERVER_NAME} =*.cognom.nom.lan
+RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
+----
+
+Amb això li estem demanant a l'Apache que reescrigui qualsevol petició dirigida
+a *cognom.nom.lan*, o qualsevol dels seus subdominis, a la mateixa adreça que
+s'ha demanat, però utilitzant el protocol HTTPS.
+
+- Comprova amb el navegador que si accedim ara per HTTP, la petició es
+modifica automàticament.
+
+== Apartat 5: Activació de pàgines personals pels usuaris
+
+Activa les pàgines personals de cada usuari del sistema tal com s'explica als
+apunts de teoria. Fes que el directori *public* dels usuaris es pugui utilitzar
+per guardar la seva pàgina personal, que serà visible a l'adreça
+*http://nom.cognom.lan/~usuari/*.
+
+Utilitza la següent regla de reescriptura per substituir el símbol ~ de les
+adreces per _users_, de manera que per accedir a la pàgina personal de
+l'usuari *nom* es pugui fer amb l'adreça *http://nom.cognom.lan/users/nom*
+
+----
+RewriteRule ^/users/(.*)$ /~\$1 [R]
+----
+
+== Apartat 6: Instal·lació d'un LAMP
+
+Segueix les instruccions dels apunts de teoria per aconseguir que el servidor
+Apache tingui suport per PHP i puguin connectar-se a una base de dades.
