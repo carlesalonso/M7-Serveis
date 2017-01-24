@@ -459,7 +459,7 @@ codi de l'aplicació web.
 
 === Introducció a SSL
 
-L'*SSL* (_Secure Socket Layers_) és un procés que administra la seguretat de les
+L'*SSL* (_Secure Sockets Layer_) és un procés que administra la seguretat de les
 transaccions que es realitzen a través d'Internet. L'estàndard SSL va ser
 desenvolupat per Netscape, juntament amb Mastercard, Bank of America, MCI i
 Silicon Graphics. Es basa en un procés de xifrat de _clau pública_ que garanteix
@@ -473,21 +473,29 @@ també connexions a través dels protocols FTP, POP i IMAP. SSL actua com una
 capa addicional que permet garantir la seguretat de les dades i que se situa
 entre la capa de l'aplicació i la capa de transport.
 
-=== Com funciona SSL 2.0
+Realment, quan parlem de SSL en general ens estem referint a una colla de
+protocols criptogràfics que inclouen les diferents versions de SSL i de TLS
+(_Transport Layer Security_).
 
-La seguretat de les transaccions a través de SSL 2.0 es basa en l'intercanvi
+Cal tenir en compte que han anat apareixent diverses vulnerabilitats contra
+aquesta col·lecció de protocols, a la vegada que es desenvolupaven versions
+més avançades. Actualment les versions SSL 1.0, 2.0 i 3.0 es consideren
+insegures., i tampoc es recomana l'ús de TLS 1.0. Els protocols recomanats
+són el TLS 1.1 i el TLS 1.2. El TLS 1.3 està en fase d'esborrany.
+
+=== Com funciona SSL/TLS
+
+La seguretat de les transaccions a través de SSL/TLS es basa en l'intercanvi
 de claus entre un client i un servidor. Una transacció segura SSL es realitza
 d'acord al següent model:
 
-- Primer, el client es connecta al servidor comercial protegit per SSL i demana
+- Primer, el client es connecta al servidor protegit per SSL i demana
 l'autenticació. El client també envia la llista dels _criptosistemes_ que
 suporta, classificada en ordre descendent per la longitud de la clau.
 
 - El servidor que rep la sol·licitud envia un certificat al client que conté la
 clau pública del servidor signat per una _entitat de certificació_ (CA), i també
-el nom del criptosistema que és  més amunt a la llista de compatibilitats (la
-longitud de la clau de xifrat - 40 o 128 bits - serà la del criptosistema
-compartit que té la grandària de clau de major longitud).
+el nom del criptosistema que és més amunt a la llista de compatibilitats.
 
 - El client verifica la validesa del certificat (i per tant, l'autenticitat del
 venedor), després crea una clau secreta a l'atzar (més precisament un suposat
