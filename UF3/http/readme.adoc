@@ -430,17 +430,30 @@ com *aplicacions web*, i en podem trobar de dos tipus: _aplicacions web clients_
 i _aplicacions web servidor_.
 
 Les *aplicacions web client* s’executen a la màquina del client. Són
-aplicacions, anomenades scripts o plugins, codificades en diferents llenguatges,
-que executa el programa navegador client. Els scripts es codifiquen
-majoritàriament en Java o Javascript i quan es vol implementa algun altre
-llenguatge, es fa mitjançant els plugins. El navegador client ha de tenir la
-capacitat per poder executar aquest scripts i plugins.
+aplicacions codificades majoritàriament en Javascript (però també poden estar-ho
+en Java, Flash, etc).
+
+És el navegador del client qui executa una aplicació client, de manera que ha
+de tenir suport per interpretar el llenguatge de programació en qüestió.
+El Javascript és l'estàndard per aquestes aplicacions, sobretot des d'HTML 5,
+i d'altres llenguatges necessitaran la instal·lació dels interprets
+corresponents per poder funcionar.
 
 Les *aplicacions web servidor*, s’executen al servidor web, generant codi HTML i
 enviant-lo al client a través del protocol HTTP. L’ús de les aplicacions
 servidor permeten que el client pugui visualitzar les pàgines web amb un
 navegador bàsic, ja que no és necessari executar cap codi al client, però
 tenen l'inconvenient de sobrecarregar el servidor.
+
+Actualment és molt comú barrejar aquests dos tipus d'aplicacions. Per exemple,
+el servidor pot encarregar-se de generar una pàgina HTML a partir d'una sèrie
+de consultes a una base de dades, però el client s'encarregarà d'aplicar
+diversos filtres o ordenacions a aquestes dades.
+
+Gràcies a tecnologies com l'AJAX, el client pot enviar peticions al servidor
+sense haver de recarregar la pàgina sencera. Així, és molt habitual que el
+client i el servidor treballin junts, executant cadascun d'ells una part del
+codi de l'aplicació web.
 
 == Nocions de seguretat en HTTP
 
