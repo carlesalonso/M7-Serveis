@@ -156,6 +156,8 @@ que més l’interessi. Per exemple, si tenim un servidor amb la informació en
 diferents idiomes, un client pot sol·licitar el contingut segons el seu idioma
 de preferència.
 
+RFC 2068 que defineix el protocol HTTP 1.1: http://www.ietf.org/rfc/rfc2068.txt
+
 La versió HTTP/2 és altament compatible amb la HTTP/1.1, de manera que el
 client i el servidor poden negociar dinàmicament quina versió utilitzen.
 
@@ -193,14 +195,18 @@ web, localitzat mitjançant una cadena de caràcters denominada adreça URL.
 
 La comunicació entre el navegador i el servidor es duu a terme en dues etapes:
 
-image::
+- El navegador realitza una sol·licitud HTTP.
+- El servidor processa la sol·licitud i després envia una resposta HTTP.
 
-- El navegador realitza una sol·licitud HTTP
-- El servidor processa la sol·licitud i després envia una resposta HTTP
+El processament de la sol·licitud en el servidor pot implicar moltes altres
+etapes, com per exemple:
 
-En realitat, la comunicació es realitza en més etapes si es considera el
-processament de la sol·licitud en el servidor. Atès que només ens ocupem del
-protocol HTTP, no s'explicarà la part del processament en el servidor.
+- L'execució d'scripts (com PHP).
+- Consultes a bases de dades.
+
+En qualsevol cas, el resultat final és que el servidor envia una capçalera
+HTTP seguida d'una sèrie de dades (típicament HTML, però poden ser de qualsevol
+tipus).
 
 === Sol·licitud HTTP
 
@@ -227,18 +233,18 @@ permeten que s'enviïn dades amb una comanda POST durant la transmissió de
 dades al servidor utilitzant un formulari.
 
 Per tant, una sol·licitud HTTP posseeix la següent sintaxi (<crlf> significa
-tornada de carro i avanç de línia):
+retorn de carro i salt de línia):
 
 ----
-		MÈTODE VERSIÓ URL<crlf>
-		CAPÇALERA: Valor<crlf>
-		. . .
-		CAPÇALERA: Valor<crlf>
-		Línia en blanc <crlf>
-		COS DE LA sol·licitud
+MÈTODE VERSIÓ URL<crlf>
+CAPÇALERA: Valor<crlf>
+. . .
+CAPÇALERA: Valor<crlf>
+Línia en blanc <crlf>
+COS DE LA sol·licitud
 ----
 
-=== Comandes
+==== Ordres
 
 .Ordres HTTP
 [options="header"]
@@ -251,7 +257,7 @@ tornada de carro i avanç de línia):
 |DELETE |Esborra el recurs situat a la URL especificada
 |========
 
-=== Capçaleres
+==== Capçaleres
 
 .Capçaleres HTTP
 [options="header"]
@@ -276,7 +282,7 @@ tornada de carro i avanç de línia):
 |User-Agent |Cadena amb informació sobre el client, per exemple, el nom i la versió del navegador i el sistema operatiu
 |========
 
-== Resposta HTTP
+=== Resposta HTTP
 
 Una resposta HTTP és un conjunt de línies que el servidor envia al navegador.
 
@@ -301,16 +307,14 @@ de capçalera, seguit per dos punts (:) i pel valor de la capçalera.
 Per tant, una resposta HTTP posseeix la següent sintaxis:
 
 ----
-		VERSIÓ-HTTP CODI EXPLICACIÓ <crlf>
-		CAPÇALERA: Valor<crlf>
-		. . . CAPÇALERA: Valor<crlf>
-		Línia en blanc <crlf>
-		COS DE LA RESPOSTA
+VERSIÓ-HTTP CODI EXPLICACIÓ <crlf>
+CAPÇALERA: Valor<crlf>
+. . . CAPÇALERA: Valor<crlf>
+Línia en blanc <crlf>
+COS DE LA RESPOSTA
 ----
 
-RFC 2068 que defineix el protocol HTTP 1.1: http://www.ietf.org/rfc/rfc2068.txt
-
-=== Capçaleres de resposta
+==== Capçaleres de resposta
 
 .Capçaleres de resposta
 [options="headers"]
@@ -327,7 +331,7 @@ RFC 2068 que defineix el protocol HTTP 1.1: http://www.ietf.org/rfc/rfc2068.txt
 |Server |Característiques del servidor que ha enviat la resposta
 |========
 
-=== Els codis de resposta
+==== Els codis de resposta
 
 Són els codis que es veuen quan el navegador no pot mostrar la pàgina
 sol·licitada. El codi de resposta està format per tres dígits: el primer
@@ -345,6 +349,10 @@ indica l'estat i els dos següents expliquen la naturalesa exacta de l'error.
 |========
 
 == Tipus de servidors HTTP
+
+Aquesta secció està basada en la informació exposada a
+https://berb.github.io/diploma-thesis/, d'en Benjamin Erb, sota llicència
+CC-AT-SA.
 
 === Servidors basats en processos
 
@@ -378,7 +386,7 @@ ja que comparteixen el mateix espai de memòria. El model de servidor basat
 en fils hereta moltes de les característiques dels servidors basats en
 processos, entre elles la de la simplicitat en el seu disseny i implementació.
 D'altra banda, el compartir l'espai de memòria implica un risc de seguretat que
-no tenen els servidors basats en processos
+no tenen els servidors basats en processos.
 
 === Servidors basats en sockets dirigits per esdeveniments
 
@@ -396,6 +404,22 @@ des del qual s'atenen totes les connexions.
 *Socket*: no són més que punts o mitjans de comunicació entre dues aplicacions
 que permeten que un procés parli (emeti o rebi informació) amb un altre procés
 estant els dos en distintes màquines.
+
+=== Exemples
+
+Les implementacions reals poden combinar diverses de les tècniques exposades.
+Per exemple, el servidor Apache prepara diversos processos quan arranca, i
+cadascun d'aquests processos pot utilitzar diversos _threads_.
+
+De fet, l'Apache és capaç d'utilitzar qualsevol dels tres sistemes exposats
+depenent de la situació.
+
+En canvi, el servidor nginx utilitza un esquema basat en esdeveniments: crea
+diversos processos, i cada procés resta a l'espera de l'arribada
+d'esdeveniments.
+
+Podeu veure una comparativa entre Apache i nginx a
+https://www.digitalocean.com/community/tutorials/apache-vs-nginx-practical-considerations
 
 == Tipus d'aplicacions web
 
