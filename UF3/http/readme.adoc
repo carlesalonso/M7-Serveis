@@ -10,6 +10,8 @@
 
 == Què és un servidor HTTP?
 
+image::images/httpintro.jpg[]
+
 Es defineix un *servidor HTTP* o *servidor web* com un programa que implementa
 el protocol HTTP, per realitzar les seves tasques. Aquest programa s’executa
 contínuament en un ordinador, quedant a l’espera de rebre sol·licituds o
@@ -29,7 +31,7 @@ que és el resultat de processar algun _script_. Posteriorment, en funció de co
 estigui configurat el servidor HTTP, torna el resultat al programa navegador
 del client.
 
-image::
+image::images/http_server.png[]
 
 En aquest procés, el servidor HTTP es limita a transferir el codi de la pagina
 HTML, sense interpretar-la. En canvi, el programa client s’ha de encarregar
@@ -48,7 +50,7 @@ seguida per un missatge de compatibilitat de versió de _MIME_ amb els paràmetr
 de la petició, la informació del client i un cos opcional amb més dades per al
 servidor.
 
-    ----
+----
 GET /~jqueral/ HTTP/1.1
 Host ies-sabadell.xtec.net
 User-Agent Mozilla/5.0 (X11; U; Linux i686; ca; rv:1.9.0.15) Gecko/2009102815 Iceweasel/3.0.6 (Debian-3.0.6-3)
@@ -59,7 +61,7 @@ Accept-Charset ISO-8859-1,utf-8;q=0.7,*;q=0.7
 Keep-Alive 300
 Connection keep-alive
 Cookie MOODLEID_usuarimoodle=%25E9%25C3%251FB%25A2GET /index.html
-    ----
+----
 
 - El servidor respon amb una línia d'estat, que inclou la versió del protocol
 del missatge i si la petició ha tingut èxit o no, un codi de resultat, seguit
@@ -67,7 +69,7 @@ d’un missatge de compatibilitat de versió de MIME amb informació del servido
 metainformació (dades sobre la informació), de l'entitat sol·licitada i un cos
 opcional amb l’entitat sol·licitada.
 
-    ----
+----
 HTTP/1.1 200 OK
 Date Wed, 09 Dec 2009 22:49:26 GMT
 Server Apache/2.2.9 (Debian) PHP/5.2.6-1+lenny4 with Suhosin-Patch mod_ssl/2.2.9 OpenSSL/0.9.8g mod_perl/2.0.4 Perl/v5.10.0
@@ -84,45 +86,12 @@ Content-Type text/html;charset=UTF-8
 <hr>
 <h2> Exemple de comunicació HTTP <h2>
 <hr>
-    ----
+----
 
-El protocol HTTP 1.0 tenia unes limitacions importants d’escalabilitat i
-rendiment, que van ser superades per la nova versió HTTP 1.1. Les
-característiques principals de la nova versió 1.1 són:
+image::images/http_client.png[]
 
-- *Connexions persistents* (_keep-alive_): la idea de les connexions persistents
-és reutilitzar la mateixa connexió TCP per enviar i rebre múltiples
-sol·licituds i respostes HTTP, en comptes d'obrir una nova connexió per cada
-parella de sol·licitud i resposta. Això té els següents avantatges:
-
-    - Menys ús de la CPU i la memòria (perquè hi ha menys connexions obertes
-    simultàniament).
-    - _HTTP pipelining_: permet enviar diverses sol·licituds HTTP utilitzant el
-		mateix socket, abans de rebre les respostes corresponents.
-    - Es redueix la congestió de la xarxa (menys connexions).
-    - Es redueix la latència entre connexions successives, perquè ens estalviem
-		la negociació de la connexió TCP.
-    - Podem rebre errors sense perdre la connexió TCP.
-
-- Transmissió per “trossos” d'informació (_Chunked Transfer Encoding_) en
-comptes d'enviar tota la informació en un sol paquet. Això permet l'streaming.
-
-- Nous mètodes que s'afegeixen als ja existents (GET, POST i HEAD): DELETE,
-TRACE, PUT, PATCH, COPY, MOVE, LINK, UNLINK, OPTIONS, WRAPPED...
-
-- Nou mètode d’autenticació (_Digest access authentication_).
-
-- Ús de *proxies* HTTP.
-
-- Suport a *host virtuals* basats en nom. Per fer-ho possible, es va obligà que
-les peticions HTTP/1.1 incorporessin un nou camp de capçalera anomenat _Host_.
-
-- *Negociació de continguts*. Els clients i els servidors poden, mitjançant
-l’intercanvi de capçaleres, negociar característiques comunes. Quan el servidor
-ofereix la informació en diverses representacions, el client pot seleccionar la
-que més l’interessi. Per exemple, si tenim un servidor amb la informació en
-diferents idiomes, un client pot sol·licitar el contingut segons el seu idioma
-de preferència.
+La versió actual del protocol HTTP és la 2, publicada el maig de 2015, encara
+que la major part de llocs utilitzen encara la versió 1.1, de 1997.
 
 == Breu història i evolució del protocol HTTP
 
@@ -146,12 +115,71 @@ la distribució de dades per les xarxes.
 metainformació de les dades que es transmeten.
 - HTTP/1.1: va ser definit en el RFC 2616 i integra en una sola especificació a
 l’anterior HTTP/1.0 amb afegits definits en els RFC 2109, 2145 i 2617.
+- HTTP/2: la primera versió nova que es publica en molts anys, definida al
+RFC 7540.
 
-Actualment l'HTTP/1.1 és una especificació estable que aconsegueix l’objectiu
-de ser un estàndard, i que soluciona les debilitats de versions anteriors. Però
-encara avui hi ha problemes sense resoldre en el protocol, per exemple, l’estat
-de les connexions segueix sense que es pugui mantenir, a menys que s'utilitzin
-mecanismes auxiliars com les _cookies_.
+El protocol HTTP 1.0 tenia unes limitacions importants d’escalabilitat i
+rendiment, que van ser superades per la nova versió HTTP 1.1. Les
+característiques principals de la versió 1.1 són:
+
+- *Connexions persistents* (_keep-alive_): la idea de les connexions persistents
+és reutilitzar la mateixa connexió TCP per enviar i rebre múltiples
+sol·licituds i respostes HTTP, en comptes d'obrir una nova connexió per cada
+parella de sol·licitud i resposta. Això té els següents avantatges:
+
+** Menys ús de la CPU i la memòria (perquè hi ha menys connexions obertes
+simultàniament).
+** _HTTP pipelining_: permet enviar diverses sol·licituds HTTP utilitzant el
+mateix socket, abans de rebre les respostes corresponents.
+** Es redueix la congestió de la xarxa (menys connexions).
+** Es redueix la latència entre connexions successives, perquè ens estalviem
+la negociació de la connexió TCP.
+** Podem rebre errors sense perdre la connexió TCP.
+
+- Transmissió per “trossos” d'informació (_Chunked Transfer Encoding_) en
+comptes d'enviar tota la informació en un sol paquet. Això permet l'streaming.
+
+- Nous mètodes que s'afegeixen als ja existents (GET, POST i HEAD): DELETE,
+TRACE, PUT, PATCH, COPY, MOVE, LINK, UNLINK, OPTIONS, WRAPPED...
+
+- Nou mètode d’autenticació (_Digest access authentication_).
+
+- Ús de *proxies* HTTP.
+
+- Suport a *host virtuals* basats en nom. Per fer-ho possible, es va obligà que
+les peticions HTTP/1.1 incorporessin un nou camp de capçalera anomenat _Host_.
+
+- *Negociació de continguts*. Els clients i els servidors poden, mitjançant
+l’intercanvi de capçaleres, negociar característiques comunes. Quan el servidor
+ofereix la informació en diverses representacions, el client pot seleccionar la
+que més l’interessi. Per exemple, si tenim un servidor amb la informació en
+diferents idiomes, un client pot sol·licitar el contingut segons el seu idioma
+de preferència.
+
+La versió HTTP/2 és altament compatible amb la HTTP/1.1, de manera que el
+client i el servidor poden negociar dinàmicament quina versió utilitzen.
+
+Algunes de les novetats de la versió HTTP/2 són les següents:
+
+- És binari: en comptes de transmetre la informació en text, es transmet en
+binari. Això redueix els possibles errors i fa els missatges més compactes.
+Com a contrapartida, no es pot depurar utilitzant programes com _telnet_.
+- Compressió de les capçaleres.
+- Millora del _HTTP pipelining_ utilitzant multiplexat: es permet que els client
+enviïn múltiples sol·licituds simultànies pel mateix canal TCP. Un client pot
+utilitzar ara una sola connexió per a tota la comunicació amb un servidor.
+- _HTTP/2 push_: el servidor pot enviar recursos al client abans que el client
+els sol·liciti, si ja sap que el necessitarà, de manera que s'estalvien
+sol·licituds i esperes.
+
+Amb tot plegat s'aconsegueix un increment d'entre un 10% i un 40% en la
+càrrega de les pàgines, i una reducció dràstica en la quantitat de connexions
+TCP utilitzades.
+
+Encara que l'estàndard no ho fa obligatori, la major part d'implementacions
+forcen l'ús de xifrat en totes les connexions.
+
+Podeu trobar més informació sobre HTTP/2 a https://http2.github.io/.
 
 == El protocol HTTP
 
