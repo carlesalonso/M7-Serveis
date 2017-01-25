@@ -308,3 +308,13 @@ RewriteRule ^/users/(.*)$ /~\$1 [R]
 
 Segueix les instruccions dels apunts de teoria per aconseguir que el servidor
 Apache tingui suport per PHP i puguin connectar-se a una base de dades.
+
+.Entregar
+====
+*Captura de l'accés a phpmyadmin.*
+====
+
+.Entregar
+====
+*Captura de l'execució de l'script php de prova.*
+====
