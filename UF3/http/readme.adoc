@@ -1371,6 +1371,38 @@ Només amb la directiva `Allow` no es faria el que es vol, perquè permetria
 entrar a la gent provinent d'aquella màquina, i addicionalment a qualsevol
 persona. El que es volia era deixar entrar només als primers.
 
+== Configuració de HTTPS
+
+El mòdul `mod_ssl` afegeix a l'Apache la capacitat de xifrar les comunicacions,
+utilitzant HTTPS (port 443) en comptes de HTTP.
+
+Per utilitzar HTTPS primer cal activar aquest mòdul amb l'ordre:
+
+----
+a2enmod ssl
+----
+
+La instal·lació ja proporciona un fitxer de configuració d'exemple per HTTPS,
+situat a _/etc/apache2/sites-available/default-ssl.conf_.
+
+Com en els altres serveis, necessitarem un fitxer de certificat i una clau per
+utilitzar HTTPS. La configuració per defecte utilitzarà una parella de
+certificat i clau que es pot generar amb el paquet `ssl-cert`, però podem
+modificar el fitxer de configuració per utilitzar qualsevol certificat i clau
+que volguem.
+
+Per utilitzar el servidor en producció cal obtenir un certificat específic pel
+lloc web que estiguem configurat, firmat per una entitat certificadora.
+
+Per configurar un lloc per utilitzar HTTPS podem fer una copia del fitxer
+_default-ssl.conf_ i activar-lo amb `a2ensite`.
+
+Un cop fets els canvis a la configuració, cal reinciar l'Apache amb:
+
+----
+sudo systemctl restart apache2.service
+----
+
 == Directoris web per cada usuari
 
 En sistema amb múltiples usuaris, es pot permetre que cada usuari tingui un
