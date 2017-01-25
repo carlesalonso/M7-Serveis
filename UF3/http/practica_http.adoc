@@ -167,28 +167,69 @@ t'oblidis de configurar les directives *ServerName* i *DocumentRoot*.
 
 == Apartat 3: Configuració del primer host virtual
 
-Les següents configuracions s'han d'aplicar al site *nom.cognom.lan*.
+Les següents configuracions s'han d'aplicar al site *nom.cognom.lan*. Recorda
+que sempre cal reinciar l'Apache per tal que agafi els canvis.
 
 - Canvia el nom del fitxer *index.html* a *inici.html*. Fes que se serveixi
 aquest fitxer per defecte en comptes de *index.html*.
+
+.Entregar
+====
+*Canvis fets a la configuració.*
+====
 
 - Utilitza la directiva *ServerAlias* per fer que si l'usuari utilitza el nom
 *www.nom.cognom.lan* en comptes de *nom.cognom.lan*, la pàgina es mostri
 correctament.
 
+.Entregar
+====
+*Canvis fets a la configuració.*
+====
+
+.Entregar
+====
+*Comprovació que funciona.*
+====
+
 - Crea un tercer directori dins de */var/www* anomenat *test* i posa un
-fitxer *index.html* a dins que mostri clarament quin lloc estem visitant.
+fitxer *inici.html* a dins que mostri clarament quin lloc estem visitant.
 Després, utilitza la directiva *Alias* per fer que l'adreça
 *nom.cognom.lan/test* vagi a parar a aquest directori.
+
+.Entregar
+====
+*Canvis fets a la configuració.*
+====
+
+.Entregar
+====
+*Comprovació que funciona.*
+====
 
 - Configura l'Apache per tal que permiti l'ús de fitxers *.htaccess* al
 directori */var/www/test*, però assegura't que no en permet als altres
 directoris.
 
+.Entregar
+====
+*Canvis fets a la configuració.*
+====
+
 - Utilitza un fitxer *.htaccess* per fer que per accedir al directori
-*/var/www/test* s'hagi de proporcionar un nom d'usuari i contrasenya vàlids per
-poder-hi accedir. Hi haurà dos usuaris amb permís d'accés: *nom* i *cognom*, els
+*/var/www/test* s'hagi de proporcionar un nom d'usuari i contrasenya vàlids.
+Hi haurà dos usuaris amb permís d'accés: *nom* i *cognom*, els
 dos amb contrasenya *12345*.
+
+.Entregar
+====
+*Canvis fets a la configuració.*
+====
+
+.Entregar
+====
+*Comprovació que funciona.*
+====
 
 == Apartat 4: Configuració del segon host virtual
 
@@ -204,10 +245,25 @@ de model.
 host. Pots utilitzar el mateix certificat SSL que vas utilitzar a la pràctica
 del FTP o generar-ne un de nou.
 
+.Entregar
+====
+*Canvis fets a la configuració.*
+====
+
 - Un cop modificada la configuració, activa el nou site.
+
+.Entregar
+====
+*Instrucció utilitzada.*
+====
 
 - Comprova amb el navegador que podem accedir tant per HTTP com per HTTPS a
 aquest site.
+
+.Entregar
+====
+*Comprovació que funciona.*
+====
 
 - Forçarem ara que qualsevol petició dirigida a HTTP es transformi
 automàticament a HTTPS. Per això, afegeix les següent línies a la configuració
@@ -226,6 +282,12 @@ s'ha demanat, però utilitzant el protocol HTTPS.
 
 - Comprova amb el navegador que si accedim ara per HTTP, la petició es
 modifica automàticament.
+
+.Entregar
+====
+*Captura del fitxer de registre d'accés de l'Apache, on es veu la reescriptura
+de l'adreça.*
+====
 
 == Apartat 5: Activació de pàgines personals pels usuaris
 
