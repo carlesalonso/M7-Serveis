@@ -840,8 +840,7 @@ fitxer anomenat _private.html_ sense tenir en compte on es trobi.
 
 ----
 <Files private.html>
-Ordre allow,deny
-Deny from all
+Require all denied
 </Files>
 ----
 
@@ -857,8 +856,7 @@ subdirectoris.
 ----
 <Directory /var/web/dir1>
 <Files private.html>
-Order allow,deny
-Deny from all
+Require all denied
 </Files>
 </Directory>
 ----
@@ -876,8 +874,7 @@ qualsevol altra petició que comenci per _/private_.
 
 ----
 <Location /private>
-Order Allow,Deny
-Deny from all
+Require all denied
 </Location>
 ----
 
@@ -908,8 +905,7 @@ d'imatges d'un sol cop:
 
 ----
 <FilesMatch \.(?i:gif|jpe?g|png)$>
-Order allow,deny
-Deny from all
+Require all denied
 </FilesMatch>
 ----
 
@@ -931,8 +927,7 @@ configuració:
 
 ----
 <Location /dir/>
-Order allow,deny
-Deny from all
+Require all denied
 </Location>
 ----
 
@@ -1319,26 +1314,45 @@ L'autenticació per nom d'usuari i contrasenya és només una part de la històr
 Freqüentment es desitja permetre l'accés als usuaris basant-se en alguna cosa
 més que qui són. Per exemple, d'on vénen.
 
-Les directives `Allow` i `Deny` possibiliten permetre i rebutjar l'accés
-depenent del nom o l'adreça de la màquina que sol·licita un document. La
-directiva `Order` va de la mà de les altres dues, i li diu a l'Apache en quin
-ordre aplicar els filtres.
+La directiva `Require` possibilita permetre i rebutjar l'accés
+depenent del nom o l'adreça de la màquina que sol·licita un document.
 
-L'ús d'aquestes directives és:
+L'ús d'aquesta directiva és:
 
 ----
-Allow from address
+Require ip <address>
 ----
 
-on _address_ és una adreça IP (o una adreça IP parcial) o un _nom de domini
-completament qualificat_ (**FQDN**), o un nom de domini parcial. Es poden
-proporcionar múltiples adreces o noms de domini.
+on _address_ és una adreça IP (o una adreça IP parcial) o una xarxa:
+
+----
+Require ip 192.168.1.10
+Require ip 192.160
+Require ip 172.16.0.0/16
+Require ip 172.16.0.0/255.255.0.0
+----
+
+També es pot filtrar per un nom de domini amb:
+
+----
+Require host <host/domini>
+----
+
+Per exemple:
+
+----
+Require host domini.cat
+Require host host.domini.cat
+Require host .cat
+----
 
 Per exemple, si tenim a algú que envia missatges no desitjats al nostre fòrum,
 i volem que no torni a accedir, podríem fer:
 
 ----
-Deny from 205.252.46.165
+<RequireNone>
+  Require ip 205.252.46.165
+</RequireNone>
 ----
 
 Els visitants que vinguin d'aquesta adreça no podran veure el contingut afectat
@@ -1346,30 +1360,44 @@ per aquesta directiva. Si, contràriament, tenim el nom de la màquina, també
 el podríem usar:
 
 ----
-Deny from host.example.com
+<RequireNone>
+  Require host host.example.com
+</RequireNone>
 ----
 
 I, si volguéssim bloquejar l'accés d'un domini sencer, podem especificar només
 part d'una adreça o nom de domini:
 
 ----
-Deny from 192.101.205
-Deny from cyberthugs.com moreidiots.com
-Deny from ke
+<RequireNone>
+  Deny from cyberthugs.com moreidiots.com
+</RequireNone>
 ----
 
-L'ús d'`Order` permet assegurar-se que efectivament està restringint l'accés al
-grup al qual vol permetre l'accés, combinant una directiva `Deny` i una `Allow`:
+Les directives `RequireAny` i `RequireAll` permeten especificar diverses
+condicions juntes. Si utilitzem `RequireAny` s'acceptarà l'accés si almenys una
+de les condicions es compleix, mentre que si utilitzem `RequireAll` s'acceptarà
+l'accés només si totes les condicions es compleixen.
+
+En el següent exemple, es permet l'accés als clients que vénen de la xarxa
+172.16.0.0/16 o que estan autenticats amb un nom d'usuari vàlid:
 
 ----
-Order deny,allow
-Deny from all
-Allow from dev.example.com
+<RequireAny>
+  Require 172.16.0.0/16
+  Require valid-user
+</RequireAny>
 ----
 
-Només amb la directiva `Allow` no es faria el que es vol, perquè permetria
-entrar a la gent provinent d'aquella màquina, i addicionalment a qualsevol
-persona. El que es volia era deixar entrar només als primers.
+En canvi, en el següent exemple, només acceptem connexions des de la xarxa
+172.16.0.0/16 i que, a més, siguin d'usuaris autenticats:
+
+----
+<RequireAll>
+  Require 172.16.0.0/16
+  Require valid-user
+</RequireAny>
+----
 
 == Configuració de HTTPS
 
