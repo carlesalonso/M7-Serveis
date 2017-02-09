@@ -1141,10 +1141,10 @@ Les directives tractades en aquest apartat han d'anar al fitxer de configuració
 principal del servidor (típicament dins d'una secció `<Directory>`), o en
 fitxers de configuració per directoris (fitxers _.htaccess_).
 
-Si es planeja utilitzar fitxers _.htaccess_, necessitarà tenir una configuració
-al servidor que permeti posar directives d'autenticació en aquests fitxers.
-Això s'aconsegueix amb la directiva `AllowOverride`, la qual especifica quines
-directives, en cas que n'hi hagi, es poden col·locar als fitxers de
+Si es planeja utilitzar fitxers _.htaccess_, es necessitarà tenir una
+configuració al servidor que permeti posar directives d'autenticació en aquests
+fitxers. Això s'aconsegueix amb la directiva `AllowOverride`, la qual especifica
+quines directives, en cas que n'hi hagi, es poden col·locar als fitxers de
 configuració per directoris.
 
 Pel cas de l'autenticació, es necessitarà una directiva `AllowOverride` com la
@@ -1160,14 +1160,15 @@ Anem a protegir amb contrasenya un directori del servidor.
 
 Caldrà crear un fitxer de contrasenyes. Aquest fitxer s'ha de col·locar en
 algun lloc no accessible mitjançant la web. Per exemple, si els documents es
-serveixen des de _/usr/local/apache/htdocs_, es podria posar el fitxer o fitxers
-de contrasenyes a _/usr/local/apache/passwd_.
+serveixen des de _/var/www/html_, es podria posar el fitxer o fitxers
+de contrasenyes a _/var/www/passwd_.
 
 Per a crear un fitxer de contrasenyes s'utilitza la utilitat `htpasswd` que ve
-amb l'Apache:
+amb l'Apache. Per exemple, per crear una contrasenya per a l'usuari *rbowen*
+utilitzaríem:
 
 ----
-htpasswd -c /usr/local/apache/passwd/passwords rbowen
+htpasswd -c /var/www/passwd/passwords rbowen
 ----
 
 L'`htpasswd` demanarà la contrasenya, i després la tornarà a demanar per a
@@ -1180,18 +1181,26 @@ Re-type new password: mypassword
 Adding password for user rbowen
 ----
 
+[TIP]
+====
+L'opció `-c` indica que el fitxer de contrasenyes s'ha de crear. Si estem
+afegint contrasenyes a un fitxer existent, no s'ha de posar aquesta opció.
+====
+
 El següent pas és configurar el servidor per a què sol·liciti una contrasenya
 i dir-li al servidor a quins usuaris se'ls permet l'accés. Això es pot fer
-editant el fitxer _httpd.conf_ o utilitzant un fitxer _.htaccess_. Per exemple,
-si es vol protegir el directori _/usr/local/apache/htdocs/secret_, es poden
+editant el fitxer _apache2.conf_ (o qualsevol dels fitxer inclosos) o
+utilitzant un fitxer _.htaccess_.
+
+Per exemple, si es vol protegir el directori _/var/www/html/secret_, es poden
 utilitzar les següents directives, ja sigui posant-les al fitxer
-_/usr/local/apache/htdocs/secret/.htaccess_, o a _httpd.conf_, dins d'una secció
-`<Directory /usr/local/apache/apache/htdocs/secret>`.
+_/var/www/html/secret/.htaccess_, o a _apache2.conf_, dins d'una secció
+`<Directory /var/www/html/secret>`.
 
 ----
 AuthType Basic
 AuthName "Restricted Files"
-AuthUserFile /usr/local/apache/passwd/passwords
+AuthUserFile /var/www/passwd/passwords
 Require user rbowen
 ----
 
@@ -1253,7 +1262,7 @@ per espais.
 Per afegir un usuari a un fitxer de contrasenyes ja existent, s'escriu:
 
 ----
-htpasswd /usr/local/apache/passwd/passwords dpitts
+htpasswd /var/www/passwd/passwords dpitts
 ----
 
 S'obtindrà la mateixa resposta que abans, però el nou usuari s'afegirà al
@@ -1265,8 +1274,8 @@ Després, cal modificar el fitxer _.htaccess_ per tal que sigui com el següent:
 ----
 AuthType Basic
 AuthName "By Invitation Only"
-AuthUserFile /usr/local/apache/passwd/passwords
-AuthGroupFile /usr/local/apache/passwd/groups
+AuthUserFile /var/www/passwd/passwords
+AuthGroupFile /var/www/passwd/groups
 Require group GroupName
 ----
 
