@@ -304,6 +304,11 @@ l'usuari *nom* es pugui fer amb l'adreça *http://nom.cognom.lan/users/nom*
 RewriteRule ^/users/(.*)$ /~\$1 [R]
 ----
 
+.Entregar
+====
+*Comprovació que ens podem connectar a la carpeta d'un usuari.*
+====
+
 == Apartat 6: Instal·lació d'un LAMP
 
 Segueix les instruccions dels apunts de teoria per aconseguir que el servidor
