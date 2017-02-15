@@ -1454,7 +1454,9 @@ directiva `UserDir`.
 === Configurant la ruta amb UserDir
 
 La directiva `UserDir` especifica el directori del qual es carregarà el
-contingut per cada usuari. Aquesta directiva pot adoptar diverses formes.
+contingut per cada usuari, i està definida al mòdul *mod_userdir*.
+
+Aquesta directiva pot adoptar diverses formes:
 
 Si es dóna una ruta que no comenci amb una barra, s'assumeix que és una ruta
 relativa al directori personal de l'usuari especificat. Donada la configuració:
