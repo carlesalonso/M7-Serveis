@@ -182,6 +182,9 @@ aquest fitxer per defecte en comptes de *index.html*.
 *www.nom.cognom.lan* en comptes de *nom.cognom.lan*, la pàgina es mostri
 correctament.
 
+Per tal que això funciona, el servidor DNS ha de resoldre correctament l'adreça
+*www.nom.cognom.lan* a la teva adreça IP.
+
 .Entregar
 ====
 *Canvis fets a la configuració.*
