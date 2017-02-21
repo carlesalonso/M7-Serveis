@@ -1,0 +1,146 @@
+= Pràctica servidor HTTP
+
+:encoding: utf-8
+:lang: ca
+:toc: left
+:!numbered:
+//:teacher:
+
+ifdef::teacher[]
+== (Versió del professor):
+endif::teacher[]
+
+////
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+////
+
+<<<
+
+== Objectiu de la pràctica
+
+En aquesta pràctica veurem com configurar les principals característiques
+d'un servidor _proxy-cache_.
+
+Veure com configurar els clients per utilitzar aquest servei, com configurar el
+servidor _squid_ per fer de cau de pàgines web, i com configurar-lo per filtrar
+pàgines concretes.
+
+== Preparatius
+
+* Utilitzarem l'entorn de xarxa de les pràctiques anteriors. Configurarem
+_gollum_ (172.16.2.2) com a servidor _proxy-cache_.
+
+* Necessitarem el client _PC1_ per comprovar les configuracions que anem fent
+al servei. Els routers _sauron_ i _saruman_ hauran d'estar engegats per poder
+connectar-nos a internet.
+
+* Si no tenim el servei DHCP funcionant, haurem d'assignar una IP fixa a PC1
+per tal que es pugui connectar a la xarxa.
+
+* Seguint els passos de les pràctiques anteriors, totes les màquines han de
+mostrar un prompt personalitzat i hi ha d'haver un usuari amb el vostre nom i
+permisos per utilitzar *sudo*.
+
+[IMPORTANT]
+====
+Cal que configureu el vostre terminal perquè al prompt aparegui el vostre nom i
+la data ressaltats en diferents colors. *Això és imprescindible per avaluar
+les captures*.
+====
+
+== Apartat 1: Instal·lació de l'_squid_ a _gollum_
+
+L'Squid es un programari proxy que pot gestionar peticions HTTP, HTTPS i FTP
+en una xarxa local.
+
+Amb l'Squid podrem establir un servidor intermediari amb memòria cau i/o
+filtrat.
+
+L'Squid guardarà temporalment les pàgines estàtiques que es visitin, de manera
+que si es tornen a visitar (pel mateix o per un altre client) no calgui anar-les
+a buscar un altre cop a Internet. D'aquesta manera es redueix el temps de
+càrrega de les pàgines i es redueix l'amplada de banda que s'utilitza per
+accedir a Internet, que és l'habitual coll d'ampolla en una xarxa amb molts
+clients.
+
+Encara que actualment la major part de pàgines siguin dinàmiques, hi ha molts
+dels recursos que inclouen (imatges, fulls d'estil, scripts) que són estàtics
+i es poden guardar al cau.
+
+Cal tenir en compte també que quan utilitzem un _cache_ per accedir a Internet,
+el sevidor que fa de _cache_ fa d'intermediari de totes les connexions a
+l'exterior, així que si no és prou ràpid o té una mala connectivitat, la xarxa
+acabarà anant globalment més lenta.
+
+Com a servidor _proxy_, l'Squid permet filtrar l'accés a pàgines web
+determinades, a certs noms de domini, o bé a pàgines el nom de les quals
+contingui algunes paraules clau. Amb això es pot evitar un munt de consum
+d'amplada de banda no desitjat.
+
+La instal·lació de l'Squid és immediata: només cal instal·lar el paquet
+_squid_.
+
+Els fitxers principals que hem de tenir en comptes són els següents:
+
+- `/etc/squid3/squid.conf`: el fitxer de configuració principal.
+- `/var/log/squid3/access.log`: el fitxer de registre dels accesos que es
+produeixin.
+- `/var/spool/squid3`: el directori on es guardarà el cau.
+
+== Apartat 2: Configuració bàsica
+
+Hi ha algunes configuracions bàsiques que voldrem fer un cop instal·lat el
+servidor:
+
+- Port on escolta l'Squid: volem que escolti pel port 8080.
+- Cau: per defecte l'Squid utilitza com a cau la memòria del servidor. Si volem
+que utilitzi espai al disc li hem d'indicar. Fes que utilitza fins a 1000 MB.
+Per tal que generi l'estructura de directoris necessària, cal apagar
+momentàniament el servei i executar l'ordre `squid3 -z`.
+- Xarxa autoritzada: finalment, volem configurar quins clients poden utilitzar
+el servidor intermediari. Per fer això utilitzarem una ACL (Access Control
+List).
+Totes les ACL es descriuen segons el següent format:
+
+----
+acl nom_acl tipus_acl descripció ...
+----
+
+Per fer que només la xarxa on són els clients estigui autoritzada a navegar per
+Internet mitjançant el proxy, utilitzarem les següents directives:
+
+----
+acl authorized_network src 172.16.2.0/8
+http_access allow authorized_network
+----
+
+ACL (Access Control List) és un concepte de seguretat informàtica utilitzat per
+a permetre la separació de privilegis. La separació de privilegis consisteix
+en otorgar o no uns certs privilegis a un objecte (usuari, màquina...) que
+està realitzant una consulta.
+
+Per exemple, `acl authorized_network src 172.16.2.0/8` crea una regla anomenada
+*authorized_network* que defineix una xarxa d’origen de peticions
+(*src 172.16.2.0/8*). Una vegada definida la regla es pot incloure en una de
+les llistes d'accés, com `http_access`, permetent o prohibint la regla.
+
+== Apartat 3: Configuració dels clients
+
+== Apartat 4: Bloqueig de dominis
+
+== Apartat 5: Bloqueig per paraules claus
+
+== Apartat 6: Forçar l'ús del proxy
+
+== Apartat 7: Qüestions sobre ACL
