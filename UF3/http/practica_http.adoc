@@ -304,7 +304,7 @@ adreces per _users_, de manera que per accedir a la pàgina personal de
 l'usuari *nom* es pugui fer amb l'adreça *http://nom.cognom.lan/users/nom*
 
 ----
-RewriteRule ^/users/(.*)$ /~\$1 [R]
+RewriteRule ^/users/(.*)$ /~$1 [R]
 ----
 
 .Entregar
