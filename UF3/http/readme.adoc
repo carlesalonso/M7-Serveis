@@ -1632,19 +1632,19 @@ hauríem d'evitar utilitzar-lo directament des del servidor web.
 
 2. Per simplificar la instal·lació, instal·larem el paquet _phpmyadmin_.
 
-    2.1. Fixeu-vos que aquest paquet ja instal·la l'_apache2_ si no el teníem,
+  a. Fixeu-vos que aquest paquet ja instal·la l'_apache2_ si no el teníem,
     el _libapache2-mod-php5_, que és el mòdul de l'Apache encarregat
     d'interpretar el  codi PHP i el _php5-mysql_, que és l'extensió del
     llenguatge PHP per accedir a MySQL/MariaDB.
 
-    2.2. El _phpmyadmin_ l'utilitzarem des de l'Apache, de manera que
+  b. El _phpmyadmin_ l'utilitzarem des de l'Apache, de manera que
     seleccionarem que configuri el servidor _apache2_.
 
-3. Amb el navegador, anem a la web del _phpmyadmin_: http://localhost/phpmyadmin
+3. Amb el navegador, anem a la web del _phpmyadmin_: http://<domini>/phpmyadmin
 
-    3.1. Entrem amb l'usuari root que hem creat a l'instal·lar el MySQL.
+  a. Entrem amb l'usuari root que hem creat a l'instal·lar el MySQL.
 
-    3.2. Per crear un nou usuari al MariaDB, anem a _Privileges_, i
+  b. Per crear un nou usuari al MariaDB, anem a _Users_, i
     _Add a New User_. Posem el nom de l'usuari, els hosts des dels que podrà
     connectar (en el cas habitual d'una web que accedeix a la base de dades,
     posaríem _Local_, ja que el servidor web s'està executant al mateix
@@ -1653,10 +1653,10 @@ hauríem d'evitar utilitzar-lo directament des del servidor web.
     aquest accés remot deshabilitat. Si volguéssim habilitar-lo, hauríem d'anar
     al fitxer _/etc/mysql/my.cnf_ i comentar la línia `bind-address = 127.0.0.1`
 
-    3.3. Podem crear una base de dades directament amb el nom de l'usuari, o bé
+  c. Podem crear una base de dades directament amb el nom de l'usuari, o bé
     crear-la després.
 
-    3.4. Després de crear la base de dades, convé crear una taula amb alguna
+  d. Després de crear la base de dades, convé crear una taula amb alguna
     informació.
 
 4. Si el _phpmyadmin_ ha funcionat i ha pogut crear l'usuari i la base de dades,
