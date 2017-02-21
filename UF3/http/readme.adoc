@@ -1247,6 +1247,9 @@ amb nom d'usuari _rbowen_) accedeixi al directori. En la major part dels
 casos, es voldrà permetre l'accés a més d'una persona. Per això s'utilitza
 la directiva `AuthGroupFile`.
 
+La directiva `AuthGroupFile` està definida al mòdul *mod_authz_groupfile*, així
+que caldrà activar aquest mòdul per poder-la utilitzar.
+
 Si es desitja permetre l'entrada a més d'una persona, caldrà crear un fitxer
 de grup que associï noms de grup amb una llista d'usuaris pertanyents a aquest
 grup. El format d'aquest fitxer és molt senzill, i es pot crear amb qualsevol
@@ -1451,7 +1454,9 @@ directiva `UserDir`.
 === Configurant la ruta amb UserDir
 
 La directiva `UserDir` especifica el directori del qual es carregarà el
-contingut per cada usuari. Aquesta directiva pot adoptar diverses formes.
+contingut per cada usuari, i està definida al mòdul *mod_userdir*.
+
+Aquesta directiva pot adoptar diverses formes:
 
 Si es dóna una ruta que no comenci amb una barra, s'assumeix que és una ruta
 relativa al directori personal de l'usuari especificat. Donada la configuració:

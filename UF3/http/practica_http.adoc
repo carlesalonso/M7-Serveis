@@ -182,6 +182,9 @@ aquest fitxer per defecte en comptes de *index.html*.
 *www.nom.cognom.lan* en comptes de *nom.cognom.lan*, la pàgina es mostri
 correctament.
 
+Per tal que això funciona, el servidor DNS ha de resoldre correctament l'adreça
+*www.nom.cognom.lan* a la teva adreça IP.
+
 .Entregar
 ====
 *Canvis fets a la configuració.*
@@ -303,6 +306,11 @@ l'usuari *nom* es pugui fer amb l'adreça *http://nom.cognom.lan/users/nom*
 ----
 RewriteRule ^/users/(.*)$ /~\$1 [R]
 ----
+
+.Entregar
+====
+*Comprovació que ens podem connectar a la carpeta d'un usuari.*
+====
 
 == Apartat 6: Instal·lació d'un LAMP
 
