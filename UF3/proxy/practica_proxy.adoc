@@ -137,10 +137,145 @@ les llistes d'accés, com `http_access`, permetent o prohibint la regla.
 
 == Apartat 3: Configuració dels clients
 
-== Apartat 4: Bloqueig de dominis
+Per tal d'utilitzar l'squid hem de configurar el navegador web.
 
-== Apartat 5: Bloqueig per paraules claus
+Configura el firefox de _PC1_ per tal que utilitzi _gollum_ com a servidor
+proxy.
+
+.Entregar
+====
+*Configuració del firefox*
+====
+
+Comprova que pots navegar per Internet. Després, ves al servidor i comprova
+al registre de l'squid que la navegació ha quedat registrada.
+
+.Entregar
+====
+*Registre de l'squid on es veu la navegació del client*
+====
+
+== Apartat 4: Bloqueig de pàgines
+
+Configura l'squid per fer que les màquines clients de la nostra xarxa no puguin
+accedir a les pàgines següents:
+
+www.facebook.com
+www.twitter.com
+www.youtube.com
+
+.Entregar
+====
+*Configuració de l'squid*
+====
+
+.Entregar
+====
+*Comprovació que les pàgines han quedat bloquejades*
+====
+
+Fes que tampoc puguin entrar a pàgines les adreces de les quals continguin les
+paraules: games, download o social.
+
+.Entregar
+====
+*Configuració de l'squid*
+====
+
+.Entregar
+====
+*Comprovació que les pàgines han quedat bloquejades*
+====
+
+Finalment, assegura't que les restriccions anteriors s'apliquen tant al
+protocol HTTP com al protocol HTTPS.
+
+.Entregar
+====
+*Configuració de l'squid*
+====
+
+.Entregar
+====
+*Comprovació que les pàgines han quedat bloquejades*
+====
+
+== Apartat 5: Bloqueig horari
+
+L'squid també permet especificar si s'ha de donar o no connectivitat segons la
+franja horària.
+
+Volem permetre que els usuaris de la nostra xarxa es puguin connectar als
+dominis anteriors, però només en el següent horari:
+
+- Dissabtes i diumenges tot el dia.
+- Divendres a partir de les 2 de la tarda.
+- De dilluns a dijous de 2 a 4 de la tarda.
+
+Afegeix la configuració necessària a l'squid per imposar aquest horari.
+
+.Entregar
+====
+*Configuració de l'squid*
+====
 
 == Apartat 6: Forçar l'ús del proxy
+
+Hi ha diverses maneres de forçar que els clients de la xarxa utilitzin el
+proxy per navegar.
+
+Una de les més directes és fer que l'iptables adreci tot el tràfic que vingui
+directament dels clients cap al servidor proxy. Amb això aconseguim no només que
+els clients hagin d'utilitzar forçosament el proxy, sinó que ho facin
+automàticament encara que no ho configurin explícitament al seu navegador.
+
+Això ho podem fer a _saruman_ afegint les següents regles d'iptables:
+
+----
+iptables -t nat -A PREROUTING -i ethX -s ! el_teu_proxy -p tcp --dport 80 -j DNAT --to el_teu_proxy:8080
+iptables -t nat -A POSTROUTING -o ethX -s xarxa_local -d el_teu_proxy -j SNAT --to iptables_box
+iptables -A FORWARD -s xarxa_local -d el_teu_proxy -i ethX -o ethX -p tcp --dport 8080 -j ACCEPT
+----
+
+Aquí, cal substituir les següents expressions:
+
+- **ethX**: s'ha de posar la interfície de xarxa de _saruman_ que estigui
+connectada a la xarxa local que estem configurant.
+- **el_teu_proxy**: l'adreça IP del servidor on hi ha l'squid, _gollum_.
+- **xarxa_local**: la xarxa local que estem configurant.
+- **iptables_box**: l'adreça IP de _saruman_ que pertany a la xarxa que estem
+configurant.
+
+Amb aquestes regles aconseguim que tot el tràfic que es dirigeix al port 80
+des de qualsevol màquina de la xarxa local, es desviï a _gollum_, i que la
+resposta de l'squid es retorni al client a través de _saruman_, no directament.
+
+.Entregar
+====
+*Sortida de `iptables -t nat -L` on es veuen les regles anteriors aplicades*
+====
+
+Un cop aplicades les regles, comprova des de _PC1_ que pots navegar directament,
+traient la configuració del proxy.
+
+.Entregar
+====
+*Navegació des de PC1 sense tenir cap proxy configurat*
+====
+
+Comprova després al registre de l'squid que _PC1_ s'ha connectat realment a
+través de l'squid, sense saber-ho.
+
+.Entregar
+====
+*Registre de l'squid on veu la navegació de PC1*
+====
+
+Finalment, si tot funciona, recorda guardar les regles d'iptables.
+
+.Entregar
+====
+*Ordre utilitzada per guardar les regles d'iptables*
+====
 
 == Apartat 7: Qüestions sobre ACL
