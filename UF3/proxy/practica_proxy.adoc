@@ -89,7 +89,7 @@ contingui algunes paraules clau. Amb això es pot evitar un munt de consum
 d'amplada de banda no desitjat.
 
 La instal·lació de l'Squid és immediata: només cal instal·lar el paquet
-_squid_.
+_squid3_.
 
 Els fitxers principals que hem de tenir en comptes són els següents:
 
