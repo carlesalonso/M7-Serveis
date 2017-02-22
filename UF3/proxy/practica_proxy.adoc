@@ -103,37 +103,72 @@ produeixin.
 Hi ha algunes configuracions bàsiques que voldrem fer un cop instal·lat el
 servidor:
 
-- Port on escolta l'Squid: volem que escolti pel port 8080.
-- Cau: per defecte l'Squid utilitza com a cau la memòria del servidor. Si volem
-que utilitzi espai al disc li hem d'indicar. Fes que utilitza fins a 1000 MB.
+=== Port on escolta l'Squid
+
+El navegador web es comunica amb el proxy a través del protocol HTTP, però
+habitualment s'utilitza un port diferent del 80 per aquest servei.
+
+Configura l'squid per tal que escolti pel port 8080.
+
+.Entregar
+====
+*Canvis fets a la configuració*
+====
+
+=== Espai de cau
+
+Per defecte l'Squid utilitza com a cau la memòria del servidor. Si volem
+que utilitzi espai al disc li hem d'indicar.
+
+Fes que utilitzi fins a 1000 MB.
+
+.Entregar
+====
+*Canvis fets a la configuració*
+====
+
 Per tal que generi l'estructura de directoris necessària, cal apagar
 momentàniament el servei i executar l'ordre `squid3 -z`.
-- Xarxa autoritzada: finalment, volem configurar quins clients poden utilitzar
+
+.Entregar
+====
+*Resultat de l'execució de `squid3 -z`*
+====
+
+=== Xarxa autoritzada
+
+Finalment, volem configurar quins clients poden utilitzar
 el servidor intermediari. Per fer això utilitzarem una ACL (Access Control
 List).
-Totes les ACL es descriuen segons el següent format:
-
-----
-acl nom_acl tipus_acl descripció ...
-----
-
-Per fer que només la xarxa on són els clients estigui autoritzada a navegar per
-Internet mitjançant el proxy, utilitzarem les següents directives:
-
-----
-acl authorized_network src 172.16.2.0/8
-http_access allow authorized_network
-----
 
 ACL (Access Control List) és un concepte de seguretat informàtica utilitzat per
 a permetre la separació de privilegis. La separació de privilegis consisteix
 en otorgar o no uns certs privilegis a un objecte (usuari, màquina...) que
 està realitzant una consulta.
 
-Per exemple, `acl authorized_network src 172.16.2.0/8` crea una regla anomenada
+Totes les ACL es descriuen segons el següent format:
+
+----
+acl nom_acl tipus_acl descripció ...
+----
+
+Per exemple:
+
+----
+acl authorized_network src 172.16.2.0/8
+----
+
+Això crea una regla anomenada
 *authorized_network* que defineix una xarxa d’origen de peticions
 (*src 172.16.2.0/8*). Una vegada definida la regla es pot incloure en una de
-les llistes d'accés, com `http_access`, permetent o prohibint la regla.
+les llistes d'accés, com `http_access`, permetent o prohibint la regla:
+
+----
+http_access allow authorized_network
+----
+
+Amb aquestes dues línies aconseguirem que només els clients de la nostra xarxa
+puguin utilitzar el servei de proxy.
 
 == Apartat 3: Configuració dels clients
 
