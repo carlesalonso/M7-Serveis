@@ -232,13 +232,14 @@ automàticament encara que no ho configurin explícitament al seu navegador.
 Això ho podem fer a _saruman_ afegint la següent regla d'iptables:
 
 ----
-iptables -t nat -A PREROUTING -i ethX -p tcp --dport 80 -j REDIRECT --to-port PORT_SQUID
+iptables -t nat -A PREROUTING -i ethX -s XARXA_LOCAL -p tcp --dport 80 -j REDIRECT --to-port PORT_SQUID
 ----
 
 Aquí, cal substituir les següents expressions:
 
 - **ethX**: s'ha de posar la interfície de xarxa de _saruman_ que estigui
 connectada a la xarxa local que estem configurant.
+- **XARXA_LOCAL**: l'adreça de la xarxa on són els clients.
 - **PORT_SQUID**: port per on escolta l'squid.
 
 Amb aquesta regla aconseguim que tot el tràfic que es dirigeix al port 80
@@ -246,8 +247,20 @@ des de qualsevol màquina de la xarxa local, es desviï a l'squid.
 
 .Entregar
 ====
+*Regla d'iptables, amb les diferents parts adaptades al nostre cas particular.*
+====
+
+.Entregar
+====
 *Sortida de `iptables -t nat -L` on es veuen les regles anteriors aplicades*
 ====
+
+També li hem de dir a l'squid que actuï com un _transparent proxy_. Per fer
+això podem afegir la paraula _transparent_ a la directiva *http_port*:
+
+----
+http_port 8080 transparent
+----
 
 Un cop aplicades les regles, comprova des de _PC1_ que pots navegar directament,
 traient la configuració del proxy.
