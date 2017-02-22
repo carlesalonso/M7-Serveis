@@ -31,6 +31,7 @@ Materials per al mòdul *M7 - Serveix de xarxa* del cicle de *Sistemes microinfo
   - [Teoria](UF3/http)
   - [Pràctica](UF3/http/practica_http.adoc)
 2. Servidor proxy
+  - [Pràctica](UF3/proxy/practica_proxy.adoc)
 
 ### UF 4: accés a sistemes remots
 
