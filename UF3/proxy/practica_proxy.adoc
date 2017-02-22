@@ -39,10 +39,10 @@ pàgines concretes.
 == Preparatius
 
 * Utilitzarem l'entorn de xarxa de les pràctiques anteriors. Configurarem
-_gollum_ (172.16.2.2) com a servidor _proxy-cache_.
+_saruman_ com a servidor _proxy-cache_.
 
 * Necessitarem el client _PC1_ per comprovar les configuracions que anem fent
-al servei. Els routers _sauron_ i _saruman_ hauran d'estar engegats per poder
+al servei. El router _sauron_ haurà d'estar engegats per poder
 connectar-nos a internet.
 
 * Si no tenim el servei DHCP funcionant, haurem d'assignar una IP fixa a PC1
@@ -59,7 +59,7 @@ la data ressaltats en diferents colors. *Això és imprescindible per avaluar
 les captures*.
 ====
 
-== Apartat 1: Instal·lació de l'_squid_ a _gollum_
+== Apartat 1: Instal·lació de l'_squid_ a _saruman_
 
 L'Squid es un programari proxy que pot gestionar peticions HTTP, HTTPS i FTP
 en una xarxa local.
@@ -139,7 +139,7 @@ les llistes d'accés, com `http_access`, permetent o prohibint la regla.
 
 Per tal d'utilitzar l'squid hem de configurar el navegador web.
 
-Configura el firefox de _PC1_ per tal que utilitzi _gollum_ com a servidor
+Configura el firefox de _PC1_ per tal que utilitzi _saruman_ com a servidor
 proxy.
 
 .Entregar
@@ -175,7 +175,7 @@ www.youtube.com
 ====
 
 Fes que tampoc puguin entrar a pàgines les adreces de les quals continguin les
-paraules: games, download o social.
+paraules: _games_, _download_ o _social_.
 
 .Entregar
 ====
@@ -229,26 +229,20 @@ directament dels clients cap al servidor proxy. Amb això aconseguim no només q
 els clients hagin d'utilitzar forçosament el proxy, sinó que ho facin
 automàticament encara que no ho configurin explícitament al seu navegador.
 
-Això ho podem fer a _saruman_ afegint les següents regles d'iptables:
+Això ho podem fer a _saruman_ afegint la següent regla d'iptables:
 
 ----
-iptables -t nat -A PREROUTING -i ethX -s ! el_teu_proxy -p tcp --dport 80 -j DNAT --to el_teu_proxy:8080
-iptables -t nat -A POSTROUTING -o ethX -s xarxa_local -d el_teu_proxy -j SNAT --to iptables_box
-iptables -A FORWARD -s xarxa_local -d el_teu_proxy -i ethX -o ethX -p tcp --dport 8080 -j ACCEPT
+iptables -t nat -A PREROUTING -i ethX -p tcp --dport 80 -j REDIRECT --to-port PORT_SQUID
 ----
 
 Aquí, cal substituir les següents expressions:
 
 - **ethX**: s'ha de posar la interfície de xarxa de _saruman_ que estigui
 connectada a la xarxa local que estem configurant.
-- **el_teu_proxy**: l'adreça IP del servidor on hi ha l'squid, _gollum_.
-- **xarxa_local**: la xarxa local que estem configurant.
-- **iptables_box**: l'adreça IP de _saruman_ que pertany a la xarxa que estem
-configurant.
+- **PORT_SQUID**: port per on escolta l'squid.
 
-Amb aquestes regles aconseguim que tot el tràfic que es dirigeix al port 80
-des de qualsevol màquina de la xarxa local, es desviï a _gollum_, i que la
-resposta de l'squid es retorni al client a través de _saruman_, no directament.
+Amb aquesta regla aconseguim que tot el tràfic que es dirigeix al port 80
+des de qualsevol màquina de la xarxa local, es desviï a l'squid.
 
 .Entregar
 ====
