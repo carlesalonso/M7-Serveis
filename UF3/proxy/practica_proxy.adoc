@@ -1,4 +1,4 @@
-= Pràctica servidor HTTP
+= Pràctica servidor proxy
 
 :encoding: utf-8
 :lang: ca
