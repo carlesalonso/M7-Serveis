@@ -128,7 +128,11 @@ Fes que utilitzi fins a 1000 MB.
 ====
 
 Per tal que generi l'estructura de directoris necessària, cal apagar
-momentàniament el servei i executar l'ordre `squid3 -z`.
+momentàniament el servei i executar l'ordre `squid3 -z -N`.
+
+`-z` fa que es generi qualsevol part que falta en l'estructura del cau, mentre
+que `-N` fa que el programa acabi després d'això, sense quedar-se treballant
+com un dimoni.
 
 .Entregar
 ====
