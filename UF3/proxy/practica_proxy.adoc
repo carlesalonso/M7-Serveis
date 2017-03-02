@@ -331,3 +331,102 @@ Finalment, si tot funciona, recorda guardar les regles d'iptables.
 ====
 
 == Apartat 7: Qüestions sobre ACL
+
+Tenim les següents ACL (suposem que són les úniques regles que hi ha a la
+configuració):
+
+----
+acl network1 src 192.168.0.0/24
+acl network2 src 192.168.1.0/24
+acl dst_network2 dst 192.168.1.0/24
+
+acl admin arp AA:BB:CC:DD:EE:FF
+
+acl mydomain dstdomain miweb.com
+acl facebook dstdomain .facebook.com
+
+acl http proto HTTP SSL
+acl ftp proto FTP
+acl ssh port 22
+acl smtp port 25
+----
+
+Examina les següents configuracions i respon a les preguntes de
+**FORMA RAONADA**:
+
+=== Primera configuració
+
+----
+http_access allow network1 ftp !mydomain
+http_access allow network1 http !mydomain
+http_access deny all
+----
+
+1. Pot l'ordinador amb IP 192.168.0.100 navegar a la pàgina de Facebook?
+2. Pot l'ordinador amb IP 192.168.1.100 navegar per internet?
+3. Pot l’ordinador amb IP 192.168.0.100 accedir per a `miweb.com` per FTP?
+
+=== Segona configuració
+
+----
+http_access allow network2 mydomain
+http_access deny facebook
+http_access allow ftp
+http_access deny !http
+http_access allow network1
+http_access deny all
+----
+
+4. Pot l'ordinador amb IP 192.168.0.100 navegar a la pàgina de Facebook?
+5. Pot l'ordinador amb IP 192.168.0.100 accedir a `miweb.com` per FTP?
+6. Pot l'ordinador amb IP 192.168.1.100 navegar a la pàgina de Facebook?
+7. Pot l'ordinador amb IP 192.168.1.100 navegar a la pàgina de `miweb.com`?
+8. Pot l'ordinador amb IP 192.168.0.100 accedir a `miweb.com` per FTP?
+9. Pot l'ordinador amb IP 192.168.1.100 accedir a `miweb.com` per SSH?
+10. Pot l'ordinador amb IP 192.168.0.100 accedir a `miweb.com` per SSH?
+
+=== Tercera configuració
+
+----
+http_access allow network1 smtp facebook
+http_access allow network1 http facebook
+http_access deny facebook !http
+http_access allow admin
+
+http_access deny dst_network2
+
+http_access deny !http
+
+http_access allow network1
+http_access allow network2 ftp
+http_access allow network2 http
+http_access deny all
+----
+
+11. Pot `admin` accedir a la pàgina web de facebook?
+12. Pot `admin` accedir per FTP al domini de facebook?
+13. Pot l'ordinador amb IP 192.168.0.100 accedir a un servidor web d'IP
+192.168.1.44?
+14. Pot l'ordinador amb IP 192.168.1.100 navegar?
+15. Pot l'ordinador amb IP 192.168.0.100 enviar correus per SMTP? I
+el que té l'IP 192.168.1.100? I `admin`?
+16. Pot l'ordinador amb IP 192.168.1.100 emprar el protocol FTP a través
+d'Internet?
+
+=== Quarta configuració
+
+Escriu ara la configuració necessària per aconseguir el següent:
+
+17. Que les màquines de la xarxa 192.168.0.0/24 puguin accedir a internet
+(només HTTP i HTTPS) menys a la pàgina de facebook. A més, podran accedir
+per FTP a `miweb.com`.
+
+18. Que les màquines de la xarxa 192.168.0.0/24 puguin accedir a internet
+(només HTTP i HTTPS) menys a les pàgines de facebook, steampowered, twitter,
+instagram i qualsevol pàgina que contigui paraules com ‘porno’, ‘coches’ i
+‘jocs’ (paraules definides en un fitxer). Les màquines de la xarxa
+192.168.1.0/24 tindran els mateixos privilegis amb una excepció: sí que
+podran accedir a les pàgines de facebook, steampowered, twitter i instagram
+(pero no a les del fitxer de paraules).
+
+Nota: afegiu les ACL que facin falta per aconseguir-ho.
