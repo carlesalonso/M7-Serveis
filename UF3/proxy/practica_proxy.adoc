@@ -197,11 +197,11 @@ al registre de l'squid que la navegació ha quedat registrada.
 == Apartat 4: Bloqueig de pàgines
 
 Configura l'squid per fer que les màquines clients de la nostra xarxa no puguin
-accedir a les pàgines següents:
+accedir a les pàgines següents, que utilitzen HTTP:
 
-www.facebook.com
-www.twitter.com
-www.youtube.com
+- msn.com
+- linuxquestions.org
+- gencat.cat
 
 .Entregar
 ====
@@ -228,6 +228,12 @@ paraules: _games_, _download_ o _social_.
 
 Finalment, assegura't que les restriccions anteriors s'apliquen tant al
 protocol HTTP com al protocol HTTPS.
+
+Per això, bloqueja les següents pàgines, que utilizen HTTPS:
+
+- facebook.com
+- twitter.com
+- youtube.com
 
 .Entregar
 ====
