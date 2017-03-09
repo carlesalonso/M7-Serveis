@@ -235,6 +235,13 @@ Per això, bloqueja les següents pàgines, que utilizen HTTPS:
 - twitter.com
 - youtube.com
 
+[TIP]
+====
+Per bloquejar l'accés a pàgines HTTPS la clau radica en evitar que es pugui
+utilitzar el mètode CONNECT, que és el que s'utilitza per negociar la
+connexió SSL.
+====
+
 .Entregar
 ====
 *Configuració de l'squid*
