@@ -81,6 +81,15 @@ sessió, particularment l'usuari i contrasenya utilitzats per validar-se.
 Utilitza el `tcpdump` a *saruman* per capturar un inici de sessió a través de
 `telnet` entre *PC1* i *legolas*.
 
+[NOTE]
+====
+`telnet` envia un paquet per cada tecla que premem, així que per capturar
+l'usuari i contrasenya necessitarem consultar diversos paquets.
+
+L'opció `-X` del `tcpdump` ens mostrarà la captura a temps real en hexadecimal
+i en text.
+====
+
 .Entregar
 ====
 *Captura de l'usuari i contrasenya utilitzats.*
@@ -172,18 +181,19 @@ manual. Completa les següents dades i respon a les preguntes:
 
 .Entregar
 ====
-1. Port per defecte que utilitza el protocol `SSH`:
-2. Versió del protocol que estem utilitzant:
-2. Ruta del fitxer de configuració del **servidor** SSH:
-3. Ruta del fitxer de configuració del **client** SSH:
-4. Ruta del fitxer criptogràfic que identifica al servidor:
-5. Ruta del fitxer on el client guarda els servidors coneguts:
-6. Per defecte, ens podem connectar remotament com usuari root? Si la resposta
+1. Ruta del fitxer de configuració del **servidor** SSH:
+2. Instrucció per visualitzar el manual d'aquest fitxer:
+3. Port per defecte que utilitza el protocol `SSH`:
+4. Versió del protocol que estem utilitzant:
+5. Ruta del fitxer de configuració del **client** SSH:
+6. Ruta del fitxer criptogràfic que identifica al servidor:
+7. Ruta del fitxer on el client guarda els servidors coneguts:
+8. Per defecte, ens podem connectar remotament com usuari root? Si la resposta
 és sí, de quina manera?
-7. Per a què serveixen les `HostKey`?
-8. En què consisteix la separació de privilegis?
-9. Pot connectar-se remotament un usuari que tingui una contrasenya en blanc?
-10. Per defecte, podem utilitzar aplicacions gràfiques remotament?
+9. Per a què serveixen les `HostKey`?
+10. En què consisteix la separació de privilegis?
+11. Pot connectar-se remotament un usuari que tingui una contrasenya en blanc?
+12. Per defecte, podem utilitzar aplicacions gràfiques remotament?
 ====
 
 Comprova que pots connectar per SSH des de *legolas* cap a *PC1*.
@@ -212,11 +222,26 @@ Estableix una connexió SSH des del teu ordinador de l'aula cap a *PC1*. Utilitz
 Tanca la connexió anterior, i obre'n una altra que permeti l'execució
 d'aplicacions gràfiques.
 
+.Entregar
+====
+*Part del fitxer de configuració que permet establir connexions gràfiques.*
+====
+
 Executa el *gedit* a *PC1*, i fes que es visualitzi a l'escriptori de
 l'ordinador de l'aula.
 
-Torna a fer el mateix, però fes que ara que el *gedit* es vegi a l'escriptori
+.Entregar
+====
+*Ordre utilitzada per establir la connexió i `gedit` executant-se remotament.*
+====
+
+Torna a fer el mateix, però fes ara que el *gedit* es vegi a l'escriptori
 de *PC1*.
+
+.Entregar
+====
+*Ordre utilitzada per establir la connexió i per executar el `gedit`.*
+====
 
 Per parelles, arrenqueu un ordinador en Windows i utilitzeu el programa
 *putty* per establir una connexió remota a *PC1*.
