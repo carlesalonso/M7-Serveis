@@ -12,7 +12,7 @@ Materials per al mòdul *M7 - Serveix de xarxa* del cicle de *Sistemes microinfo
 2. DHCP
   - [Teoria](UF1/dhcp)
   - [Pràctica](UF1/dhcp/practica_dhcp.adoc)
-2. DNS
+3. DNS
   - [Teoria](UF1/dns)
   - [Pràctica](UF1/dns/practica_dns.adoc)
 
@@ -36,3 +36,4 @@ Materials per al mòdul *M7 - Serveix de xarxa* del cicle de *Sistemes microinfo
 ### UF 4: accés a sistemes remots
 
 1. Accés a sistemes remots
+  - [Pràctica](UF4/practica_ssh.adoc)
