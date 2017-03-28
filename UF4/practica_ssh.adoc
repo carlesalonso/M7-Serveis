@@ -1,0 +1,256 @@
+= Pràctica accés remot
+
+:encoding: utf-8
+:lang: ca
+:toc: left
+:!numbered:
+//:teacher:
+
+ifdef::teacher[]
+== (Versió del professor):
+endif::teacher[]
+
+////
+ifndef::teacher[]
+.Entregar
+====
+*Resposta*
+====
+endif::teacher[]
+ifdef::teacher[]
+.Solució
+====
+*Solució*
+====
+endif::teacher[]
+////
+
+<<<
+
+== Objectiu de la pràctica
+
+L'objectiu de la pràctica és experimentar alguns dels sistemes de connexió
+remota més comuns, tant en terminal com en mode gràfic.
+
+== Preparatius
+
+* Per aquesta pràctica necessitaràs les màquines virtuals `sauron` i
+`saruman`, per enrutar els paquets de xarxa, `PC1`, com a client i per
+establir-hi connexions gràfiques, i `legolas` com a servidor per a
+connexions en mode text.
+
+* Pots assignar una IP fixa a `PC1`, o utilitzar el servidor DHCP de `bilbo`.
+
+* Seguint els passos de les pràctiques anteriors, totes les màquines han de
+mostrar un prompt personalitzat i hi ha d'haver un usuari amb el vostre nom i
+permisos per utilitzar *sudo*.
+
+[IMPORTANT]
+====
+Cal que configureu el vostre terminal perquè al prompt aparegui el vostre nom i
+la data ressaltats en diferents colors. *Això és imprescindible per avaluar
+les captures*.
+====
+
+== Apartat 1: Telnet
+
+Un dels primers sistemes per connectar-se remotament a un altre ordinador fou
+el `telnet`.
+
+Instal·la la part de servidor del *telnet* a *legolas*.
+
+.Entregar
+====
+*Instal·lació del sevidor de `telnet`.*
+====
+
+Utilitza *PC1* per connectar-te a *legolas* via *telnet*. Utilitza les ordres
+`whoami` i `hostname` abans i després de la connexió per comprovar amb quin
+usuari i a quin ordinador estàs connectat en cada cas.
+
+.Entregar
+====
+*Connexió entre _PC1_ i _legolas_.*
+====
+
+Una de les limitacions més importants del protocol `telnet` és que tota la
+comunicació viatja sense xifrar. Això significa que és relativament fàcil
+per un atacant que controli un node intermig capturar la informació de la
+sessió, particularment l'usuari i contrasenya utilitzats per validar-se.
+
+Utilitza el `tcpdump` a *saruman* per capturar un inici de sessió a través de
+`telnet` entre *PC1* i *legolas*.
+
+.Entregar
+====
+*Captura de l'usuari i contrasenya utilitzats.*
+====
+
+Com s'ha pogut comprovar, l'ús de `telnet` presenta importants problemes de
+seguretat, així que ha quedat relagat a usos molt concrets.
+
+Actualment, el *telnet* s'utilitza per:
+
+- fer diagnòstics de xarxa utilitzant protocols que treballin en text pla.
++
+Connecta utilitzant `telnet` a `www.linuxquestions.org`, pel port 80, i envia
+la següent petició HTTP:
++
+----
+GET / HTTP/1.1
+Host: www.linuxquestions.org
+Connection: close
+----
++
+[TIP]
+====
+Cal afegir una línia en blanc al final per indicar el final de la petició.
+====
++
+.Entregar
+====
+*Captura de part de la resposta obtinguda.*
+====
++
+[TIP]
+====
+Noteu que aquest tipus de proves només es poden fer en pàgines que no utilitzen
+SSL.
+====
++
+[NOTE]
+====
+A la pràctica de correu electrònic vam fer una activitat similar per connectar
+a través de `telnet` amb un servidor SMTP.
+====
+
+- alguns jocs i entreteniments.
++
+.Entregar
+====
+*Captura d'una sessió de `telnet` contra `towel.blinkenlights.nl`.*
+====
++
+.Entregar
+====
+*Captura d'una sessió de `telnet` contra `mud.balzhur.org` pel port 5400.*
+====
+
+[NOTE]
+====
+Val a dir que les últimes versions de `telnet` incorporen una capa SSL, però
+no s'estan utilitzant gaire perquè `SSH` permet fer el mateix que `telnet` i
+moltes coses més.
+====
+
+== Apartat 2: SSH bàsic
+
+Actualment, el protocol `SSH` és un dels més utilitzats per connexions a
+terminals remots. A més de connexions xifrades, ofereix un munt de possibilitats
+addicionals.
+
+Consulta l'article a `https://en.wikipedia.org/wiki/Secure_Shell` i llegeix
+les capacitats del protocol `SSH`.
+
+.Entregar
+====
+*Explica _en les teves pròpies paraules_ tres de les capacitats que té `SSH`.*
+====
+
+En aquest apartat utilitzarem *PC1* com a servidor, per tal de poder provar
+la connexió en mode gràfic.
+
+Instal·la el servidor SSH (`openssh-server`) a *PC1*.
+
+.Entregar
+====
+*Captura de la instal·lació.*
+====
+
+Localitza el fitxer de configuració principal del servidor i consulta el seu
+manual. Completa les següents dades i respon a les preguntes:
+
+.Entregar
+====
+1. Port per defecte que utilitza el protocol `SSH`:
+2. Versió del protocol que estem utilitzant:
+2. Ruta del fitxer de configuració del **servidor** SSH:
+3. Ruta del fitxer de configuració del **client** SSH:
+4. Ruta del fitxer criptogràfic que identifica al servidor:
+5. Ruta del fitxer on el client guarda els servidors coneguts:
+6. Per defecte, ens podem connectar remotament com usuari root? Si la resposta
+és sí, de quina manera?
+7. Per a què serveixen les `HostKey`?
+8. En què consisteix la separació de privilegis?
+9. Pot connectar-se remotament un usuari que tingui una contrasenya en blanc?
+10. Per defecte, podem utilitzar aplicacions gràfiques remotament?
+====
+
+Comprova que pots connectar per SSH des de *legolas* cap a *PC1*.
+
+.Entregar
+====
+*Captura de la connexió de _legolas_  a _PC1_ per `SSH`.*
+====
+
+A continuació volem permetre que ens puguem connectar a *PC1* des de fora de la
+LAN. Per això cal obrir el port necessari a *sauron* i dirigir-lo a *PC1*.
+
+.Entregar
+====
+*Ordres necessàries per obrir el port del `SSH` a _sauron_.*
+====
+
+Estableix una connexió SSH des del teu ordinador de l'aula cap a *PC1*. Utilitza
+`whoami` i `hostname` abans i després de la connexió.
+
+.Entregar
+====
+*Connexió entre l'ordinador de l'aula i _PC1_*
+====
+
+Tanca la connexió anterior, i obre'n una altra que permeti l'execució
+d'aplicacions gràfiques.
+
+Executa el *gedit* a *PC1*, i fes que es visualitzi a l'escriptori de
+l'ordinador de l'aula.
+
+Torna a fer el mateix, però fes que ara que el *gedit* es vegi a l'escriptori
+de *PC1*.
+
+Per parelles, arrenqueu un ordinador en Windows i utilitzeu el programa
+*putty* per establir una connexió remota a *PC1*.
+
+Instal·leu el programa *xming* al Windows.
+
+Comproveu que ara podeu connectar-vos remotament des del Windows a *PC1*
+utilitzant el *putty* i executar programes gràfics.
+
+== Apartat 3: eines SSH
+
+Utilitza l'eina `scp` per copiar un fitxer de l'ordinador físic a *PC1*.
+
+Utilitza l'eina `scp` per copiar un fitxer de *PC1* a l'ordinador físic.
+
+Connecta't a *PC1* utilitzant `sftp`. Comprova que pots baixar i pujar un
+directori i tot el seu contingut.
+
+Repeteix l'apartat anterior utilitzant el client gràfic `filezilla`.
+
+Utilitza l'ordre `mount` per muntar un directori de *PC1* com si fos un
+directori local. Utilitza `sshfs` com a tipus del sistema de fitxers.
+
+== Apartat 4: autenticació amb clau criptogràfica
+
+- Generació de claus
+- rsync (cron?)
+
+== Apartat 5: túnels
+
+- túnel local
+- túnel invers
+
+== Apartat 6: VNC
+
+- Instal·lació
+- test
