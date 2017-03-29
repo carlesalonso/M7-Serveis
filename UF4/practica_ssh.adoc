@@ -246,10 +246,20 @@ de *PC1*.
 Per parelles, arrenqueu un ordinador en Windows i utilitzeu el programa
 *putty* per establir una connexió remota a *PC1*.
 
+.Entregar
+====
+*Connexió a _PC1_ des de Windows.*
+====
+
 Instal·leu el programa *xming* al Windows.
 
 Comproveu que ara podeu connectar-vos remotament des del Windows a *PC1*
 utilitzant el *putty* i executar programes gràfics.
+
+.Entregar
+====
+*Escriptori del Windows amb el `gedit` de _PC1_ executant-se.*
+====
 
 == Apartat 3: eines SSH
 
