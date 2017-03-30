@@ -251,7 +251,9 @@ Per parelles, arrenqueu un ordinador en Windows i utilitzeu el programa
 *Connexió a _PC1_ des de Windows.*
 ====
 
-Instal·leu el programa *xming* al Windows.
+Instal·leu el programa *xming* al Windows. Aquest programa permet visualitzar
+aplicacions que s'estan executant en un servidor X Window, el sistema de
+finestres del GNU/Linux.
 
 Comproveu que ara podeu connectar-vos remotament des del Windows a *PC1*
 utilitzant el *putty* i executar programes gràfics.
