@@ -383,6 +383,48 @@ passant-li el punt de muntatge.
 
 == Apartat 4: autenticació amb clau criptogràfica
 
+Si volem connectar-nos remotament a un altre _host_ sovint, o bé volem
+automatitzar alguna operació remota, haver d'introduir cada cop la
+contrasenya és incòmode.
+
+Una alternativa consisteix a canviar el sistema d'autenticació dels usuaris i
+utilitzar una clau criptogràfica.
+
+Si optem per aquesta opció, generarem una parella de claus pública/privada al
+nostre ordinador i el client SSH les utilitzarà per validar-se contra el
+servidor.
+
+Essencialment, enviarem la clau pública al servidor i mantindrem la privada al
+client. Cada cop que ens connectem, el servidor xifrarà una missatge aleatori
+utiltizant la clau pública i l'enviarà al client. El client el dexifrarà
+utilitzant la clau privada i el reenviarà al servidor, demostrant així que és
+qui diu ser (només el posseïdor de la clau privada pot dexifrar el missatge
+que s'ha xifrat amb la clau pública corresponent).
+
+[NOTE]
+====
+Cal destacar aquí que el sistema de claus és diferent que el sistema de
+contrasenya en el sentit que qui s'autentica és el propi _host_ i no
+l'usuari, de manera que si el mateix ususari vol establir una connexió des
+d'un altre ordinador que no disposi de la clau privada, no podrà autenticar-se
+utilitzant aquest mecanisme.
+====
+
+En general, el sistema de claus es considera més segur que el sistema basat en
+contrasenyes, perquè la mida de les claus és més gran que la de qualsevol
+contrasenya, i el seu contingut és més aleatori.
+
+Els dos sistemes es poden combinar: es pot permetre que els usuaris utilitzin
+indistintament un o l'altre sistema, que alguns usuaris n'utilitzin un i
+d'altres l'altre, o que només es permeti un sistema.
+
+A més, la clau privada del client es pot guardar al disc xifrada. Això impedeix
+que qualsevol persona que obtingui accés al disc del client pugui utilitzar la
+clau per autenticar-se. A canvi, l'usuari haurà d'introduir una contrasenya cada
+cop que vulgui utilitzar la clau privada. Aquesta contrasenya no viatjarà per
+la xarxa, sinó que és la contrasenya que s'utilitzarà per recuperar la clau
+privada del fitxer xifrat del disc.
+
 - Generació de claus
 - rsync (cron?)
 
