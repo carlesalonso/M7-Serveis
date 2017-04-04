@@ -265,17 +265,121 @@ utilitzant el *putty* i executar programes gràfics.
 
 == Apartat 3: eines SSH
 
-Utilitza l'eina `scp` per copiar un fitxer de l'ordinador físic a *PC1*.
+A més de connectar-nos remotament utilitzant una línia de comandes, el
+protocol SSH admet una sèrie d'eines i extensions addicionals que ens permeten
+traspassar fitxers des de la màquina servidora (a on ens hem connectat) cap a
+la màquina client (des d'on ens connectem) i a l'inrevés.
 
-Utilitza l'eina `scp` per copiar un fitxer de *PC1* a l'ordinador físic.
+En aquest apartat veurem algunes d'aquestes eines.
 
-Connecta't a *PC1* utilitzant `sftp`. Comprova que pots baixar i pujar un
-directori i tot el seu contingut.
+La primera que veurem és `scp`. Aquesta utilitat funciona de forma similar al
+`cp` estàndard, amb la difèrencia que l'origen i el destí dels fitxers a
+copiar poden ser a qualsevol de les dues màquines.
 
-Repeteix l'apartat anterior utilitzant el client gràfic `filezilla`.
+- Utilitza `scp` per copiar el fitxer `/etc/hosts` de *PC1* al directori
+personal del teu ordinador.
++
+.Entregar
+====
+*Instrucció utilitzada i resultat de l'operació.*
+====
 
-Utilitza l'ordre `mount` per muntar un directori de *PC1* com si fos un
-directori local. Utilitza `sshfs` com a tipus del sistema de fitxers.
+- Utilitza `scp` per copiar el directori `/etc/network` i tot el seu contingut,
+del teu ordinador al teu _home_ de *PC1*.
++
+.Entregar
+====
+*Instrucció utilitzada i resultat de l'operació.*
+====
+
+Una altra eina molt utilitzada per traspassar fitxers d'una banda a l'altra és
+`sftp`. A diferència de `scp`, l'`sftp` obre un terminal interactiu que permet
+moure'ns pels sistemes de fitxers dels dos _hosts_ i traspassar fitxers i
+directoris d'una banda a l'altra.
+
+Les ordres que acepta `sftp` són molt similars a les que ja vam veure per FTP.
+Les ordres que comencen per `l` es refereixen al sistema local (des d'on ens
+connectem). Per exemple, `lcd` s'utilitza per canviar el directori de treball
+a l'ordinador local, mentre que `cd` s'utilitza per canviar el directori de
+treball a l'ordinador remot.
+
+- Utilitza `sftp` per baixar el teu _home_ complet des de *PC1* cap al teu
+ordinador.
++
+.Entregar
+====
+*Instrucció utilitzada i resultat de l'operació.*
+====
+
+Per comoditat, podem utilitzar un client gràfic per fer la mateixa tasca.
+Internament, el client gràfic treballarà enviant les ordres de `sftp`
+necessàries, però per nosaltres serà més fàcil orientar-nos en el sistema de
+fitxers i no caldrà que recordem aquestes ordres.
+
+Una bona elecció pel client gràfic és el programa `filezilla`, que ja vam
+utilitzar per FTP, i que és multiplataforma.
+
+- Repeteix l'apartat anterior utilitzant el client gràfic `filezilla`.
++
+.Entregar
+====
+*Captura del `filezilla` després de realitzar l'operació.*
+====
+
+[TIP]
+====
+En Windows, un altre client gràfic molt utilitzat és el `winscp`.
+====
+
+Finalment, una última forma com podem accedir al sistema de fitxers remot és
+muntar-lo directament com si es tractés d'una unitat extraïble, de manera que
+tot el sistema de fitxers remot sigui accessible des d'un directori del sistema
+de fitxers local.
+
+Aquest mecanisme té l'avantatge que, un cop muntat el sistema remot, podem
+treballar-hi oblidant completament que es tracta d'un ordinador remot, i
+utilitzant les utilitats i eines que acosumem a utilitzar en el sistema local.
+Per exemple, podríem editar una web que tenim penjada a l'ordinador remot
+directament utilitzar l'entorn de desenvolupament habitual instal·lat al
+nostre ordinador de treball.
+
+Per utilitzar `sshfs` primer de tot cal instal·lar el paquet que conté el
+client, que es diu justament `sshfs`.
+
+[TIP]
+====
+També existeix un client SSHFS per Windows que es diu `win-sshfs`.
+====
+
+- Crea el directori `pc1` dins de `/mnt` al teu ordinador. Aquest serà el punt
+de muntatge, és a dir, el directori des d'on accedirem al sistema de fitxers
+remot.
+
+La sintaxi de `sshfs` és la següent:
+
+----
+sshfs -o <opció1,opció2...> <lloc remot> <directori de muntatge>
+----
+
+Utilitzarem les següents opcions:
+
+1. `allow_other`: permet que altres usuari a banda de root puguin utilitzar el
+muntatge.
+2. `default_permissions`: fa que el nucli calculi els permisos dels fitxers
+remots (si no s'utilitza, els permisos es veuran estranys, perquè els
+identificadors dels usuaris al sistema remot no són els mateixos que en el
+sistema local).
+
+Utilitza `sshfs` per muntar l'arrel del sistema de fitxers remot dins del
+directori que hem creat abans.
+
+.Entregar
+====
+*Ordre utilitzada i resultat obtingut.*
+====
+
+Per desmuntar el sistema de fitxers remots n'hi ha prou amb utilitzar `umount`
+passant-li el punt de muntatge.
 
 == Apartat 4: autenticació amb clau criptogràfica
 
