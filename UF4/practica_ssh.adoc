@@ -468,8 +468,120 @@ Comprova que ara pots entrar amb aquest usuari sense posar una contrasenya.
 
 == Apartat 5: túnels
 
-- túnel local
-- túnel invers
+=== Túnel local
+
+Una característica que fa a l'SSH molt interessant és la possibilitat de crear
+túnels, és a dir, de poder utilitzar una connexió SSH per accedir a qualsevol
+altre servei que hi hagi a la xarxa local on hi ha el servidor SSH.
+
+Per provar aquesta funcionalitat segueix els següents passos:
+
+1. Assegura't que tens un servidor HTTP executant-se a *legolas*. Si no el tens,
+instal·la l'Apache amb `apt-get install apache2`.
+
+2. Revisa la configuració d'`iptables` de *sauron* i elimina qualsevol línia
+que faci referència al port 80. Amb això tanquem el port 80 de manera que es
+vegi tancat des de l'exterior de la LAN.
+
+3. Comprova que des de *PC1* es pot visualitzar la web de *legolas*, posant la
+seva IP al navegador web.
+
+4. Comprova que des de l'ordinador de l'aula veiem el port 80 tancat, posant
+la IP pública de *sauron* al navegador web.
+
+Aquesta és una situació habitual: volem accedir a un servei intern d'una LAN
+des de l'exterior, però no tenim cap port del router redirigit a aquest servei,
+i no podem/volem modificar la configuració del router.
+
+Si tenim accés per SSH a una màquina de dins de la LAN, podem resoldre
+fàcilment aquesta situació utilitzant un túnel SSH.
+
+La sintaxi general és:
+
+----
+ssh -L port_local:adreça_servei:port_servei usuari@servidor_ssh
+----
+
+On:
+
+- `port_local` és el port de la nostra màquina des d'on podrem accedir al servei
+remot. Hauria de ser un port no reservat (superior a 1024).
+- `adreça_servei` és la IP del host que dóna el servei a què volem accedir.
+- `port_servei`: és el port per on s'accedeix al servei.
+- `usuari`: l'usuari que utilitzem per connectar al SSH.
+- `servidor_ssh`: IP del host que fa de servidor SSH.
+
+També podem afegir les opcions `-f` (per tal que el client SSH no bloquegi
+la terminal) i `-N` (per evitar que s'executi res al servidor SSH).
+
+Un cop establert el túnel SSH, podem accedir al servei remot a *localhost* i
+el port que hem indicat.
+
+Segueix els passos anteriors per visualitzar la web de *legolas* des de
+l'ordinador de l'aula.
+
+.Entregar
+====
+*Ordre SSH utilitzada.*
+====
+
+.Entregar
+====
+*Navegador web amb la pàgina de _legolas_ oberta.*
+====
+
+=== Túnel invers
+
+Canviem ara una mica la situació:
+
+1. Desinstal·la el servidor SSH de PC1.
+2. Elimina les regles d'`iptables` de *sauron* que facin referència al port 22.
+3. Instal·la el servidor SSH a la màquina de l'aula.
+
+El problema és el mateix d'abans: volem accedir des de l'ordinador de l'aula
+a la web de *legolas*. Ara, però, no tenim accés per SSH.
+
+Per fer això necessitem accedir físicament a *PC1* (o demanar a algú de la LAN
+que ho faci per nosaltres), i que estableixi una connexió SSH cap al nostre
+ordinador:
+
+----
+ssh -R port_remot:adreça_servei:port_servei usuari@servidor_ssh
+----
+
+On:
+
+- `port_remot` és el port de la nostra màquina des d'on podrem accedir al servei
+remot. Hauria de ser un port no reservat (superior a 1024).
+- `adreça_servei` és la IP del host que dóna el servei a què volem accedir.
+- `port_servei`: és el port per on s'accedeix al servei.
+- `usuari`: l'usuari que utilitzem per connectar al SSH.
+- `servidor_ssh`: IP del nostre ordinador.
+
+Un cop establerta la connexió, si necessitem que es mantingui oberta, podem
+deixar un programa com el `top` executant-se.
+
+Mentre aquesta connexió estigui oberta podrem, des de l'ordinador de l'aula
+accedir al servei remot, utilitzant `localhost` i el port especificat.
+
+Segueix els passos anteriors per visualitzar la web de *legolas* des de
+l'ordinador de l'aula.
+
+.Entregar
+====
+*Ordre SSH utilitzada.*
+====
+
+.Entregar
+====
+*Navegador web amb la pàgina de _legolas_ oberta.*
+====
+
+[TIP]
+====
+Aquesta tècnica es pot utilitzar en particular per accedir per SSH a una
+màquina que està darrera d'un _firewall_ que no admet la connexió al SSH.
+====
 
 == Apartat 6: VNC
 
