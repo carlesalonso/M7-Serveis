@@ -425,8 +425,46 @@ cop que vulgui utilitzar la clau privada. Aquesta contrasenya no viatjarà per
 la xarxa, sinó que és la contrasenya que s'utilitzarà per recuperar la clau
 privada del fitxer xifrat del disc.
 
-- Generació de claus
-- rsync (cron?)
+En aquest apartat configurarem una parella de claus criptogràfiques per
+aconseguir que el teu usuari habitual a l'ordinador de l'aula es pugui
+connectar a *PC1* sense haver d'introduir un nom d'usuari i contrasenya.
+
+Per fer-ho, connecta't amb el teu usuari i posa:
+
+----
+ssh-keygen
+----
+
+Contesta les preguntes que et faci. En aquest cas, no protegirem la clau
+generada amb una contrasenya.
+
+.Entregar
+====
+*Sortida de l'ordre.*
+====
+
+Un cop generades les claus hem de passar la clau pública al servidor. La clau
+pública es guarda al fitxer `authorized_keys`, dins del directori `~/.ssh/` de
+l'usuari amb què ens voldrem autenticar.
+
+La utilitat `ssh-copy-id` facilita aquest pas, sempre i quan tinguem ja accés
+al servidor utilitzant una contrasenya:
+
+----
+ssh-copy-id usuari@servidor
+----
+
+.Entregar
+====
+*Sortida de l'ordre.*
+====
+
+Comprova que ara pots entrar amb aquest usuari sense posar una contrasenya.
+
+.Entregar
+====
+*Accés al servidor per clau criptogràfica.*
+====
 
 == Apartat 5: túnels
 
