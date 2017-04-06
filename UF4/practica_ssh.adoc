@@ -585,5 +585,27 @@ màquina que està darrera d'un _firewall_ que no admet la connexió al SSH.
 
 == Apartat 6: VNC
 
-- Instal·lació
-- test
+El *VNC* (_Virtual Network Computing_) és un sistema que permet la connexió
+remota a un escriptori.
+
+Consumeix més recursos de xarxa i té menys possibilitats que el SSH, però a
+canvi, és multiplataforma i permet treballar amb l'escriptori complet.
+
+Hi ha diferents implementacions del VNC, algunes d'elles lliures.
+
+1. Instal·la el TightVNC a la teva màquina, a Debian (paquet `tightvncserver`).
+2. Instal·la el client del TightVNC a una màquina Windows.
+3. Connecta des del Windows a la màquina Debian, utilitzant el client VNC.
+
+.Entregar
+====
+*Sistema Windows amb connexió VNC oberta a sistema Debian.*
+====
+
+Repeteix els tres passos anteriors, posant ara el servidor al Windows i el
+client al Debian (el paquet es diu `xtightvncviewer`).
+
+.Entregar
+====
+*Sistema Debian amb connexió VNC oberta a sistema Windows.*
+====
