@@ -429,7 +429,8 @@ En aquest apartat configurarem una parella de claus criptogràfiques per
 aconseguir que el teu usuari habitual a l'ordinador de l'aula es pugui
 connectar a *PC1* sense haver d'introduir un nom d'usuari i contrasenya.
 
-Per fer-ho, connecta't amb el teu usuari i posa:
+Les claus es generen a l'ordinador que farà de *client* i ho ha de fer
+l'usuari que volem que es pugui connectar per SSH. Amb aquest usuari, executa:
 
 ----
 ssh-keygen
