@@ -598,6 +598,12 @@ Hi ha diferents implementacions del VNC, algunes d'elles lliures.
 2. Instal·la el client del TightVNC a una màquina Windows.
 3. Connecta des del Windows a la màquina Debian, utilitzant el client VNC.
 
+[WARNING]
+====
+El port per defecte del servidor TightVNC a Debian és el 5901, però el client
+de Windows intenta connectar-se al 5900. Per tant, cal especificar el port.
+====
+
 .Entregar
 ====
 *Sistema Windows amb connexió VNC oberta a sistema Debian.*
