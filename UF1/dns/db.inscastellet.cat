@@ -2,7 +2,7 @@
 ; BIND data file for local loopback interface
 ;
 $TTL	604800
-inscastellet.cat.	IN	SOA	dns.inscastellet.cat. root.dns.inscatellet.cat. (
+inscastellet.cat.	IN	SOA	dns.inscastellet.cat. root.dns.inscastellet.cat. (
 			      2		; Serial
 			 604800		; Refresh
 			  86400		; Retry
